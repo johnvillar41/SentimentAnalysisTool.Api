@@ -1,0 +1,12 @@
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Data\bin\Debug\net5.0\SentimentAnalysisTool.Data.deps.json
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Data\bin\Debug\net5.0\SentimentAnalysisTool.Data.dll
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Data\bin\Debug\net5.0\ref\SentimentAnalysisTool.Data.dll
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Data\bin\Debug\net5.0\SentimentAnalysisTool.Data.pdb
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Data\obj\Debug\net5.0\SentimentAnalysisTool.Data.csprojAssemblyReference.cache
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Data\obj\Debug\net5.0\SentimentAnalysisTool.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Data\obj\Debug\net5.0\SentimentAnalysisTool.Data.AssemblyInfoInputs.cache
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Data\obj\Debug\net5.0\SentimentAnalysisTool.Data.AssemblyInfo.cs
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Data\obj\Debug\net5.0\SentimentAnalysisTool.Data.csproj.CoreCompileInputs.cache
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Data\obj\Debug\net5.0\SentimentAnalysisTool.Data.dll
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Data\obj\Debug\net5.0\ref\SentimentAnalysisTool.Data.dll
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Data\obj\Debug\net5.0\SentimentAnalysisTool.Data.pdb
