@@ -7,10 +7,7 @@ namespace SentimentAnalysisTool.Data.Models
     {
         public int RecordId { get; set; }
         public string RecordName { get; set; }
-
-        public int ReportId { get;set; }
-        public ReportModel Report { get; set; }
-        public IEnumerable<CommentModel> Comments { get; set; }
-        public IEnumerable<CorpusRecordModel> CorpusRecords { get; set; }
+        public int PositivePercent { get; set; }
+        public int NegativePercent { get; set; }
     }
 }
