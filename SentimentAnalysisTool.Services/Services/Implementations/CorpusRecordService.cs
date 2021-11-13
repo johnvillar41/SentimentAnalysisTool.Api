@@ -10,20 +10,19 @@ using System.Threading.Tasks;
 
 namespace SentimentAnalysisTool.Services.Services.Implementations
 {
-    public class WordFrequencyService : IWordFrequencyService
+    public class CorpusRecordService : ICorpusRecordService
     {
-        public async Task<bool> AddWordFrequenciesAsync(IEnumerable<WordFrequencyModel> wordFrequencies, string connectionString)
+        public async Task<bool> AddCorpusRecordAsync(CorpusRecordModel corpus, string connectionString)
         {
-            var sqlQuery = @"INSERT INTO WordFrequencyTable 
+            var sqlQuery = @"INSERT INTO CorpusRecordsTable(RecordId,CorpusName)
                             VALUES(
                                 @RecordId,
-                                @Word,
-                                @WordFrequency
+                                @CorpusName
                             )";
             using SqlConnection connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
-            var rowsAffected = await connection.ExecuteAsync(sqlQuery, wordFrequencies, transaction);
+            var rowsAffected = await connection.ExecuteAsync(sqlQuery, corpus, transaction);
             await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;

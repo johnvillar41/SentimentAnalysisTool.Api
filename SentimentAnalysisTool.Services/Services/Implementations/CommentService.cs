@@ -33,10 +33,12 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
             var comments = await connection.QueryAsync<CommentModel>(sqlQuery,
-                new { 
-                        PageNumber = pageNumber,
-                        RowsOfPage = pageSize
-                    });
+                new
+                {
+                    PageNumber = pageNumber,
+                    RowsOfPage = pageSize
+                },
+                transaction);
             await transaction.CommitAsync();
             return comments;
         }
