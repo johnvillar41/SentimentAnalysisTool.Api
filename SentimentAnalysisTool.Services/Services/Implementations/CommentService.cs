@@ -11,7 +11,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 {
     public class CommentService : ICommentService
     {
-        public async Task<IEnumerable<CommentModel>> FetchComments(int pageSize, int pageNumber, string connectionString)
+        public async Task<IEnumerable<CommentModel>> FetchCommentsAsync(int pageSize, int pageNumber, string connectionString)
         {
             var sqlQuery = @"SELECT * FROM CommentsTable
                              ORDER BY CommentId
@@ -29,7 +29,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             return comments;
         }
 
-        public async Task<bool> SaveComments(IEnumerable<CommentModel> comments, string connectionString)
+        public async Task<bool> SaveCommentsAsync(IEnumerable<CommentModel> comments, string connectionString)
         {
             var sqlQuery = @"INSERT INTO CommentsTable(RecordId, 
                                                        CommentScore, 
