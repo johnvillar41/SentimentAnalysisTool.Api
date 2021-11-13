@@ -8,5 +8,6 @@ namespace SentimentAnalysisTool.Services.Services.Interfaces
     public interface ICommentService
     {
         Task<bool> SaveComments(IEnumerable<CommentModel> comments, string connectionString);
+        Task<IEnumerable<CommentModel>> FetchComments(int pageSize, int pageNumber, string connectionString); 
     }
 }

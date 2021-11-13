@@ -11,23 +11,37 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 {
     public class CommentService : ICommentService
     {
-        public async Task<bool> SaveComments(IEnumerable<CommentModel> comments, string connectionString)
+        public async Task<IEnumerable<CommentModel>> FetchComments(int pageSize, int pageNumber, string connectionString)
         {
+            var sqlQuery = @"SELECT * FROM CommentsTable
+                             ORDER BY CommentId
+                             OFFSET (@PageNumber-1)*@RowsOfPage ROWS
+                             FETCH NEXT @RowsOfPage ROWS ONLY";
             using SqlConnection connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
-            IDbTransaction transaction = connection.BeginTransaction();
-            var insertedRows = 0;
-            foreach(var comment in comments)
-            {
-                insertedRows = await connection.ExecuteAsync("INSERT INTO CommentsTable(RecordId,CommentScore,CommentDetail,Date) VALUES(@RecordId,@CommentScore,@CommentDetail,@Date)",
-                    new { 
-                        RecordId = comment.Record.RecordId,
-                        CommentScore = comment.CommentScore,
-                        CommentDetail = comment.CommentDetail,
-                        Date = comment.Date
+            using var transaction = await connection.BeginTransactionAsync();
+            var comments = await connection.QueryAsync<CommentModel>(sqlQuery,
+                new { 
+                        PageNumber = pageNumber,
+                        RowsOfPage = pageSize
                     });
-            }
-            if (insertedRows > 0)
+            await transaction.CommitAsync();
+            return comments;
+        }
+
+        public async Task<bool> SaveComments(IEnumerable<CommentModel> comments, string connectionString)
+        {
+            var sqlQuery = @"INSERT INTO CommentsTable(RecordId, 
+                                                       CommentScore, 
+                                                       CommentDetail, 
+                                                       Date) 
+                            VALUES(@RecordId, @CommentScore, @CommentDetail, @Date";
+            using SqlConnection connection = new SqlConnection(connectionString);
+            await connection.OpenAsync();
+            using var transaction = await connection.BeginTransactionAsync();
+            var rowsAffected = await connection.ExecuteAsync(sqlQuery, comments, transaction);
+            await transaction.CommitAsync();
+            if (rowsAffected > 0)
                 return true;
 
             return false;
