@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 
 namespace SentimentAnalysisTool.Api.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class CommentController : ControllerBase
     {
         private readonly ICommentService _commentService;
@@ -21,8 +23,8 @@ namespace SentimentAnalysisTool.Api.Controllers
             _configuration = configuration;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
         }
-
-        [HttpGet]
+        //GET: api/Comment/10/1
+        [HttpGet("{pageSize}/{pageNumber}")]
         public async Task<IActionResult> FetchComments(int pageSize = 10, int pageNumber = 1)
         {
             var comments = await _commentService.FetchCommentsAsync(pageSize, pageNumber, ConnectionString);
