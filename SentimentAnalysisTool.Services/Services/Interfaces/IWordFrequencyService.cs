@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace SentimentAnalysisTool.Services.Services.Interfaces
 {
-    public interface IReportsService
+    public interface IWordFrequencyService
     {
-        Task<bool> UpdateReportGivenByRecordIdAsync(int recordId, RecordModel record, string connectionString);
+        Task<bool> AddWordFrequenciesAsync(IEnumerable<WordFrequencyModel> wordFrequencies, string connectionString);
     }
 }
