@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SentimentAnalysisTool.Data\SentimentAnalysisTool.Data.csproj" />
+    <ProjectReference Include="..\SentimentAnalysisTool.Services\SentimentAnalysisTool.Services.csproj" />
   </ItemGroup>
 
 </Project>

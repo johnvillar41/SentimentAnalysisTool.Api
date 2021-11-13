@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using SentimentAnalysisTool.Services.Services.Implementations;
+using SentimentAnalysisTool.Services.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +34,12 @@ namespace SentimentAnalysisTool.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SentimentAnalysisTool.Api", Version = "v1" });
             });
+            services.AddTransient<ICommentService, CommentService>();
+            services.AddTransient<ICorpusRecordService, CorpusRecordService>();
+            services.AddTransient<ICorpusTypeService, CorpusTypeService>();
+            services.AddTransient<ICorpusWordsService, CorpusWordsService>();
+            services.AddTransient<ISlangRecordsService, SlangRecordsService>();
+            services.AddTransient<IWordFrequencyService, WordFrequencyService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
