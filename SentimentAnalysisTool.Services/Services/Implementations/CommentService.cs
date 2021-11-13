@@ -11,6 +11,18 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 {
     public class CommentService : ICommentService
     {
+        /// <summary>
+        /// Fetches a paginated result of graded(comments with polarity values) comments from the database
+        /// </summary>
+        /// <param name="pageSize">
+        /// Indicates the amount of comments you want to fecth
+        /// </param>
+        /// <param name="pageNumber">
+        /// Indicates the page number for every pagesize fetched
+        /// </param>        
+        /// <returns>
+        /// Collection of graded comments
+        /// </returns>
         public async Task<IEnumerable<CommentModel>> FetchCommentsAsync(int pageSize, int pageNumber, string connectionString)
         {
             var sqlQuery = @"SELECT * FROM CommentsTable
@@ -28,7 +40,15 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             await transaction.CommitAsync();
             return comments;
         }
-
+        /// <summary>
+        /// This will save the graded reviews comming from the client application to the database
+        /// </summary>
+        /// <param name="comments">
+        /// List of graded(comments with polarity values) comment reviews
+        /// </param>        
+        /// <returns>
+        /// Whether transaction is successfull or not
+        /// </returns>
         public async Task<bool> SaveCommentsAsync(IEnumerable<CommentModel> comments, string connectionString)
         {
             var sqlQuery = @"INSERT INTO CommentsTable(RecordId, 
