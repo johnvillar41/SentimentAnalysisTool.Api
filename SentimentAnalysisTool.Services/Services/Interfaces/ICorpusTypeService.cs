@@ -10,5 +10,6 @@ namespace SentimentAnalysisTool.Services.Services.Interfaces
     public interface ICorpusTypeService
     {
         Task<bool> AddCorpusTypeAsync(CorpusTypeModel corpusType, string connectionString);
+        Task<CorpusTypeModel> FindCorpusAsync(int corpusTypeId);
     }
 }

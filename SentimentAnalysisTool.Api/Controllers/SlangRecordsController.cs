@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using SentimentAnalysisTool.Api.Models;
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
 using System;
@@ -15,22 +16,28 @@ namespace SentimentAnalysisTool.Api.Controllers
     public class SlangRecordsController : ControllerBase
     {
         private readonly ISlangRecordsService _slangRecordsService;
+        private readonly ICorpusTypeService _corpusTypeService;
         private readonly IConfiguration _configuration;
         private string ConnectionString { get; }
-        public SlangRecordsController(ISlangRecordsService slangRecordsService, IConfiguration configuration)
+        public SlangRecordsController(
+            ISlangRecordsService slangRecordsService, 
+            IConfiguration configuration,
+            ICorpusTypeService corpusTypeService)
         {
             _slangRecordsService = slangRecordsService;
+            _corpusTypeService = corpusTypeService;
             _configuration = configuration;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
         }
         //POST: api/SlangRecord
         [HttpPost]
-        public async Task<IActionResult> AddSlangRecord([FromBody] SlangRecordModel slangRecord)
+        public async Task<IActionResult> AddSlangRecord([FromBody] SlangRecordViewModel slangRecordViewModel)
         {
-            if (slangRecord == null)
+            if (slangRecordViewModel == null)
                 return NotFound();
 
-            var result = await _slangRecordsService.AddSlangRecordAsync(slangRecord, ConnectionString);
+            var slangRecordModel = BuildSlangRecord(slangRecordViewModel);
+            var result = await _slangRecordsService.AddSlangRecordAsync(slangRecordModel, ConnectionString);
             if (result)
                 return Ok();
 
@@ -38,11 +45,17 @@ namespace SentimentAnalysisTool.Api.Controllers
         }
         //POST: api/SlangRecord
         [HttpPost]
-        public async Task<IActionResult> AddSlangRecord([FromBody] IEnumerable<SlangRecordModel> slangRecords)
+        public async Task<IActionResult> AddSlangRecord([FromBody] IEnumerable<SlangRecordViewModel> slangRecordViewModels)
         {
-            if (slangRecords == null)
+            if (slangRecordViewModels == null)
                 return NotFound();
 
+            var slangRecordModels = slangRecordViewModels.Select(async x => new SlangRecordModel()
+            {
+                CorpusType = await _corpusTypeService.FindCorpusAsync(x.CorpusTypeId),
+                SlangName = x.SlangName
+            });
+            var slangRecords = await Task.WhenAll(slangRecordModels);
             var result = await _slangRecordsService.AddSlangRecordAsync(slangRecords, ConnectionString);
             if (result)
                 return Ok();
@@ -58,6 +71,17 @@ namespace SentimentAnalysisTool.Api.Controllers
                 return Ok();
 
             return BadRequest();
+        }
+
+        private SlangRecordModel BuildSlangRecord(SlangRecordViewModel slangRecordViewModel)
+        {
+            var slangRecord = new SlangRecordModel
+            {
+                CorpusType = new CorpusTypeModel { CorpusTypeId = slangRecordViewModel.CorpusTypeId },
+                SlangName = slangRecordViewModel.SlangName
+            };
+
+            return slangRecord;
         }
     }
 }
