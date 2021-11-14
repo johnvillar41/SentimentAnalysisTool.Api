@@ -36,6 +36,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             _configuration = configuration;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
         }
+        //POST: api/AddRecord
         [HttpPost]
         public async Task<IActionResult> AddRecord([FromBody] RecordViewModel recordViewModel)
         {
@@ -98,6 +99,16 @@ namespace SentimentAnalysisTool.Api.Controllers
                 return BadRequest("Error Adding WordFrequencies");
 
             return Ok();
+        }
+        //DELETE: api/DeleteRecord/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRecord(int id)
+        {
+            var result = await _recordService.DeleteRecordAsync(id, ConnectionString);
+            if (result)
+                return Ok();
+
+            return BadRequest();
         }
     }
 }
