@@ -36,9 +36,9 @@ namespace SentimentAnalysisTool.Api.Controllers
                 CorpusTypeId = -1, // Assigning -1 due to adding a new corpusType
                 Record = null, //TODO null atm
                 CorpusTypeName = corpusTypeViewModel.CorpusTypeName,
-                CorpusWords = (IEnumerable<CorpusWordModel>) corpusTypeViewModel.CorpusWordViewModels.Select(async x => new CorpusWordModel()
+                CorpusWords = (IEnumerable<CorpusWordModel>)corpusTypeViewModel.CorpusWordViewModels.Select(async x => new CorpusWordModel()
                 {
-                    CorpusType = await _corpusTypeService.FindCorpusTypeAsync(x.CorpusTypeId),
+                    CorpusType = await _corpusTypeService.FindCorpusTypeAsync(x.CorpusTypeId, ConnectionString),
                     CorpusWord = x.CorpusWord
                 })
             };
@@ -52,7 +52,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteCorpusType(int id)
         {
-            var result = await _corpusTypeService.DeleteCorpusTypeAsync(id);
+            var result = await _corpusTypeService.DeleteCorpusTypeAsync(id, ConnectionString);
             if (result)
                 return Ok();
 

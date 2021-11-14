@@ -1,0 +1,15 @@
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Services\bin\Debug\net5.0\SentimentAnalysisTool.Services.deps.json
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Services\bin\Debug\net5.0\SentimentAnalysisTool.Services.dll
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Services\bin\Debug\net5.0\ref\SentimentAnalysisTool.Services.dll
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Services\bin\Debug\net5.0\SentimentAnalysisTool.Services.pdb
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Services\bin\Debug\net5.0\SentimentAnalysisTool.Data.dll
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Services\bin\Debug\net5.0\SentimentAnalysisTool.Data.pdb
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Services\obj\Debug\net5.0\SentimentAnalysisTool.Services.csprojAssemblyReference.cache
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Services\obj\Debug\net5.0\SentimentAnalysisTool.Services.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Services\obj\Debug\net5.0\SentimentAnalysisTool.Services.AssemblyInfoInputs.cache
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Services\obj\Debug\net5.0\SentimentAnalysisTool.Services.AssemblyInfo.cs
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Services\obj\Debug\net5.0\SentimentAnalysisTool.Services.csproj.CoreCompileInputs.cache
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Services\obj\Debug\net5.0\SentimentAnalysisTool.Services.csproj.CopyComplete
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Services\obj\Debug\net5.0\SentimentAnalysisTool.Services.dll
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Services\obj\Debug\net5.0\ref\SentimentAnalysisTool.Services.dll
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Services\obj\Debug\net5.0\SentimentAnalysisTool.Services.pdb

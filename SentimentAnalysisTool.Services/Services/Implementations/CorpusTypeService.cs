@@ -1,11 +1,8 @@
 ﻿using Dapper;
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SentimentAnalysisTool.Services.Services.Implementations
@@ -65,6 +62,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
             var result = await connection.QueryFirstAsync<CorpusTypeModel>(sqlQuery, new { CorpusTypeId = corpusTypeId }, transaction);
+            await transaction.CommitAsync();
             return result;
         }
     }
