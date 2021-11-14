@@ -38,7 +38,7 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             var slangRecordModel = new SlangRecordModel
             {
-                CorpusType = await _corpusTypeService.FindCorpusAsync(slangRecordViewModel.CorpusTypeId),
+                CorpusType = await _corpusTypeService.FindCorpusTypeAsync(slangRecordViewModel.CorpusTypeId),
                 SlangName = slangRecordViewModel.SlangName
             };
             var result = await _slangRecordsService.AddSlangRecordAsync(slangRecordModel, ConnectionString);
@@ -56,7 +56,7 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             var slangRecordModels = slangRecordViewModels.Select(async x => new SlangRecordModel()
             {
-                CorpusType = await _corpusTypeService.FindCorpusAsync(x.CorpusTypeId),
+                CorpusType = await _corpusTypeService.FindCorpusTypeAsync(x.CorpusTypeId),
                 SlangName = x.SlangName
             });
             var slangRecords = await Task.WhenAll(slangRecordModels);

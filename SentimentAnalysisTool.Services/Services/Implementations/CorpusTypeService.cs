@@ -42,7 +42,12 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             return false;
         }
 
-        public Task<CorpusTypeModel> FindCorpusAsync(int corpusTypeId)
+        public Task<bool> DeleteCorpusTypeAsync(int corpusTypeId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CorpusTypeModel> FindCorpusTypeAsync(int corpusTypeId)
         {
             throw new NotImplementedException();
         }
