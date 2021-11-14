@@ -55,15 +55,14 @@ namespace SentimentAnalysisTool.Api.Controllers
             recordModel.RecordId = resultPrimaryKey;
 
             //Insertion for CommentsTable
-            var commentModelTasks = recordViewModel.CommentViewModels.Select(async x => new CommentModel()
+            var commentModels = recordViewModel.CommentViewModels.Select(x => new CommentModel()
             {
                 CommentId = x.CommentId,
                 Record = recordModel,
                 CommentScore = x.CommentScore,
                 CommentDetail = x.CommentDetail,
                 Date = x.Date
-            });
-            var commentModels = await Task.WhenAll(commentModelTasks);
+            });            
             var commentsResult = await _commentService.SaveCommentsAsync(commentModels, ConnectionString);
             if (!commentsResult)
                 return BadRequest("Error Adding Comments!");
