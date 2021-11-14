@@ -7,5 +7,6 @@ namespace SentimentAnalysisTool.Services.Services.Interfaces
     {
         Task<int> AddRecordAsync(RecordModel record, string connectionString);
         Task<bool> DeleteRecordAsync(int recordId, string connectionString);
+        Task<RecordModel> FindRecordAsync(int recordId, string connectionString);
     }
 }

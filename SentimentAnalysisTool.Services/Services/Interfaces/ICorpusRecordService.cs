@@ -10,5 +10,6 @@ namespace SentimentAnalysisTool.Services.Services.Interfaces
     public interface ICorpusRecordService
     {
         Task<bool> AddCorpusRecordAsync(CorpusRecordModel corpus, string connectionString);
+        Task<bool> AddCorpusRecordAsync(IEnumerable<CorpusRecordModel> corpuses, string connectionString);
     }
 }
