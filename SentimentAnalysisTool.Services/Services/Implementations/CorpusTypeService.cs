@@ -30,10 +30,13 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             var transaction = await connection.BeginTransactionAsync();
             var primaryKey = await connection.ExecuteAsync(sqlQuery, corpusType, transaction);
 
-            corpusType.CorpusWords.Select(x => x.CorpusType.CorpusTypeId = primaryKey);
-            var corpusWordResult = await _corpusWordsService.AddCorpusWordsAsync(corpusType.CorpusWords, connectionString);
-            if (!corpusWordResult)
-                return false;
+            if(corpusType.CorpusWords.Any())
+            {
+                corpusType.CorpusWords.Select(x => x.CorpusType.CorpusTypeId = primaryKey);
+                var corpusWordResult = await _corpusWordsService.AddCorpusWordsAsync(corpusType.CorpusWords, connectionString);
+                if (!corpusWordResult)
+                    return false;
+            }           
 
             await transaction.CommitAsync();
             if (primaryKey > 0)
