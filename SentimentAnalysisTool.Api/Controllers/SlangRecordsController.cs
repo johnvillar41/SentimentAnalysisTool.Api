@@ -36,7 +36,11 @@ namespace SentimentAnalysisTool.Api.Controllers
             if (slangRecordViewModel == null)
                 return NotFound();
 
-            var slangRecordModel = BuildSlangRecord(slangRecordViewModel);
+            var slangRecordModel = new SlangRecordModel
+            {
+                CorpusType = await _corpusTypeService.FindCorpusAsync(slangRecordViewModel.CorpusTypeId),
+                SlangName = slangRecordViewModel.SlangName
+            };
             var result = await _slangRecordsService.AddSlangRecordAsync(slangRecordModel, ConnectionString);
             if (result)
                 return Ok();
@@ -71,17 +75,6 @@ namespace SentimentAnalysisTool.Api.Controllers
                 return Ok();
 
             return BadRequest();
-        }
-
-        private SlangRecordModel BuildSlangRecord(SlangRecordViewModel slangRecordViewModel)
-        {
-            var slangRecord = new SlangRecordModel
-            {
-                CorpusType = new CorpusTypeModel { CorpusTypeId = slangRecordViewModel.CorpusTypeId },
-                SlangName = slangRecordViewModel.SlangName
-            };
-
-            return slangRecord;
-        }
+        }       
     }
 }
