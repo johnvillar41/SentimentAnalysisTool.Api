@@ -33,24 +33,36 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             return Ok(comments);
         }
-
+        //POST: api/SaveComments
         [HttpPost]
-        public async Task<IActionResult> SaveComments()
+        public async Task<IActionResult> SaveComments(IFormFile csvFormFile)
         {
-            throw new NotImplementedException();
-        }
+            var isSuccessful = await UploadCsv(csvFormFile);
+            if (!isSuccessful)
+                return BadRequest("Error Uploading File");
 
-        [HttpPost]
-        public async Task<IActionResult> UploadCsv(IFormFile csvFormFile)
+            var result = await PolarizeCsvFile(csvFormFile);
+            if(result)
+                return Ok("Successfully Uploaded file!");
+
+            return BadRequest("Error!");
+        }
+             
+        private async Task<bool> UploadCsv(IFormFile csvFormFile)
         {
             var filePath = Path.GetTempFileName();
             if (csvFormFile.Length > 0)
             {
                 using FileStream fileStream = new FileStream(filePath, FileMode.Create);
                 await csvFormFile.CopyToAsync(fileStream);
-                return Ok();
+                return true;
             }
-            return BadRequest();
+            return false;
+        }
+
+        private async Task<bool> PolarizeCsvFile(IFormFile csvFormFile)
+        {
+            throw new NotImplementedException();
         }
     }
 }
