@@ -25,7 +25,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             using SqlConnection connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             var transaction = await connection.BeginTransactionAsync();
-            var primaryKey = await connection.ExecuteAsync(sqlQuery, corpusType, transaction);
+            var primaryKey = await connection.QuerySingleAsync<int>(sqlQuery, corpusType, transaction);
 
             if(corpusType.CorpusWords.Any())
             {
