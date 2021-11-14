@@ -20,7 +20,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         private readonly IConfiguration _configuration;
         private string ConnectionString { get; }
         public SlangRecordsController(
-            ISlangRecordsService slangRecordsService, 
+            ISlangRecordsService slangRecordsService,
             IConfiguration configuration,
             ICorpusTypeService corpusTypeService)
         {
@@ -38,7 +38,7 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             var slangRecordModel = new SlangRecordModel
             {
-                CorpusType = await _corpusTypeService.FindCorpusTypeAsync(slangRecordViewModel.CorpusTypeId),
+                CorpusType = await _corpusTypeService.FindCorpusTypeAsync(slangRecordViewModel.CorpusTypeId, ConnectionString),
                 SlangName = slangRecordViewModel.SlangName
             };
             var result = await _slangRecordsService.AddSlangRecordAsync(slangRecordModel, ConnectionString);
@@ -56,7 +56,7 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             var slangRecordModels = slangRecordViewModels.Select(async x => new SlangRecordModel()
             {
-                CorpusType = await _corpusTypeService.FindCorpusTypeAsync(x.CorpusTypeId),
+                CorpusType = await _corpusTypeService.FindCorpusTypeAsync(x.CorpusTypeId, ConnectionString),
                 SlangName = x.SlangName
             });
             var slangRecords = await Task.WhenAll(slangRecordModels);
@@ -75,6 +75,6 @@ namespace SentimentAnalysisTool.Api.Controllers
                 return Ok();
 
             return BadRequest();
-        }       
+        }
     }
 }
