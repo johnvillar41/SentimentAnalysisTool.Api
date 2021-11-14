@@ -16,7 +16,7 @@ namespace SentimentAnalysisTool.Api.Controllers
     {
         private readonly ICommentService _commentService;
         private readonly IConfiguration _configuration;
-        private string ConnectionString { get; set; }
+        private string ConnectionString { get; }
         public CommentController(ICommentService commentService, IConfiguration configuration)
         {
             _commentService = commentService;
