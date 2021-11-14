@@ -44,8 +44,7 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             //Insertion for RecordsTable
             var recordModel = new RecordModel()
-            {
-                RecordId = -1,
+            {                
                 RecordName = recordViewModel.RecordName,
                 PositivePercent = recordViewModel.PositivePercent,
                 NegativePercent = recordViewModel.NegativePercent
@@ -53,12 +52,13 @@ namespace SentimentAnalysisTool.Api.Controllers
             var resultPrimaryKey = await _recordService.AddRecordAsync(recordModel, ConnectionString);
             if (resultPrimaryKey < 1)
                 return BadRequest("Error Adding Record!");
+            recordModel.RecordId = resultPrimaryKey;
 
             //Insertion for CommentsTable
             var commentModelTasks = recordViewModel.CommentViewModels.Select(async x => new CommentModel()
             {
                 CommentId = x.CommentId,
-                Record = await _recordService.FindRecordAsync(resultPrimaryKey, ConnectionString),
+                Record = recordModel,
                 CommentScore = x.CommentScore,
                 CommentDetail = x.CommentDetail,
                 Date = x.Date
@@ -69,33 +69,31 @@ namespace SentimentAnalysisTool.Api.Controllers
                 return BadRequest("Error Adding Comments!");
 
             //Insertion for CorpusRecordsTable
-            var corpusRecordModelTasks = recordViewModel.CorpusRecordViewModels.Select(async x => new CorpusRecordModel()
+            var corpusRecordModels = recordViewModel.CorpusRecordViewModels.Select(x => new CorpusRecordModel()
             {
                 CorpusRecordId = -1,
-                Record = await _recordService.FindRecordAsync(resultPrimaryKey, ConnectionString),
+                Record = recordModel,
                 CorpusName = x.CorpusName,
-                CorpusTypes = (IEnumerable<CorpusTypeModel>)x.CorpusTypeIds.Select(async y => new CorpusTypeModel()
+                CorpusTypes = x.CorpusTypeIds.Select(y => new CorpusTypeModel()
                 {
                     CorpusTypeId = -1,
-                    Record = await _recordService.FindRecordAsync(resultPrimaryKey, ConnectionString),
+                    Record = recordModel,
                     CorpusTypeName = _corpusTypeService.FindCorpusTypeAsync(y, ConnectionString).Result.CorpusTypeName,
                     CorpusWords = new List<CorpusWordModel>()
                 })
-            });
-            var corpusRecordModels = await Task.WhenAll(corpusRecordModelTasks);
+            });            
             var corpusRecordServiceResult = await _corpusRecordService.AddCorpusRecordAsync(corpusRecordModels, ConnectionString);
             if (!corpusRecordServiceResult)
                 return BadRequest("Error Adding Corpus!");
 
             //Insertion for WordFrequencyTable
-            var wordFrequencyModelTasks = recordViewModel.WordFrequencyViewModels.Select(async x => new WordFrequencyModel()
+            var wordFrequencyModels = recordViewModel.WordFrequencyViewModels.Select(x => new WordFrequencyModel()
             {
                 WordFrequencyId = -1,
-                Record = await _recordService.FindRecordAsync(resultPrimaryKey, ConnectionString),
+                Record = recordModel,
                 Word = x.Word,
                 WordFrequency = x.WordFrequency
-            });
-            var wordFrequencyModels = await Task.WhenAll(wordFrequencyModelTasks);
+            });           
             var wordFrequencyServiceResult = await _wordFrequencyService.AddWordFrequenciesAsync(wordFrequencyModels, ConnectionString);
             if (!wordFrequencyServiceResult)
                 return BadRequest("Error Adding WordFrequencies");
