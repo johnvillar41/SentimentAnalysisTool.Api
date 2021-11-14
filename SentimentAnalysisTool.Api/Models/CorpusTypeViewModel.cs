@@ -9,5 +9,6 @@ namespace SentimentAnalysisTool.Api.Models
     {
         public int CorpusRecordId { get; set; }
         public string CorpusTypeName { get; set; }
+        public int RecordId { get; set; }
     }
 }

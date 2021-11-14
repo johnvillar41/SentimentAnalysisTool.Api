@@ -15,7 +15,7 @@ namespace SentimentAnalysisTool.Api.Controllers
     [ApiController]
     public class CorpusTypeController : ControllerBase
     {
-        private readonly ICorpusTypeService _corpusTypeService;        
+        private readonly ICorpusTypeService _corpusTypeService;
         private readonly IConfiguration _configuration;
         private string ConnectionString { get; }
         public CorpusTypeController(ICorpusTypeService corpusTypeService, IConfiguration configuration)
@@ -25,17 +25,23 @@ namespace SentimentAnalysisTool.Api.Controllers
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> AddCorpusType([FromBody] CorpusTypeViewModel corpusTypeViewModel)
-        //{
-        //    if (corpusTypeViewModel == null)
-        //        return NotFound();
+        [HttpPost]
+        public async Task<IActionResult> AddCorpusType([FromBody] CorpusTypeViewModel corpusTypeViewModel)
+        {
+            if (corpusTypeViewModel == null)
+                return NotFound();
 
-        //    var corpusModel = new CorpusTypeModel()
-        //    {
-        //        Record = await 
-        //    }
-        //    var result = await _corpusTypeService.AddCorpusTypeAsync();
-        //}
+            var corpusModel = new CorpusTypeModel()
+            {
+                Record = null, //TODO null atm
+                CorpusTypeName = corpusTypeViewModel.CorpusTypeName,
+                CorpusWords = null //This should always be null here
+            };
+            var result = await _corpusTypeService.AddCorpusTypeAsync(corpusModel, ConnectionString);
+            if (result)
+                return Ok();
+
+            return BadRequest();
+        }
     }
 }
