@@ -41,5 +41,10 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
             return false;
         }
+
+        public Task<RecordModel> FindRecordAsync(int recordId, string connectionString)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

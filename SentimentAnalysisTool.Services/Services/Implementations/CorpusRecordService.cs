@@ -29,5 +29,10 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
             return false;
         }
+
+        public Task<bool> AddCorpusRecordAsync(IEnumerable<CorpusRecordModel> corpuses, string connectionString)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
