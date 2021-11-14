@@ -36,7 +36,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             _configuration = configuration;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
         }
-        //POST: api/AddRecord
+        //POST: api/Records
         [HttpPost]
         public async Task<IActionResult> AddRecord([FromBody] RecordViewModel recordViewModel)
         {
@@ -100,7 +100,7 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             return Ok();
         }
-        //DELETE: api/DeleteRecord/{id}
+        //DELETE: api/Records/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRecord(int id)
         {
