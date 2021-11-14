@@ -45,14 +45,27 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             return false;
         }
 
-        public Task<bool> DeleteCorpusTypeAsync(int corpusTypeId)
+        public async Task<bool> DeleteCorpusTypeAsync(int corpusTypeId, string connectionString)
         {
-            throw new NotImplementedException();
+            var sqlQuery = @"DELETE FROM CorpusTypeTable WHERE CorpusTypeId = @CorpusTypeId";
+            using SqlConnection connection = new SqlConnection(connectionString);
+            await connection.OpenAsync();
+            using var transaction = await connection.BeginTransactionAsync();
+            var result = await connection.ExecuteAsync(sqlQuery, new { CorpusTypeId = corpusTypeId }, transaction);
+            if (result > 0)
+                return true;
+
+            return false;
         }
 
-        public Task<CorpusTypeModel> FindCorpusTypeAsync(int corpusTypeId)
+        public async Task<CorpusTypeModel> FindCorpusTypeAsync(int corpusTypeId, string connectionString)
         {
-            throw new NotImplementedException();
+            var sqlQuery = @"SELECT * FROM CorpusTypeTable WHERE CorpusTypeId = @CorpusTypeId";
+            using SqlConnection connection = new SqlConnection(connectionString);
+            await connection.OpenAsync();
+            using var transaction = await connection.BeginTransactionAsync();
+            var result = await connection.QueryFirstAsync<CorpusTypeModel>(sqlQuery, new { CorpusTypeId = corpusTypeId }, transaction);
+            return result;
         }
     }
 }
