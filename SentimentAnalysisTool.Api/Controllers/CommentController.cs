@@ -29,7 +29,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         {
             var comments = await _commentService.FetchCommentsAsync(pageSize, pageNumber, ConnectionString);
             if (((List<CommentModel>)comments).Count == 0)
-                return NoContent();
+                return NotFound("No Comments Found!");
 
             return Ok(comments);
         }
