@@ -7,6 +7,7 @@ using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -21,6 +22,7 @@ namespace SentimentAnalysisTool.Tests
         private Mock<ICorpusTypeService> mockCorpusTypeService;
         private Mock<IConfiguration> mockConfiguration;
         private RecordsController recordController;
+        
         public RecordsControllerTests()
         {
             mockCommentService = new Mock<ICommentService>();
@@ -88,11 +90,9 @@ namespace SentimentAnalysisTool.Tests
             //Arrange          
             mockRecordService
                 .Setup(m => m.AddRecordAsync(It.IsAny<RecordModel>(), It.IsAny<string>()))
-                .Returns(Task.FromResult(1));
-                            
-            var mockCommentList = Mock.Of<IEnumerable<CommentModel>>();
+                .Returns(Task.FromResult(1));           
             mockCommentService
-                .Setup(m => m.SaveCommentsAsync(mockCommentList, It.IsAny<string>()))
+                .Setup(m => m.SaveCommentsAsync(It.IsAny<IEnumerable<CommentModel>>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(false));
 
             //Act
@@ -111,10 +111,13 @@ namespace SentimentAnalysisTool.Tests
             //Arrange          
             mockRecordService
                 .Setup(m => m.AddRecordAsync(It.IsAny<RecordModel>(), It.IsAny<string>()))
-                .Returns(Task.FromResult(1));                      
+                .Returns(Task.FromResult(1));
             mockCommentService
-                .Setup(m => m.SaveCommentsAsync(It.IsAny<IEnumerable<CommentModel>>(), It.IsAny<string>()))
-                .Returns(Task.FromResult(true));
+                 .Setup(m => m.SaveCommentsAsync(It.IsAny<IEnumerable<CommentModel>>(), It.IsAny<string>()))
+                 .Returns(Task.FromResult(true));
+            mockCorpusRecordService
+                .Setup(m => m.AddCorpusRecordAsync(It.IsAny<IEnumerable<CorpusRecordModel>>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(false));
 
             //Act
             var recordViewModel = Mock.Of<RecordViewModel>();
@@ -126,6 +129,62 @@ namespace SentimentAnalysisTool.Tests
             var contentResultMessage = contentResult.Value;
             Assert.Equal(result, contentResult);
             Assert.Equal("Error Adding Corpus!", contentResultMessage);
+        }
+        [Fact]
+        public async Task Should_Return_BadRequest_When_AddFrequency_Is_False()
+        {
+            //Arrange          
+            mockRecordService
+                .Setup(m => m.AddRecordAsync(It.IsAny<RecordModel>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(1));
+            mockCommentService
+                 .Setup(m => m.SaveCommentsAsync(It.IsAny<IEnumerable<CommentModel>>(), It.IsAny<string>()))
+                 .Returns(Task.FromResult(true));
+            mockCorpusRecordService
+                .Setup(m => m.AddCorpusRecordAsync(It.IsAny<IEnumerable<CorpusRecordModel>>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(true));
+            mockWordFrequencyService
+               .Setup(m => m.AddWordFrequenciesAsync(It.IsAny<IEnumerable<WordFrequencyModel>>(), It.IsAny<string>()))
+               .Returns(Task.FromResult(false));           
+
+            //Act
+            var recordViewModel = Mock.Of<RecordViewModel>();
+            recordViewModel.CommentViewModels = Mock.Of<IEnumerable<CommentViewModel>>();
+            recordViewModel.CorpusRecordViewModels = Mock.Of<IEnumerable<CorpusRecordViewModel>>();
+            recordViewModel.WordFrequencyViewModels = Mock.Of<IEnumerable<WordFrequencyViewModel>>();
+            var result = await recordController.AddRecord(recordViewModel);
+            //Assert
+            var contentResult = Assert.IsType<BadRequestObjectResult>(result);
+            var contentResultMessage = contentResult.Value;
+            Assert.Equal(result, contentResult);
+            Assert.Equal("Error Adding WordFrequencies!", contentResultMessage);
+        }
+        [Fact]
+        public async Task Should_Return_Ok_When_All_Is_True()
+        {
+            //Arrange          
+            mockRecordService
+                .Setup(m => m.AddRecordAsync(It.IsAny<RecordModel>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(1));
+            mockCommentService
+                 .Setup(m => m.SaveCommentsAsync(It.IsAny<IEnumerable<CommentModel>>(), It.IsAny<string>()))
+                 .Returns(Task.FromResult(true));
+            mockCorpusRecordService
+                .Setup(m => m.AddCorpusRecordAsync(It.IsAny<IEnumerable<CorpusRecordModel>>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(true));
+            mockWordFrequencyService
+               .Setup(m => m.AddWordFrequenciesAsync(It.IsAny<IEnumerable<WordFrequencyModel>>(), It.IsAny<string>()))
+               .Returns(Task.FromResult(true));         
+
+            //Act
+            var recordViewModel = Mock.Of<RecordViewModel>();
+            recordViewModel.CommentViewModels = Mock.Of<IEnumerable<CommentViewModel>>();
+            recordViewModel.CorpusRecordViewModels = Mock.Of<IEnumerable<CorpusRecordViewModel>>();
+            recordViewModel.WordFrequencyViewModels = Mock.Of<IEnumerable<WordFrequencyViewModel>>();
+            var result = await recordController.AddRecord(recordViewModel);
+            //Assert
+            var contentResult = Assert.IsType<OkResult>(result);            
+            Assert.Equal(result, contentResult);            
         }
     }
 }

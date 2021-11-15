@@ -96,7 +96,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             });           
             var wordFrequencyServiceResult = await _wordFrequencyService.AddWordFrequenciesAsync(wordFrequencyModels, ConnectionString);
             if (!wordFrequencyServiceResult)
-                return BadRequest("Error Adding WordFrequencies");
+                return BadRequest("Error Adding WordFrequencies!");
 
             return Ok();
         }
