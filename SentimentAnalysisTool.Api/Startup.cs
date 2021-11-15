@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using SentimentAnalysisTool.Api.Helpers;
 using SentimentAnalysisTool.Services.Services.Implementations;
 using SentimentAnalysisTool.Services.Services.Interfaces;
 using System;
@@ -36,6 +37,7 @@ namespace SentimentAnalysisTool.Api
             services.AddTransient<ISlangRecordsService, SlangRecordsService>();
             services.AddTransient<IWordFrequencyService, WordFrequencyService>();
             services.AddTransient<IRecordService, RecordService>();
+            services.AddTransient<IFileHelper, FileHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
