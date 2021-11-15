@@ -51,9 +51,9 @@ namespace SentimentAnalysisTool.Api.Controllers
                 NegativePercent = recordViewModel.NegativePercent
             };
             var resultPrimaryKey = await _recordService.AddRecordAsync(recordModel, ConnectionString);
-            if (resultPrimaryKey < 1)
-                return BadRequest("Error Adding Record!");
             recordModel.RecordId = resultPrimaryKey;
+            if (recordModel.RecordId < 1)
+                return BadRequest("Error Adding Record!");            
 
             //Insertion for CommentsTable
             var commentModels = recordViewModel.CommentViewModels.Select(x => new CommentModel()
