@@ -5,6 +5,7 @@ using SentimentAnalysisTool.Api.Controllers;
 using SentimentAnalysisTool.Api.Models;
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
@@ -88,21 +89,43 @@ namespace SentimentAnalysisTool.Tests
             mockRecordService
                 .Setup(m => m.AddRecordAsync(It.IsAny<RecordModel>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(1));
+                            
+            var mockCommentList = Mock.Of<IEnumerable<CommentModel>>();
             mockCommentService
-                .Setup(m => m.SaveCommentsAsync(new Mock<IEnumerable<CommentModel>>().Object, It.IsAny<string>()))
+                .Setup(m => m.SaveCommentsAsync(mockCommentList, It.IsAny<string>()))
                 .Returns(Task.FromResult(false));
 
             //Act
-            var recordViewModel = new RecordViewModel()
-            {
-                CommentViewModels = new Mock<IEnumerable<CommentViewModel>>().Object
-            };
+            var recordViewModel = Mock.Of<RecordViewModel>();
+            recordViewModel.CommentViewModels = Mock.Of<IEnumerable<CommentViewModel>>();
             var result = await recordController.AddRecord(recordViewModel);
             //Assert
             var contentResult = Assert.IsType<BadRequestObjectResult>(result);
             var contentResultMessage = contentResult.Value;
             Assert.Equal(result, contentResult);
             Assert.Equal("Error Adding Comments!", contentResultMessage);
+        }
+        [Fact]
+        public async Task Should_Return_BadRequest_When_AddCorpusRecord_Is_False()
+        {
+            //Arrange          
+            mockRecordService
+                .Setup(m => m.AddRecordAsync(It.IsAny<RecordModel>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(1));                      
+            mockCommentService
+                .Setup(m => m.SaveCommentsAsync(It.IsAny<IEnumerable<CommentModel>>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(true));
+
+            //Act
+            var recordViewModel = Mock.Of<RecordViewModel>();
+            recordViewModel.CommentViewModels = Mock.Of<IEnumerable<CommentViewModel>>();
+            recordViewModel.CorpusRecordViewModels = Mock.Of<IEnumerable<CorpusRecordViewModel>>();
+            var result = await recordController.AddRecord(recordViewModel);
+            //Assert
+            var contentResult = Assert.IsType<BadRequestObjectResult>(result);
+            var contentResultMessage = contentResult.Value;
+            Assert.Equal(result, contentResult);
+            Assert.Equal("Error Adding Corpus!", contentResultMessage);
         }
     }
 }
