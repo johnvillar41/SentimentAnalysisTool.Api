@@ -49,7 +49,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         }
         //POST: api/SlangRecord
         [HttpPost]
-        public async Task<IActionResult> AddSlangRecord([FromBody] IEnumerable<SlangRecordViewModel> slangRecordViewModels)
+        public async Task<IActionResult> AddSlangRecords([FromBody] IEnumerable<SlangRecordViewModel> slangRecordViewModels)
         {
             if (slangRecordViewModels == null)
                 return NotFound();
