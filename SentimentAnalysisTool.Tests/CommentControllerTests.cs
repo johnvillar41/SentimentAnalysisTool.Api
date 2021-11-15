@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Moq;
 using SentimentAnalysisTool.Api.Controllers;
+using SentimentAnalysisTool.Api.Helpers;
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
 using System;
@@ -17,12 +18,16 @@ namespace SentimentAnalysisTool.Tests
     {
         private readonly Mock<ICommentService> mockCommentService;
         private readonly Mock<IConfiguration> mockConfiguration;
+        private readonly Mock<IFileHelper> mockFileHelper;
         private readonly CommentController commentController;
         public CommentControllerTests()
         {
             mockCommentService = new Mock<ICommentService>();
             mockConfiguration = new Mock<IConfiguration>();
-            commentController = new CommentController(mockCommentService.Object, mockConfiguration.Object);
+            commentController = new CommentController(
+                mockCommentService.Object,                
+                mockConfiguration.Object,
+                mockFileHelper.Object);
         }
         [Fact]
         public async Task Should_Return_NotFound_When_FetchComments_Returns_None()
