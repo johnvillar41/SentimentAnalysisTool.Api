@@ -28,7 +28,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         public async Task<IActionResult> FetchComments(int pageSize = 10, int pageNumber = 1)
         {
             var comments = await _commentService.FetchCommentsAsync(pageSize, pageNumber, ConnectionString);
-            if (((List<CommentModel>)comments).Count == 0)
+            if (comments.Count == 0)
                 return NotFound("No Comments Found!");
 
             return Ok(comments);

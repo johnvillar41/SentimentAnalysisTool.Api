@@ -23,7 +23,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         /// <returns>
         /// Collection of graded comments
         /// </returns>
-        public async Task<IEnumerable<CommentModel>> FetchCommentsAsync(int pageSize, int pageNumber, string connectionString)
+        public async Task<ICollection<CommentModel>> FetchCommentsAsync(int pageSize, int pageNumber, string connectionString)
         {
             var sqlQuery = @"SELECT * FROM CommentsTable
                              ORDER BY CommentId
@@ -40,7 +40,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                 },
                 transaction);
             await transaction.CommitAsync();
-            return comments;
+            return (ICollection<CommentModel>)comments;
         }
         /// <summary>
         /// This will save the graded reviews comming from the client application to the database
