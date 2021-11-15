@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using SentimentAnalysisTool.Api.Helpers;
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
 using System;
@@ -15,11 +16,16 @@ namespace SentimentAnalysisTool.Api.Controllers
     public class CommentController : ControllerBase
     {
         private readonly ICommentService _commentService;
+        private readonly IFileHelper _fileHelper;
         private readonly IConfiguration _configuration;
         private string ConnectionString { get; }
-        public CommentController(ICommentService commentService, IConfiguration configuration)
+        public CommentController(
+            ICommentService commentService, 
+            IConfiguration configuration,
+            IFileHelper fileHelper)
         {
             _commentService = commentService;
+            _fileHelper = fileHelper;
             _configuration = configuration;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
         }
@@ -37,32 +43,15 @@ namespace SentimentAnalysisTool.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveComments(IFormFile csvFormFile)
         {
-            var isSuccessful = await UploadCsv(csvFormFile);
+            var isSuccessful = await _fileHelper.UploadCsv(csvFormFile);
             if (!isSuccessful)
                 return BadRequest("Error Uploading File");
 
-            var result = await PolarizeCsvFile(csvFormFile);
-            if(result)
-                return Ok("Successfully Uploaded file!");
+            var result = await _fileHelper.PolarizeCsvFile(csvFormFile);
+            throw new NotImplementedException();
 
             return BadRequest("Error!");
-        }
-             
-        private async Task<bool> UploadCsv(IFormFile csvFormFile)
-        {
-            var filePath = Path.GetTempFileName();
-            if (csvFormFile.Length > 0)
-            {
-                using FileStream fileStream = new FileStream(filePath, FileMode.Create);
-                await csvFormFile.CopyToAsync(fileStream);
-                return true;
-            }
-            return false;
-        }
-
-        private async Task<bool> PolarizeCsvFile(IFormFile csvFormFile)
-        {
-            throw new NotImplementedException();
-        }
+        }          
+        
     }
 }
