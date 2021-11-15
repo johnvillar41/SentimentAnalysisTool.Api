@@ -54,13 +54,13 @@ namespace SentimentAnalysisTool.Api.Controllers
             if (slangRecordViewModels == null)
                 return NotFound();
 
-            var slangRecordModels = slangRecordViewModels.Select(async x => new SlangRecordModel()
+            var slangRecordModelsTasks = slangRecordViewModels.Select(async x => new SlangRecordModel()
             {
                 CorpusType = await _corpusTypeService.FindCorpusTypeAsync(x.CorpusTypeId, ConnectionString),
                 SlangName = x.SlangName
             });
-            var slangRecords = await Task.WhenAll(slangRecordModels);
-            var result = await _slangRecordsService.AddSlangRecordAsync(slangRecords, ConnectionString);
+            var slangRecordModels = await Task.WhenAll(slangRecordModelsTasks);
+            var result = await _slangRecordsService.AddSlangRecordAsync(slangRecordModels, ConnectionString);
             if (result)
                 return Ok();
 
