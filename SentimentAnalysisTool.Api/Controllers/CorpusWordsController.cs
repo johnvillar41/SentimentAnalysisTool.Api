@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using SentimentAnalysisTool.Api.Models;
+using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -14,11 +16,16 @@ namespace SentimentAnalysisTool.Api.Controllers
     public class CorpusWordsController : ControllerBase
     {
         private readonly ICorpusWordsService _corpusWordsService;
+        private readonly ICorpusTypeService _corpusTypeService;
         private readonly IConfiguration _configuration;
         private string ConnectionString { get; }
-        public CorpusWordsController(ICorpusWordsService corpusWordsService, IConfiguration configuration)
+        public CorpusWordsController(
+            ICorpusWordsService corpusWordsService,
+            IConfiguration configuration,
+            ICorpusTypeService corpusTypeService)
         {
             _corpusWordsService = corpusWordsService;
+            _corpusTypeService = corpusTypeService;
             _configuration = configuration;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
         }
@@ -31,6 +38,23 @@ namespace SentimentAnalysisTool.Api.Controllers
                 return NotFound("Empty Corpus List!");
 
             return Ok(corpusList);
+        }
+        //POST: api/CorpusWords
+        [HttpPost]
+        public async Task<IActionResult> AddCorpusWords([FromBody] IEnumerable<CorpusWordViewModel> corpusWords)
+        {
+            var corpusModelTasks = corpusWords.Select(async x => new CorpusWordModel()
+            {
+                CorpusWordId = -1,
+                CorpusWord = x.CorpusWord,
+                CorpusType = await _corpusTypeService.FindCorpusTypeAsync(x.CorpusTypeId, ConnectionString)
+            });
+            var corpusModels = await Task.WhenAll(corpusModelTasks);
+            var result = await _corpusWordsService.AddCorpusWordsAsync(corpusModels, ConnectionString);
+            if (result)
+                return Ok();
+
+            return BadRequest();
         }
     }
 }
