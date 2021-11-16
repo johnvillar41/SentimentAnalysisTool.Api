@@ -72,30 +72,40 @@ namespace SentimentAnalysisTool.Tests
             //Assert
             Assert.IsType<NotFoundResult>(result);
         }
-        [Fact(Skip = "Can't Test Task.WhenAll")]
+        [Fact]
         public async Task Should_Return_Ok_If_AddSlangRecords_Is_True()
         {
             //Arrange
+            var mockListSlangRecordsViewModel = new List<SlangRecordViewModel>()
+            {
+                Mock.Of<SlangRecordViewModel>(),
+                Mock.Of<SlangRecordViewModel>()
+            };            
             mockCorpusTypeService
                .Setup(m => m.FindCorpusTypeAsync(It.IsAny<int>(), It.IsAny<string>()))
                .Returns(Task.FromResult(Mock.Of<CorpusTypeModel>()));
             mockSlangRecordsService
-                .Setup(m => m.AddSlangRecordAsync(Mock.Of<IEnumerable<SlangRecordModel>>(), It.IsAny<string>()))
+                .Setup(m => m.AddSlangRecordAsync(It.IsAny<IEnumerable<SlangRecordModel>>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(true));
             //Act
-            var result = await slangRecordsController.AddSlangRecords(Mock.Of<IEnumerable<SlangRecordViewModel>>());
+            var result = await slangRecordsController.AddSlangRecords(mockListSlangRecordsViewModel);
             //Assert
             Assert.IsType<OkResult>(result);
         }
-        [Fact(Skip = "Can't Test Task.WhenAll")]        
+        [Fact]        
         public async Task Should_Return_BadRequest_If_AddSlangRecords_Is_False()
         {
             //Arrange
+            var mockListSlangRecordViewModels = new List<SlangRecordViewModel>()
+            {
+                Mock.Of<SlangRecordViewModel>(),
+                Mock.Of<SlangRecordViewModel>()
+            };
             mockCorpusTypeService
                .Setup(m => m.FindCorpusTypeAsync(It.IsAny<int>(), It.IsAny<string>()))
-               .ReturnsAsync(Mock.Of<CorpusTypeModel>());           
+               .ReturnsAsync(It.IsAny<CorpusTypeModel>());           
             //Act
-            var result = await slangRecordsController.AddSlangRecords(Mock.Of<IEnumerable<SlangRecordViewModel>>());
+            var result = await slangRecordsController.AddSlangRecords(mockListSlangRecordViewModels);
             //Assert
             Assert.IsType<BadRequestResult>(result);
         }
