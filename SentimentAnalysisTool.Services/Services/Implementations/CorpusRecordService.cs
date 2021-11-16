@@ -30,9 +30,26 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             return false;
         }
 
-        public Task<bool> AddCorpusRecordAsync(IEnumerable<CorpusRecordModel> corpuses, string connectionString)
+        public async Task<bool> AddCorpusRecordAsync(IEnumerable<CorpusRecordModel> corpuses, string connectionString)
         {
-            throw new NotImplementedException();
+            var sqlQuery = @"INSERT INTO CorpusRecordsTable(RecordId,CorpusName)
+                            VALUES(
+                                @RecordId,
+                                @CorpusName
+                            )";
+            using SqlConnection connection = new SqlConnection(connectionString);
+            await connection.OpenAsync();
+            using var transaction = await connection.BeginTransactionAsync();
+            var rowsAffected = 0;
+            foreach (var corpus in corpuses)
+            {
+                rowsAffected += await connection.ExecuteAsync(sqlQuery, corpus, transaction);
+            }
+            await transaction.CommitAsync();
+            if (rowsAffected > 0)
+                return true;
+
+            return false;
         }
     }
 }
