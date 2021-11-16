@@ -93,6 +93,32 @@ namespace SentimentAnalysisTool.Tests
             var result = await corpusWordsController.AddCorpusWords(mockCorpusList);
             //Assert
             Assert.IsType<BadRequestResult>(result);
+        }        
+        [Fact]
+        public async Task Should_Return_Ok_When_Successfully_Added_CorpusWord()
+        {
+            //Arrange
+            var corpusWord = Mock.Of<CorpusWordViewModel>();
+            mockCorpusWordsService
+                .Setup(m => m.AddCorpusWordAsync(It.IsAny<CorpusWordModel>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(true));
+            //Act
+            var result = await corpusWordsController.AddCorpusWord(corpusWord);
+            //Assert
+            Assert.IsType<OkResult>(result);
+        }
+        [Fact]
+        public async Task Should_Return_BadRequest_When_Unsuccessfully_Added_CorpusWord()
+        {
+            //Arrange
+            var corpusWord = Mock.Of<CorpusWordViewModel>();                
+            mockCorpusWordsService
+                .Setup(m => m.AddCorpusWordAsync(It.IsAny<CorpusWordModel>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(false));
+            //Act
+            var result = await corpusWordsController.AddCorpusWord(corpusWord);
+            //Assert
+            Assert.IsType<BadRequestResult>(result);
         }
         [Fact]
         public async Task Should_Return_Ok_When_DeleteCorpusWordAsync_Is_Successful()

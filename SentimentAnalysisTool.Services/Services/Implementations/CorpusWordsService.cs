@@ -12,6 +12,11 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 {
     public class CorpusWordsService : ICorpusWordsService
     {
+        public Task<bool> AddCorpusWordAsync(CorpusWordModel corpusWord, string connectionString)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> AddCorpusWordsAsync(IEnumerable<CorpusWordModel> corpusWords, string connectionString)
         {
             var sqlQuery = @"INSERT INTO CorpusWordsTable(CorpusTypeId,CorpusWord) VALUES(

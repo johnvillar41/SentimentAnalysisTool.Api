@@ -56,6 +56,22 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             return BadRequest();
         }
+        //POST api/CorpusWords
+        [HttpPost]
+        public async Task<IActionResult> AddCorpusWord([FromBody] CorpusWordViewModel corpusWord)
+        {
+            var corpusWordModel = new CorpusWordModel()
+            {
+                CorpusWordId = -1,
+                CorpusWord = corpusWord.CorpusWord,
+                CorpusType = await _corpusTypeService.FindCorpusTypeAsync(corpusWord.CorpusTypeId, ConnectionString)
+            };
+            var result = await _corpusWordsService.AddCorpusWordAsync(corpusWordModel, ConnectionString);
+            if (result)
+                return Ok();
+
+            return BadRequest();
+        }
         //DELETE: api/CorpusWords/1
         [HttpDelete("{corpusWordId}")]
         public async Task<IActionResult> DeleteCorpusWord(int corpusWordId)
