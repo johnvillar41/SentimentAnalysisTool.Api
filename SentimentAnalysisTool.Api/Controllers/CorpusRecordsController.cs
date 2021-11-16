@@ -39,9 +39,8 @@ namespace SentimentAnalysisTool.Api.Controllers
             var corpusRecordModel = new CorpusRecordModel()
             {
                 CorpusRecordId = -1,
-                Record = await _recordService.FindRecordAsync(corpusRecordViewModel.RecordId, ConnectionString),
-                CorpusName = corpusRecordViewModel.CorpusName,
-                CorpusTypes = null
+                Record = await _recordService.FindRecordAsync(corpusRecordViewModel.RecordId, ConnectionString),               
+                CorpusType = null
             };
             var result = await _corpusRecordService.AddCorpusRecordAsync(corpusRecordModel, ConnectionString);
             if (result)

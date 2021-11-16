@@ -33,16 +33,9 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             var corpusModel = new CorpusTypeModel()
             {
-                CorpusTypeId = -1, // Assigning -1 due to adding a new corpusType
-                Record = null, //TODO null atm
+                CorpusTypeId = -1,              
                 CorpusTypeName = corpusTypeViewModel.CorpusTypeName,          
-            };
-            var corpusWordTasks = corpusTypeViewModel.CorpusWordViewModels.Select(async x => new CorpusWordModel()
-            {
-                CorpusType = await _corpusTypeService.FindCorpusTypeAsync(x.CorpusTypeId, ConnectionString),
-                CorpusWord = x.CorpusWord
-            });
-            corpusModel.CorpusWords = await Task.WhenAll(corpusWordTasks);            
+            };           
             var result = await _corpusTypeService.AddCorpusTypeAsync(corpusModel, ConnectionString);
             if (result)
                 return Ok();

@@ -45,7 +45,7 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             //Insertion for RecordsTable
             var recordModel = new RecordModel()
-            {                
+            {
                 RecordName = recordViewModel.RecordName,
                 PositivePercent = recordViewModel.PositivePercent,
                 NegativePercent = recordViewModel.NegativePercent
@@ -53,7 +53,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             var resultPrimaryKey = await _recordService.AddRecordAsync(recordModel, ConnectionString);
             recordModel.RecordId = resultPrimaryKey;
             if (recordModel.RecordId < 1)
-                return BadRequest("Error Adding Record!");            
+                return BadRequest("Error Adding Record!");
 
             //Insertion for CommentsTable
             var commentModels = recordViewModel.CommentViewModels.Select(x => new CommentModel()
@@ -63,7 +63,7 @@ namespace SentimentAnalysisTool.Api.Controllers
                 CommentScore = x.CommentScore,
                 CommentDetail = x.CommentDetail,
                 Date = x.Date
-            });            
+            });
             var commentsResult = await _commentService.SaveCommentsAsync(commentModels, ConnectionString);
             if (!commentsResult)
                 return BadRequest("Error Adding Comments!");
@@ -73,14 +73,12 @@ namespace SentimentAnalysisTool.Api.Controllers
             {
                 CorpusRecordId = -1,
                 Record = recordModel,
-                CorpusName = x.CorpusName,
-                CorpusTypes = x.CorpusTypeIds.Select(y => new CorpusTypeModel()
+                CorpusType = new CorpusTypeModel()
                 {
-                    CorpusTypeId = -1,
-                    Record = recordModel,
-                    CorpusTypeName = _corpusTypeService.FindCorpusTypeAsync(y, ConnectionString).Result.CorpusTypeName,
+                    CorpusTypeId = -1,                    
+                    CorpusTypeName = _corpusTypeService.FindCorpusTypeAsync(x.CorpusTypeId, ConnectionString).Result.CorpusTypeName,
                     CorpusWords = new List<CorpusWordModel>()
-                })
+                }
             });            
             var corpusRecordServiceResult = await _corpusRecordService.AddCorpusRecordAsync(corpusRecordModels, ConnectionString);
             if (!corpusRecordServiceResult)
