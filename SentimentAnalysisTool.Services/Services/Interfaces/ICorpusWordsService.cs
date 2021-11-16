@@ -8,5 +8,6 @@ namespace SentimentAnalysisTool.Services.Services.Interfaces
     {
         Task<bool> AddCorpusWordsAsync(IEnumerable<CorpusWordModel> corpusWords, string connectionString);
         Task<ICollection<CorpusWordModel>> FetchCorpusWordsAsync(int corpusTypeId, string connectionString);
+        Task<bool> DeleteCorpusWordAsync(int corpusWordId, string connectionString);
     }
 }

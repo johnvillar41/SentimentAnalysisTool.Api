@@ -29,6 +29,11 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             return false;
         }
 
+        public Task<bool> DeleteCorpusWordAsync(int corpusWordId, string connectionString)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<ICollection<CorpusWordModel>> FetchCorpusWordsAsync(int corpusTypeId, string connectionString)
         {
             throw new NotImplementedException();

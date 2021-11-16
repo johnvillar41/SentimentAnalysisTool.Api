@@ -56,5 +56,15 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             return BadRequest();
         }
+        //DELETE: api/CorpusWords/1
+        [HttpDelete("{corpusWordId}")]
+        public async Task<IActionResult> DeleteCorpusWord(int corpusWordId)
+        {
+            var result = await _corpusWordsService.DeleteCorpusWordAsync(corpusWordId, ConnectionString);
+            if (result)
+                return Ok();
+
+            return BadRequest();
+        }
     }
 }
