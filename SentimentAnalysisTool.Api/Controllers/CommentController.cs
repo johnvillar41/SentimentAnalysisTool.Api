@@ -45,12 +45,13 @@ namespace SentimentAnalysisTool.Api.Controllers
         {
             var isSuccessful = await _fileHelper.UploadCsv(csvFormFile);
             if (!isSuccessful)
-                return BadRequest("Error Uploading File");
+                return BadRequest("Error Uploading File!");
 
             var result = await _fileHelper.PolarizeCsvFile(csvFormFile);
-            throw new NotImplementedException();
+            if(result.Count == 0)
+                return BadRequest("Error Polarizing Files!");
 
-            return BadRequest("Error!");
+            return Ok(result);
         }          
         
     }
