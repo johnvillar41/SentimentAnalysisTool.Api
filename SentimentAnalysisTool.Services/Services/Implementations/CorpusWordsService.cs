@@ -25,7 +25,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                             )";
             using SqlConnection connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
-            using var transaction = connection.BeginTransaction();
+            using var transaction = await connection.BeginTransactionAsync();
             var rowsAffected = await connection.ExecuteAsync(sqlQuery, corpusWords, transaction);
             await transaction.CommitAsync();
             if (rowsAffected > 0)
@@ -34,9 +34,18 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             return false;
         }
 
-        public Task<bool> DeleteCorpusWordAsync(int corpusWordId, string connectionString)
+        public async Task<bool> DeleteCorpusWordAsync(int corpusWordId, string connectionString)
         {
-            throw new NotImplementedException();
+            var sqlQuery = @"DELETE FROM CorpusWordsTable WHERE CorpusWordId = @CorpusWordId";
+            using SqlConnection connection = new SqlConnection(connectionString);
+            await connection.OpenAsync();
+            using var transaction = await connection.BeginTransactionAsync();
+            var rowsAffected = await connection.ExecuteAsync(sqlQuery, corpusWordId, transaction);
+            await transaction.CommitAsync();
+            if (rowsAffected > 0)
+                return true;
+
+            return false;
         }
 
         public Task<ICollection<CorpusWordModel>> FetchCorpusWordsAsync(int corpusTypeId, string connectionString)
