@@ -42,9 +42,14 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             return false;
         }
 
-        public Task<RecordModel> FindRecordAsync(int recordId, string connectionString)
+        public async Task<RecordModel> FindRecordAsync(int recordId, string connectionString)
         {
-            throw new System.NotImplementedException();
+            var sqlQuery = @"SELECT * FROM RecordsTable WHERE RecordId = @RecordId";
+            using SqlConnection connection = new SqlConnection(connectionString);
+            await connection.OpenAsync();
+            using var transaction = await connection.BeginTransactionAsync();
+            var record = await connection.QueryFirstOrDefaultAsync<RecordModel>(sqlQuery, new { RecordId = recordId }, transaction);
+            return record;
         }
     }
 }
