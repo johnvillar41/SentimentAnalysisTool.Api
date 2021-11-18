@@ -12,9 +12,21 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 {
     public class CorpusWordsService : ICorpusWordsService
     {
-        public Task<bool> AddCorpusWordAsync(CorpusWordModel corpusWord, string connectionString)
+        public async Task<bool> AddCorpusWordAsync(CorpusWordModel corpusWord, string connectionString)
         {
-            throw new NotImplementedException();
+            var sqlQuery = @"INSERT INTO CorpusWordsTable(CorpusTypeId,CorpusWord) VALUES(
+                                @CorpusTypeId,
+                                @CorpusWord
+                            )";
+            using SqlConnection connection = new SqlConnection(connectionString);
+            await connection.OpenAsync();
+            using var transaction = await connection.BeginTransactionAsync();
+            var rowsAffected = await connection.ExecuteAsync(sqlQuery, corpusWord, transaction);
+            await transaction.CommitAsync();
+            if (rowsAffected > 0)
+                return true;
+
+            return false;
         }
 
         public async Task<bool> AddCorpusWordsAsync(IEnumerable<CorpusWordModel> corpusWords, string connectionString)
@@ -26,7 +38,11 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             using SqlConnection connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
-            var rowsAffected = await connection.ExecuteAsync(sqlQuery, corpusWords, transaction);
+            var rowsAffected = 0;
+            foreach (var corpus in corpusWords)
+            {
+                rowsAffected += await connection.ExecuteAsync(sqlQuery, corpus, transaction);
+            }
             await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;
@@ -48,9 +64,14 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             return false;
         }
 
-        public Task<ICollection<CorpusWordModel>> FetchCorpusWordsAsync(int corpusTypeId, string connectionString)
+        public async Task<ICollection<CorpusWordModel>> FetchCorpusWordsAsync(int corpusTypeId, string connectionString)
         {
-            throw new NotImplementedException();
+            var sqlQuery = @"SELECT * FROM CorpusWordsTable WHERE CorpusTypeId = @CorpusTypeId";
+            using SqlConnection connection = new SqlConnection(connectionString);
+            await connection.OpenAsync();
+            using var transaction = await connection.BeginTransactionAsync();
+            var corpusWords = await connection.QueryAsync<CorpusWordModel>(sqlQuery, new { CorpusTypeId = corpusTypeId }, transaction);
+            return corpusWords.ToList();
         }
     }
 }
