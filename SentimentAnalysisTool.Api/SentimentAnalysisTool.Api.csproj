@@ -14,4 +14,8 @@
     <ProjectReference Include="..\SentimentAnalysisTool.Services\SentimentAnalysisTool.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Files\" />
+  </ItemGroup>
+
 </Project>
