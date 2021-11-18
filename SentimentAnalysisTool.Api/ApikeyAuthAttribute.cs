@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace SentimentAnalysisTool.Api
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class ApikeyAttribute : Attribute, IAsyncActionFilter
+    public class ApikeyAuthAttribute : Attribute, IAsyncActionFilter
     {
         private const string APIKEY_HEADER_NAME = "Apikey";
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)

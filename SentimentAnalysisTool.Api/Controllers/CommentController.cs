@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 namespace SentimentAnalysisTool.Api.Controllers
 {
     [Route("api/[controller]")]
+    [ApikeyAuth]
     [ApiController]
     public class CommentController : ControllerBase
     {
