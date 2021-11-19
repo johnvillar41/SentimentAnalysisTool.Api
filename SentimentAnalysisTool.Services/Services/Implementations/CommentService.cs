@@ -58,10 +58,20 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                                                        CommentDetail, 
                                                        Date) 
                             VALUES(@RecordId, @CommentScore, @CommentDetail, @Date";
-            using SqlConnection connection = new SqlConnection(connectionString);
+            using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
-            var rowsAffected = await connection.ExecuteAsync(sqlQuery, comments, transaction);
+            var rowsAffected = 0;
+            foreach (var item in comments)
+            {
+                rowsAffected += await connection.ExecuteAsync(sqlQuery, 
+                    new {
+                        item.Record.RecordId,
+                        item.CommentScore,
+                        item.CommentDetail,
+                        item.Date
+                    }, transaction);
+            }            
             await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;
