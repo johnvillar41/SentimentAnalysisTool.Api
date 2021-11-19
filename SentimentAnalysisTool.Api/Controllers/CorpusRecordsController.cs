@@ -18,15 +18,18 @@ namespace SentimentAnalysisTool.Api.Controllers
     {
         private readonly ICorpusRecordService _corpusRecordService;
         private readonly IRecordService _recordService;
+        private readonly ICorpusTypeService _corpusTypeService;
         private readonly IConfiguration _configuration;
         private string ConnectionString { get; }
         public CorpusRecordsController(
             ICorpusRecordService corpusRecordService,
             IRecordService recordService,
+            ICorpusTypeService corpusTypeService,
             IConfiguration configuration)
         {
             _corpusRecordService = corpusRecordService;
             _recordService = recordService;
+            _corpusTypeService = corpusTypeService;
             _configuration = configuration;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
         }
@@ -40,8 +43,8 @@ namespace SentimentAnalysisTool.Api.Controllers
             var corpusRecordModel = new CorpusRecordModel()
             {
                 CorpusRecordId = -1,
-                Record = await _recordService.FindRecordAsync(corpusRecordViewModel.RecordId, ConnectionString),               
-                CorpusType = null
+                Record = await _recordService.FindRecordAsync(corpusRecordViewModel.RecordId, ConnectionString),
+                CorpusType = await _corpusTypeService.FindCorpusTypeAsync(corpusRecordViewModel.CorpusTypeId, ConnectionString)
             };
             var result = await _corpusRecordService.AddCorpusRecordAsync(corpusRecordModel, ConnectionString);
             if (result)

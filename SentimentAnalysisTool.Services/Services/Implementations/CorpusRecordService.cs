@@ -14,15 +14,19 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
     {
         public async Task<bool> AddCorpusRecordAsync(CorpusRecordModel corpus, string connectionString)
         {
-            var sqlQuery = @"INSERT INTO CorpusRecordsTable(RecordId,CorpusName)
+            var sqlQuery = @"INSERT INTO CorpusRecordsTable(RecordId,CorpusTypeId)
                             VALUES(
                                 @RecordId,
-                                @CorpusName
+                                @CorpusTypeId
                             )";
-            using SqlConnection connection = new SqlConnection(connectionString);
+            using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
-            var rowsAffected = await connection.ExecuteAsync(sqlQuery, corpus, transaction);
+            var rowsAffected = await connection.ExecuteAsync(sqlQuery, new
+            {
+                corpus.Record.RecordId,
+                corpus.CorpusType.CorpusTypeId
+            }, transaction);
             await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;
