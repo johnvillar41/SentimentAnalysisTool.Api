@@ -22,7 +22,11 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             using SqlConnection connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
-            var rowsAffected = await connection.ExecuteAsync(sqlQuery, slangRecord, transaction);
+            var rowsAffected = await connection.ExecuteAsync(sqlQuery, new
+            {
+                slangRecord.CorpusType.CorpusTypeId,
+                slangRecord.SlangName
+            }, transaction);
             await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;
@@ -40,7 +44,15 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             using SqlConnection connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
-            var rowsAffected = await connection.ExecuteAsync(sqlQuery, slangRecords, transaction);
+            var rowsAffected = 0;
+            foreach (var item in slangRecords)
+            {
+                rowsAffected += await connection.ExecuteAsync(sqlQuery, new
+                {
+                    item.CorpusType.CorpusTypeId,
+                    item.SlangName
+                }, transaction);
+            }           
             await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;

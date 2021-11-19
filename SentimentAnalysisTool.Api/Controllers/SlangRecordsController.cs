@@ -30,7 +30,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             _configuration = configuration;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
         }
-        //POST: api/SlangRecord
+        //POST: api/SlangRecords
         [HttpPost]
         public async Task<IActionResult> AddSlangRecord([FromBody] SlangRecordViewModel slangRecordViewModel)
         {
@@ -48,8 +48,9 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             return BadRequest();
         }
-        //POST: api/SlangRecord
+        //POST: api/SlangRecords/AddSlangRecords
         [HttpPost]
+        [Route("AddSlangRecords")]
         public async Task<IActionResult> AddSlangRecords([FromBody] IEnumerable<SlangRecordViewModel> slangRecordViewModels)
         {
             if (slangRecordViewModels == null)
