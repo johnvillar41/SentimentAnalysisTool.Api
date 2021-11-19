@@ -25,7 +25,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             _configuration = configuration;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
         }
-        //POST: api/AddCorpusType
+        //POST: api/CorpusType
         [HttpPost]
         public async Task<IActionResult> AddCorpusType([FromBody] CorpusTypeViewModel corpusTypeViewModel)
         {
@@ -43,8 +43,8 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             return BadRequest();
         }
-        //DELETE: api/DeleteCorpusType/{id}
-        [HttpDelete]
+        //DELETE: api/CorpusType/{id}
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCorpusType(int id)
         {
             var result = await _corpusTypeService.DeleteCorpusTypeAsync(id, ConnectionString);

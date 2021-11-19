@@ -45,13 +45,13 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         public async Task<bool> DeleteCorpusTypeAsync(int corpusTypeId, string connectionString)
         {
             var sqlQuery = @"DELETE FROM CorpusTypeTable WHERE CorpusTypeId = @CorpusTypeId";
-            using SqlConnection connection = new SqlConnection(connectionString);
+            using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
             var result = await connection.ExecuteAsync(sqlQuery, new { CorpusTypeId = corpusTypeId }, transaction);
+            await transaction.CommitAsync();
             if (result > 0)
-                return true;
-
+                return true;            
             return false;
         }
 
