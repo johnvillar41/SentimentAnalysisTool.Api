@@ -19,7 +19,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                                 @CorpusTypeId,
                                 @SlangName
                             )";
-            using SqlConnection connection = new SqlConnection(connectionString);
+            using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
             var rowsAffected = await connection.ExecuteAsync(sqlQuery, new
@@ -41,7 +41,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                                 @CorpusTypeId,
                                 @SlangName
                             )";
-            using SqlConnection connection = new SqlConnection(connectionString);
+            using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
             var rowsAffected = 0;
@@ -52,7 +52,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                     item.CorpusType.CorpusTypeId,
                     item.SlangName
                 }, transaction);
-            }           
+            }
             await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;
@@ -63,10 +63,10 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         public async Task<bool> DeleteSlangRecordAsync(int slangRecordId, string connectionString)
         {
             var sqlQuery = @"DELETE FROM SlangRecordsTable WHERE SlangRecordsId = @SlangRecordsId";
-            using SqlConnection connection = new SqlConnection(connectionString);
+            using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
-            var rowsAffected = await connection.ExecuteAsync(sqlQuery, slangRecordId, transaction);
+            var rowsAffected = await connection.ExecuteAsync(sqlQuery, new { SlangRecordsId = slangRecordId }, transaction);
             await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;
