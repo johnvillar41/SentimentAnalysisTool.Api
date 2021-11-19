@@ -16,24 +16,28 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         }
         public async Task<bool> AddCorpusTypeAsync(CorpusTypeModel corpusType, string connectionString)
         {
-            var sqlQuery = @"INSERT INTO CorpusTypeTable(CorpusRecordsId,CorpusTypeName)
-                            VALUES(
-                                @CorpusRecordsId,
+            var sqlQuery = @"INSERT INTO CorpusTypeTable(CorpusTypeName)
+                            VALUES(                                
                                 @CorpusTypeName
                             );
                             SELECT Scope_Identity();";
-            using SqlConnection connection = new SqlConnection(connectionString);
+            using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             var transaction = await connection.BeginTransactionAsync();
-            var primaryKey = await connection.QuerySingleAsync<int>(sqlQuery, corpusType, transaction);
+            var primaryKey = await connection.QuerySingleAsync<int>(sqlQuery,
+                new
+                {
+                    corpusType.CorpusTypeName
+                },
+                transaction);
 
-            if(corpusType.CorpusWords.Any())
+            if (corpusType.CorpusWords.Any())
             {
                 corpusType.CorpusWords.Select(x => x.CorpusType.CorpusTypeId = primaryKey);
                 var corpusWordResult = await _corpusWordsService.AddCorpusWordsAsync(corpusType.CorpusWords, connectionString);
                 if (!corpusWordResult)
                     return false;
-            }           
+            }
 
             await transaction.CommitAsync();
             if (primaryKey > 0)
@@ -51,7 +55,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             var result = await connection.ExecuteAsync(sqlQuery, new { CorpusTypeId = corpusTypeId }, transaction);
             await transaction.CommitAsync();
             if (result > 0)
-                return true;            
+                return true;
             return false;
         }
 

@@ -41,7 +41,11 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             var rowsAffected = 0;
             foreach (var corpus in corpusWords)
             {
-                rowsAffected += await connection.ExecuteAsync(sqlQuery, corpus, transaction);
+                rowsAffected += await connection.ExecuteAsync(sqlQuery, new
+                {
+                    corpus.CorpusType.CorpusTypeId,
+                    corpus.CorpusWord
+                }, transaction);
             }
             await transaction.CommitAsync();
             if (rowsAffected > 0)

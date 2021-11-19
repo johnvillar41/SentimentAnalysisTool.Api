@@ -34,9 +34,25 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             var corpusModel = new CorpusTypeModel()
             {
-                CorpusTypeId = -1,              
-                CorpusTypeName = corpusTypeViewModel.CorpusTypeName,          
-            };           
+                CorpusTypeId = -1,
+                CorpusTypeName = corpusTypeViewModel.CorpusTypeName,  
+            };
+            var corpusWordTasks = corpusTypeViewModel.CorpusWordViewModels.Select(async x => new CorpusWordModel()
+            {
+                CorpusType = await _corpusTypeService.FindCorpusTypeAsync(x.CorpusTypeId, ConnectionString),
+                CorpusWord = x.CorpusWord
+            });
+            var slangRecordTasks = corpusTypeViewModel.SlangRecordViewModels.Select(async x => new SlangRecordModel()
+            {
+                CorpusType = await _corpusTypeService.FindCorpusTypeAsync(x.CorpusTypeId, ConnectionString),
+                SlangName = x.SlangName
+            });
+            var corpusWords = await Task.WhenAll(corpusWordTasks);
+            var slangRecords = await Task.WhenAll(slangRecordTasks);
+
+            corpusModel.CorpusWords = corpusWords;
+            corpusModel.SlangRecords = slangRecords;
+
             var result = await _corpusTypeService.AddCorpusTypeAsync(corpusModel, ConnectionString);
             if (result)
                 return Ok();
