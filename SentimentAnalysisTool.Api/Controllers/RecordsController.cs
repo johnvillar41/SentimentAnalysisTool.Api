@@ -4,6 +4,7 @@ using SentimentAnalysisTool.Api.Models;
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -44,18 +45,26 @@ namespace SentimentAnalysisTool.Api.Controllers
             if (recordViewModel == null)
                 return NotFound();
 
-            //Insertion for RecordsTable
+            
             var recordModel = new RecordModel()
             {
                 RecordName = recordViewModel.RecordName,
                 PositivePercent = recordViewModel.PositivePercent,
                 NegativePercent = recordViewModel.NegativePercent
             };
-            var resultPrimaryKey = await _recordService.AddRecordAsync(recordModel, ConnectionString);
+
+            //Initialization of transaction and connection
+            var connection = new SqlConnection(ConnectionString);
+            await connection.OpenAsync();
+            using var transaction = await connection.BeginTransactionAsync();
+
+            //Beginning of database transaction
+            //Insertion for RecordsTable
+            var resultPrimaryKey = await _recordService.AddRecordAsync(recordModel, transaction, connection);
             recordModel.RecordId = resultPrimaryKey;
             if (recordModel.RecordId < 1)
                 return BadRequest("Error Adding Record!");
-
+            
             //Insertion for CommentsTable
             var commentModels = recordViewModel.CommentViewModels.Select(x => new CommentModel()
             {
@@ -65,7 +74,7 @@ namespace SentimentAnalysisTool.Api.Controllers
                 CommentDetail = x.CommentDetail,
                 Date = x.Date
             });
-            var commentsResult = await _commentService.SaveCommentsAsync(commentModels, ConnectionString);
+            var commentsResult = await _commentService.SaveCommentsAsync(commentModels, transaction, connection);
             if (!commentsResult)
                 return BadRequest("Error Adding Comments!");
 
@@ -76,12 +85,12 @@ namespace SentimentAnalysisTool.Api.Controllers
                 Record = recordModel,
                 CorpusType = new CorpusTypeModel()
                 {
-                    CorpusTypeId = x.CorpusTypeId,                    
+                    CorpusTypeId = x.CorpusTypeId,
                     CorpusTypeName = _corpusTypeService.FindCorpusTypeAsync(x.CorpusTypeId, ConnectionString).Result.CorpusTypeName,
                     CorpusWords = new List<CorpusWordModel>()
                 }
-            });            
-            var corpusRecordServiceResult = await _corpusRecordService.AddCorpusRecordAsync(corpusRecordModels, ConnectionString);
+            });
+            var corpusRecordServiceResult = await _corpusRecordService.AddCorpusRecordAsync(corpusRecordModels, transaction, connection);
             if (!corpusRecordServiceResult)
                 return BadRequest("Error Adding Corpus!");
 
@@ -92,11 +101,13 @@ namespace SentimentAnalysisTool.Api.Controllers
                 Record = recordModel,
                 Word = x.Word,
                 WordFrequency = x.WordFrequency
-            });           
-            var wordFrequencyServiceResult = await _wordFrequencyService.AddWordFrequenciesAsync(wordFrequencyModels, ConnectionString);
+            });
+            var wordFrequencyServiceResult = await _wordFrequencyService.AddWordFrequenciesAsync(wordFrequencyModels, transaction, connection);
             if (!wordFrequencyServiceResult)
                 return BadRequest("Error Adding WordFrequencies!");
 
+            //Commitment to database transaction
+            await transaction.CommitAsync();
             return Ok();
         }
         //DELETE: api/Records/{id}

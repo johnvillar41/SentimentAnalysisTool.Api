@@ -4,6 +4,7 @@ using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
@@ -73,6 +74,33 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                     }, transaction);
             }            
             await transaction.CommitAsync();
+            if (rowsAffected > 0)
+                return true;
+
+            return false;
+        }
+
+        public async Task<bool> SaveCommentsAsync(IEnumerable<CommentModel> comments, DbTransaction transaction, SqlConnection connection)
+        {
+            var sqlQuery = @"INSERT INTO CommentsTable(RecordId, 
+                                                       CommentScore, 
+                                                       CommentDetail, 
+                                                       Date) 
+                            VALUES(@RecordId, @CommentScore, @CommentDetail, @Date)";
+            if(connection.State == ConnectionState.Closed)
+                await connection.OpenAsync();            
+            var rowsAffected = 0;
+            foreach (var item in comments)
+            {
+                rowsAffected += await connection.ExecuteAsync(sqlQuery,
+                    new
+                    {
+                        item.Record.RecordId,
+                        item.CommentScore,
+                        item.CommentDetail,
+                        item.Date
+                    }, transaction);
+            }            
             if (rowsAffected > 0)
                 return true;
 

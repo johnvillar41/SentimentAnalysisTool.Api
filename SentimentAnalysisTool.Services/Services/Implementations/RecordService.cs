@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
+using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
@@ -25,6 +26,25 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             using var transaction = await connection.BeginTransactionAsync();
             var primaryKey = connection.QuerySingle<int>(sqlQuery, record, transaction);
             await transaction.CommitAsync();
+            return primaryKey;
+        }
+
+        public async Task<int> AddRecordAsync(RecordModel record, System.Data.Common.DbTransaction transaction, SqlConnection connection)
+        {
+            var sqlQuery = @"INSERT INTO RecordsTable(
+                                RecordName,
+                                PositivePercent,
+                                NegativePercent
+                            )VALUES(
+                                @RecordName,
+                                @PositivePercent,
+                                @NegativePercent
+                            );
+                            SELECT SCOPE_IDENTITY();";    
+            if(connection.State == ConnectionState.Closed)
+                await connection.OpenAsync();            
+
+            var primaryKey = connection.QuerySingle<int>(sqlQuery, record, transaction);            
             return primaryKey;
         }
 

@@ -3,6 +3,8 @@ using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -55,6 +57,31 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                     }, transaction);
             }
             await transaction.CommitAsync();
+            if (rowsAffected > 0)
+                return true;
+
+            return false;
+        }
+
+        public async Task<bool> AddCorpusRecordAsync(IEnumerable<CorpusRecordModel> corpuses, DbTransaction transaction, SqlConnection connection)
+        {
+            var sqlQuery = @"INSERT INTO CorpusRecordsTable(RecordId,CorpusTypeId)
+                            VALUES(
+                                @RecordId,
+                                @CorpusTypeId
+                            )";
+            if (connection.State == ConnectionState.Closed)
+                await connection.OpenAsync();
+            var rowsAffected = 0;
+            foreach (var corpus in corpuses)
+            {
+                rowsAffected += await connection.ExecuteAsync(sqlQuery,
+                    new
+                    {
+                        corpus.Record.RecordId,
+                        corpus.CorpusType.CorpusTypeId
+                    }, transaction);
+            }
             if (rowsAffected > 0)
                 return true;
 

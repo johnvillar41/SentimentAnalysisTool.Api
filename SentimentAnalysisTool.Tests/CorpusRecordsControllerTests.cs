@@ -17,6 +17,7 @@ namespace SentimentAnalysisTool.Tests
     public class CorpusRecordsControllerTests
     {
         private readonly Mock<ICorpusRecordService> mockCorpusRecordService;
+        private readonly Mock<ICorpusTypeService> mockCorpusTypeService;
         private readonly Mock<IRecordService> mockRecordService;
         private readonly Mock<IConfiguration> mockConfiguration;
         private readonly CorpusRecordsController corpusRecordsController;
@@ -25,9 +26,11 @@ namespace SentimentAnalysisTool.Tests
             mockCorpusRecordService = new Mock<ICorpusRecordService>();
             mockRecordService = new Mock<IRecordService>();
             mockConfiguration = new Mock<IConfiguration>();
+            mockCorpusTypeService = new Mock<ICorpusTypeService>();
             corpusRecordsController = new CorpusRecordsController(
                 mockCorpusRecordService.Object,
                 mockRecordService.Object,
+                mockCorpusTypeService.Object,
                 mockConfiguration.Object);
         }
         [Fact]
