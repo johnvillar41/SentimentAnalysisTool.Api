@@ -76,7 +76,7 @@ namespace SentimentAnalysisTool.Api.Controllers
                 Record = recordModel,
                 CorpusType = new CorpusTypeModel()
                 {
-                    CorpusTypeId = -1,                    
+                    CorpusTypeId = x.CorpusTypeId,                    
                     CorpusTypeName = _corpusTypeService.FindCorpusTypeAsync(x.CorpusTypeId, ConnectionString).Result.CorpusTypeName,
                     CorpusWords = new List<CorpusWordModel>()
                 }

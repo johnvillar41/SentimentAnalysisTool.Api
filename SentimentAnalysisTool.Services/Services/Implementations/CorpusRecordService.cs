@@ -32,10 +32,10 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> AddCorpusRecordAsync(IEnumerable<CorpusRecordModel> corpuses, string connectionString)
         {
-            var sqlQuery = @"INSERT INTO CorpusRecordsTable(RecordId,CorpusName)
+            var sqlQuery = @"INSERT INTO CorpusRecordsTable(RecordId,CorpusTypeId)
                             VALUES(
                                 @RecordId,
-                                @CorpusName
+                                @CorpusTypeId
                             )";
             using SqlConnection connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
@@ -43,7 +43,12 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             var rowsAffected = 0;
             foreach (var corpus in corpuses)
             {
-                rowsAffected += await connection.ExecuteAsync(sqlQuery, corpus, transaction);
+                rowsAffected += await connection.ExecuteAsync(sqlQuery,
+                    new
+                    {
+                        corpus.Record.RecordId,
+                        corpus.CorpusType.CorpusTypeId
+                    }, transaction);
             }
             await transaction.CommitAsync();
             if (rowsAffected > 0)

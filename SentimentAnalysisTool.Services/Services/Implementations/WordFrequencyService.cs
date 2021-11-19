@@ -20,10 +20,21 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                                 @Word,
                                 @WordFrequency
                             )";
-            using SqlConnection connection = new SqlConnection(connectionString);
+            using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
-            var rowsAffected = await connection.ExecuteAsync(sqlQuery, wordFrequencies, transaction);
+            var rowsAffected = 0;
+            foreach (var item in wordFrequencies)
+            {
+                rowsAffected += await connection.ExecuteAsync(sqlQuery,
+                    new
+                    {
+                        item.Record.RecordId,
+                        item.Word,
+                        item.WordFrequency
+                    }, transaction);
+            }
+
             await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;

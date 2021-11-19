@@ -57,7 +57,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                                                        CommentScore, 
                                                        CommentDetail, 
                                                        Date) 
-                            VALUES(@RecordId, @CommentScore, @CommentDetail, @Date";
+                            VALUES(@RecordId, @CommentScore, @CommentDetail, @Date)";
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
