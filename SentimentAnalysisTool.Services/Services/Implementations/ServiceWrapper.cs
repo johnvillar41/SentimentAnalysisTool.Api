@@ -12,8 +12,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
     public class ServiceWrapper : IServiceWrapper
     {
         public async Task<DbTransaction> BeginTransactionAsync(SqlConnection connection)
-        {
-            await connection.OpenAsync();
+        {            
             return await connection.BeginTransactionAsync();
         }
 
@@ -22,9 +21,11 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             await transaction.CommitAsync();
         }
 
-        public SqlConnection OpenConnection(string connectionString)
+        public async Task<SqlConnection> OpenConnection(string connectionString)
         {
-            return new SqlConnection(connectionString);
+            var connection = new SqlConnection(connectionString);
+            await connection.OpenAsync();
+            return connection;
         }
     }
 }
