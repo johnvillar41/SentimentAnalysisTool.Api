@@ -26,20 +26,18 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         /// </returns>
         public async Task<ICollection<CommentModel>> FetchCommentsAsync(int pageSize, int pageNumber, string connectionString)
         {
-            var sqlQuery = @"SELECT * FROM CommentsTable
-                             ORDER BY CommentId
-                             OFFSET (@PageNumber-1)*@RowsOfPage ROWS
-                             FETCH NEXT @RowsOfPage ROWS ONLY";
-            using SqlConnection connection = new SqlConnection(connectionString);
+            var procedure = "PaginateCommentsTable";
+            using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
-            var comments = await connection.QueryAsync<CommentModel>(sqlQuery,
+            var comments = await connection.QueryAsync<CommentModel>(procedure,
                 new
                 {
                     PageNumber = pageNumber,
                     RowsOfPage = pageSize
                 },
-                transaction);
+                transaction,
+                commandType: CommandType.StoredProcedure);
             await transaction.CommitAsync();
             return (ICollection<CommentModel>)comments;
         }
@@ -54,25 +52,22 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         /// </returns>
         public async Task<bool> SaveCommentsAsync(IEnumerable<CommentModel> comments, string connectionString)
         {
-            var sqlQuery = @"INSERT INTO CommentsTable(RecordId, 
-                                                       CommentScore, 
-                                                       CommentDetail, 
-                                                       Date) 
-                            VALUES(@RecordId, @CommentScore, @CommentDetail, @Date)";
+            var procedure = "SaveComments";
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
             var rowsAffected = 0;
             foreach (var item in comments)
             {
-                rowsAffected += await connection.ExecuteAsync(sqlQuery, 
-                    new {
+                rowsAffected += await connection.ExecuteAsync(procedure,
+                    new
+                    {
                         item.Record.RecordId,
                         item.CommentScore,
                         item.CommentDetail,
                         item.Date
-                    }, transaction);
-            }            
+                    }, transaction, commandType: CommandType.StoredProcedure);
+            }
             await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;
@@ -82,25 +77,21 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> SaveCommentsAsync(IEnumerable<CommentModel> comments, DbTransaction transaction, SqlConnection connection)
         {
-            var sqlQuery = @"INSERT INTO CommentsTable(RecordId, 
-                                                       CommentScore, 
-                                                       CommentDetail, 
-                                                       Date) 
-                            VALUES(@RecordId, @CommentScore, @CommentDetail, @Date)";
-            if(connection.State == ConnectionState.Closed)
-                await connection.OpenAsync();            
+            var procedure = "SaveComments";
+            if (connection.State == ConnectionState.Closed)
+                await connection.OpenAsync();
             var rowsAffected = 0;
             foreach (var item in comments)
             {
-                rowsAffected += await connection.ExecuteAsync(sqlQuery,
+                rowsAffected += await connection.ExecuteAsync(procedure,
                     new
                     {
                         item.Record.RecordId,
                         item.CommentScore,
                         item.CommentDetail,
                         item.Date
-                    }, transaction);
-            }            
+                    }, transaction, commandType: CommandType.StoredProcedure);
+            }
             if (rowsAffected > 0)
                 return true;
 
