@@ -57,7 +57,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             };
 
             //Initialization of transaction and connection
-            var connection = await _serviceWrapper.OpenConnection(ConnectionString);
+            using var connection = await _serviceWrapper.OpenConnection(ConnectionString);
             using var transaction = await _serviceWrapper.BeginTransactionAsync(connection);
 
             //Beginning of database transaction
