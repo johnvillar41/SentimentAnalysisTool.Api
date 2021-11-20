@@ -16,19 +16,15 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
     {
         public async Task<bool> AddCorpusRecordAsync(CorpusRecordModel corpus, string connectionString)
         {
-            var sqlQuery = @"INSERT INTO CorpusRecordsTable(RecordId,CorpusTypeId)
-                            VALUES(
-                                @RecordId,
-                                @CorpusTypeId
-                            )";
+            var procedure = "SaveCorpusRecords";
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
-            var rowsAffected = await connection.ExecuteAsync(sqlQuery, new
+            var rowsAffected = await connection.ExecuteAsync(procedure, new
             {
                 corpus.Record.RecordId,
                 corpus.CorpusType.CorpusTypeId
-            }, transaction);
+            }, transaction, commandType: CommandType.StoredProcedure);
             await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;
@@ -38,23 +34,19 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> AddCorpusRecordAsync(IEnumerable<CorpusRecordModel> corpuses, string connectionString)
         {
-            var sqlQuery = @"INSERT INTO CorpusRecordsTable(RecordId,CorpusTypeId)
-                            VALUES(
-                                @RecordId,
-                                @CorpusTypeId
-                            )";
-            using SqlConnection connection = new SqlConnection(connectionString);
+            var procedure = "SaveCorpusRecords";
+            using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
             var rowsAffected = 0;
             foreach (var corpus in corpuses)
             {
-                rowsAffected += await connection.ExecuteAsync(sqlQuery,
+                rowsAffected += await connection.ExecuteAsync(procedure,
                     new
                     {
                         corpus.Record.RecordId,
                         corpus.CorpusType.CorpusTypeId
-                    }, transaction);
+                    }, transaction, commandType: CommandType.StoredProcedure);
             }
             await transaction.CommitAsync();
             if (rowsAffected > 0)
@@ -65,11 +57,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> AddCorpusRecordAsync(IEnumerable<CorpusRecordModel> corpuses, DbTransaction transaction, SqlConnection connection)
         {
-            var sqlQuery = @"INSERT INTO CorpusRecordsTable(RecordId,CorpusTypeId)
-                            VALUES(
-                                @RecordId,
-                                @CorpusTypeId
-                            )";
+            var sqlQuery = "SaveCorpusRecords";
             if (connection.State == ConnectionState.Closed)
                 await connection.OpenAsync();
             var rowsAffected = 0;
@@ -80,7 +68,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                     {
                         corpus.Record.RecordId,
                         corpus.CorpusType.CorpusTypeId
-                    }, transaction);
+                    }, transaction, commandType: CommandType.StoredProcedure);
             }
             if (rowsAffected > 0)
                 return true;
