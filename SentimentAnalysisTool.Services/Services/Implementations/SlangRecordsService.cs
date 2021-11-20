@@ -3,6 +3,7 @@ using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -14,19 +15,15 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
     {
         public async Task<bool> AddSlangRecordAsync(SlangRecordModel slangRecord, string connectionString)
         {
-            var sqlQuery = @"INSERT INTO SlangRecordsTable(CorpusTypeId,SlangName)
-                            VALUES(
-                                @CorpusTypeId,
-                                @SlangName
-                            )";
+            var procedure = "SaveSlangRecord";
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
-            var rowsAffected = await connection.ExecuteAsync(sqlQuery, new
+            var rowsAffected = await connection.ExecuteAsync(procedure, new
             {
                 slangRecord.CorpusType.CorpusTypeId,
                 slangRecord.SlangName
-            }, transaction);
+            }, transaction, commandType: CommandType.StoredProcedure);
             await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;
@@ -36,22 +33,18 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> AddSlangRecordAsync(IEnumerable<SlangRecordModel> slangRecords, string connectionString)
         {
-            var sqlQuery = @"INSERT INTO SlangRecordsTable(CorpusTypeId,SlangName)
-                            VALUES(
-                                @CorpusTypeId,
-                                @SlangName
-                            )";
+            var procedure = "SaveSlangRecord";
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
             var rowsAffected = 0;
             foreach (var item in slangRecords)
             {
-                rowsAffected += await connection.ExecuteAsync(sqlQuery, new
+                rowsAffected += await connection.ExecuteAsync(procedure, new
                 {
                     item.CorpusType.CorpusTypeId,
                     item.SlangName
-                }, transaction);
+                }, transaction, commandType: CommandType.StoredProcedure);
             }
             await transaction.CommitAsync();
             if (rowsAffected > 0)
@@ -62,11 +55,11 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> DeleteSlangRecordAsync(int slangRecordId, string connectionString)
         {
-            var sqlQuery = @"DELETE FROM SlangRecordsTable WHERE SlangRecordsId = @SlangRecordsId";
+            var procedure = "DeleteSlangRecord";
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
-            var rowsAffected = await connection.ExecuteAsync(sqlQuery, new { SlangRecordsId = slangRecordId }, transaction);
+            var rowsAffected = await connection.ExecuteAsync(procedure, new { SlangRecordsId = slangRecordId }, transaction, commandType: CommandType.StoredProcedure);
             await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;
