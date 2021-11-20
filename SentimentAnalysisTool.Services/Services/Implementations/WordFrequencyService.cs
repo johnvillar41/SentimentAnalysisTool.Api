@@ -16,25 +16,20 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
     {
         public async Task<bool> AddWordFrequenciesAsync(IEnumerable<WordFrequencyModel> wordFrequencies, string connectionString)
         {
-            var sqlQuery = @"INSERT INTO WordFrequencyTable 
-                            VALUES(
-                                @RecordId,
-                                @Word,
-                                @WordFrequency
-                            )";
+            var procedure = "SaveWordFrequency";
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
             var rowsAffected = 0;
             foreach (var item in wordFrequencies)
             {
-                rowsAffected += await connection.ExecuteAsync(sqlQuery,
+                rowsAffected += await connection.ExecuteAsync(procedure,
                     new
                     {
                         item.Record.RecordId,
                         item.Word,
                         item.WordFrequency
-                    }, transaction);
+                    }, transaction, commandType: CommandType.StoredProcedure);
             }
 
             await transaction.CommitAsync();
@@ -46,24 +41,19 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> AddWordFrequenciesAsync(IEnumerable<WordFrequencyModel> wordFrequencies, DbTransaction transaction, SqlConnection connection)
         {
-            var sqlQuery = @"INSERT INTO WordFrequencyTable 
-                            VALUES(
-                                @RecordId,
-                                @Word,
-                                @WordFrequency
-                            )";
-            if(connection.State == ConnectionState.Closed)
+            var procedure = "SaveWordFrequency";
+            if (connection.State == ConnectionState.Closed)
                 await connection.OpenAsync();
             var rowsAffected = 0;
             foreach (var item in wordFrequencies)
             {
-                rowsAffected += await connection.ExecuteAsync(sqlQuery,
+                rowsAffected += await connection.ExecuteAsync(procedure,
                     new
                     {
                         item.Record.RecordId,
                         item.Word,
                         item.WordFrequency
-                    }, transaction);
+                    }, transaction, commandType: CommandType.StoredProcedure);
             }
 
             if (rowsAffected > 0)
