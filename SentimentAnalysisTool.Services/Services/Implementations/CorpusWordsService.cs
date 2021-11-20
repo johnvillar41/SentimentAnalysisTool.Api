@@ -3,6 +3,7 @@ using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -14,14 +15,11 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
     {
         public async Task<bool> AddCorpusWordAsync(CorpusWordModel corpusWord, string connectionString)
         {
-            var sqlQuery = @"INSERT INTO CorpusWordsTable(CorpusTypeId,CorpusWord) VALUES(
-                                @CorpusTypeId,
-                                @CorpusWord
-                            )";
-            using SqlConnection connection = new SqlConnection(connectionString);
+            var procedure = "SaveCorpusWord";
+            using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
-            var rowsAffected = await connection.ExecuteAsync(sqlQuery, corpusWord, transaction);
+            var rowsAffected = await connection.ExecuteAsync(procedure, corpusWord, transaction, commandType: CommandType.StoredProcedure);
             await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;
@@ -31,21 +29,18 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> AddCorpusWordsAsync(IEnumerable<CorpusWordModel> corpusWords, string connectionString)
         {
-            var sqlQuery = @"INSERT INTO CorpusWordsTable(CorpusTypeId,CorpusWord) VALUES(
-                                @CorpusTypeId,
-                                @CorpusWord
-                            )";
-            using SqlConnection connection = new SqlConnection(connectionString);
+            var procedure = "SaveCorpusWord";
+            using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
             var rowsAffected = 0;
             foreach (var corpus in corpusWords)
             {
-                rowsAffected += await connection.ExecuteAsync(sqlQuery, new
+                rowsAffected += await connection.ExecuteAsync(procedure, new
                 {
                     corpus.CorpusType.CorpusTypeId,
                     corpus.CorpusWord
-                }, transaction);
+                }, transaction, commandType: CommandType.StoredProcedure);
             }
             await transaction.CommitAsync();
             if (rowsAffected > 0)
@@ -56,11 +51,11 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> DeleteCorpusWordAsync(int corpusWordId, string connectionString)
         {
-            var sqlQuery = @"DELETE FROM CorpusWordsTable WHERE CorpusWordId = @CorpusWordId";
-            using SqlConnection connection = new SqlConnection(connectionString);
+            var procedure = "DeleteCorpusWord";
+            using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
-            var rowsAffected = await connection.ExecuteAsync(sqlQuery, corpusWordId, transaction);
+            var rowsAffected = await connection.ExecuteAsync(procedure, corpusWordId, transaction, commandType: CommandType.StoredProcedure);
             await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;
@@ -70,11 +65,11 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<ICollection<CorpusWordModel>> FetchCorpusWordsAsync(int corpusTypeId, string connectionString)
         {
-            var sqlQuery = @"SELECT * FROM CorpusWordsTable WHERE CorpusTypeId = @CorpusTypeId";
-            using SqlConnection connection = new SqlConnection(connectionString);
+            var procedure = "FetchCorpusWord";
+            using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
-            var corpusWords = await connection.QueryAsync<CorpusWordModel>(sqlQuery, new { CorpusTypeId = corpusTypeId }, transaction);
+            var corpusWords = await connection.QueryAsync<CorpusWordModel>(procedure, new { CorpusTypeId = corpusTypeId }, transaction, commandType: CommandType.StoredProcedure);
             return corpusWords.ToList();
         }
     }
