@@ -20,6 +20,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         private readonly IWordFrequencyService _wordFrequencyService;
         private readonly IRecordService _recordService;
         private readonly ICorpusTypeService _corpusTypeService;
+        private readonly IServiceWrapper _serviceWrapper;
         private readonly IConfiguration _configuration;
         private string ConnectionString { get; }
         public RecordsController(
@@ -28,6 +29,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             IWordFrequencyService wordFrequencyService,
             IRecordService recordService,
             ICorpusTypeService corpusTypeService,
+            IServiceWrapper serviceWrapper,
             IConfiguration configuration)
         {
             _commentService = commentService;
@@ -35,6 +37,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             _wordFrequencyService = wordFrequencyService;
             _recordService = recordService;
             _corpusTypeService = corpusTypeService;
+            _serviceWrapper = serviceWrapper;
             _configuration = configuration;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
         }
@@ -45,7 +48,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             if (recordViewModel == null)
                 return NotFound();
 
-            
+
             var recordModel = new RecordModel()
             {
                 RecordName = recordViewModel.RecordName,
@@ -54,9 +57,8 @@ namespace SentimentAnalysisTool.Api.Controllers
             };
 
             //Initialization of transaction and connection
-            var connection = new SqlConnection(ConnectionString);
-            await connection.OpenAsync();
-            using var transaction = await connection.BeginTransactionAsync();
+            var connection = _serviceWrapper.OpenConnection(ConnectionString);
+            using var transaction = await _serviceWrapper.BeginTransactionAsync(connection);
 
             //Beginning of database transaction
             //Insertion for RecordsTable
@@ -64,7 +66,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             recordModel.RecordId = resultPrimaryKey;
             if (recordModel.RecordId < 1)
                 return BadRequest("Error Adding Record!");
-            
+
             //Insertion for CommentsTable
             var commentModels = recordViewModel.CommentViewModels.Select(x => new CommentModel()
             {
@@ -107,7 +109,7 @@ namespace SentimentAnalysisTool.Api.Controllers
                 return BadRequest("Error Adding WordFrequencies!");
 
             //Commitment to database transaction
-            await transaction.CommitAsync();
+            await _serviceWrapper.CommitTransaction(transaction);
             return Ok();
         }
         //DELETE: api/Records/{id}

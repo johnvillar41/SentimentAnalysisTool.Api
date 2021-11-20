@@ -29,7 +29,7 @@ namespace SentimentAnalysisTool.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();            
+            services.AddControllers();
             services.AddTransient<ICommentService, CommentService>();
             services.AddTransient<ICorpusRecordService, CorpusRecordService>();
             services.AddTransient<ICorpusTypeService, CorpusTypeService>();
@@ -38,6 +38,7 @@ namespace SentimentAnalysisTool.Api
             services.AddTransient<IWordFrequencyService, WordFrequencyService>();
             services.AddTransient<IRecordService, RecordService>();
             services.AddTransient<IFileHelper, FileHelper>();
+            services.AddTransient<IServiceWrapper, ServiceWrapper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,14 +46,14 @@ namespace SentimentAnalysisTool.Api
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();               
+                app.UseDeveloperExceptionPage();
             }
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            app.UseAuthorization();            
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

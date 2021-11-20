@@ -7,6 +7,9 @@ using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
@@ -21,8 +24,9 @@ namespace SentimentAnalysisTool.Tests
         private Mock<IRecordService> mockRecordService;
         private Mock<ICorpusTypeService> mockCorpusTypeService;
         private Mock<IConfiguration> mockConfiguration;
+        private Mock<IServiceWrapper> mockServiceWrapper;
         private RecordsController recordController;
-        
+
         public RecordsControllerTests()
         {
             mockCommentService = new Mock<ICommentService>();
@@ -31,12 +35,14 @@ namespace SentimentAnalysisTool.Tests
             mockRecordService = new Mock<IRecordService>();
             mockCorpusTypeService = new Mock<ICorpusTypeService>();
             mockConfiguration = new Mock<IConfiguration>();
+            mockServiceWrapper = new Mock<IServiceWrapper>();
             recordController = new RecordsController(
                 mockCommentService.Object,
                 mockCorpusRecordService.Object,
                 mockWordFrequencyService.Object,
                 mockRecordService.Object,
                 mockCorpusTypeService.Object,
+                mockServiceWrapper.Object,
                 mockConfiguration.Object
             );
         }
@@ -74,7 +80,16 @@ namespace SentimentAnalysisTool.Tests
         public async Task Should_Return_BadRequest_When_PrimaryKey_Is_Less_Than_Zero()
         {
             //Arrange         
-            mockRecordService.Setup(m => m.AddRecordAsync(new Mock<RecordModel>().Object, It.IsAny<string>()))
+            var mockSqlConnection = It.IsAny<SqlConnection>();
+            var mockDbTransaction = It.IsAny<DbTransaction>();
+            mockServiceWrapper
+                .Setup(m => m.OpenConnection(It.IsAny<string>()))
+                .Returns(mockSqlConnection);
+            mockServiceWrapper
+                .Setup(m => m.BeginTransactionAsync(mockSqlConnection))
+                .Returns(Task.FromResult(mockDbTransaction));
+            mockRecordService
+                .Setup(m => m.AddRecordAsync(It.IsAny<RecordModel>(), It.IsAny<DbTransaction>(), It.IsAny<SqlConnection>()))
                 .Returns(Task.FromResult(-1));
             //Act            
             var result = await recordController.AddRecord(new Mock<RecordViewModel>().Object);
@@ -88,12 +103,20 @@ namespace SentimentAnalysisTool.Tests
         public async Task Should_Return_BadRequest_When_SaveCommentsResult_Is_False()
         {
             //Arrange          
+            var mockSqlConnection = It.IsAny<SqlConnection>();
+            var mockDbTransaction = It.IsAny<DbTransaction>();
+            mockServiceWrapper
+                .Setup(m => m.OpenConnection(It.IsAny<string>()))
+                .Returns(mockSqlConnection);
+            mockServiceWrapper
+                .Setup(m => m.BeginTransactionAsync(mockSqlConnection))
+                .Returns(Task.FromResult(mockDbTransaction));
             mockRecordService
-                .Setup(m => m.AddRecordAsync(It.IsAny<RecordModel>(), It.IsAny<string>()))
-                .Returns(Task.FromResult(1));           
+                .Setup(m => m.AddRecordAsync(It.IsAny<RecordModel>(), It.IsAny<DbTransaction>(), It.IsAny<SqlConnection>()))
+                .Returns(Task.FromResult(1));
             mockCommentService
-                .Setup(m => m.SaveCommentsAsync(It.IsAny<IEnumerable<CommentModel>>(), It.IsAny<string>()))
-                .Returns(Task.FromResult(false));
+                 .Setup(m => m.SaveCommentsAsync(It.IsAny<IEnumerable<CommentModel>>(), It.IsAny<DbTransaction>(), It.IsAny<SqlConnection>()))
+                 .Returns(Task.FromResult(false));
 
             //Act
             var recordViewModel = Mock.Of<RecordViewModel>();
@@ -109,14 +132,22 @@ namespace SentimentAnalysisTool.Tests
         public async Task Should_Return_BadRequest_When_AddCorpusRecord_Is_False()
         {
             //Arrange          
+            var mockSqlConnection = It.IsAny<SqlConnection>();
+            var mockDbTransaction = It.IsAny<DbTransaction>();
+            mockServiceWrapper
+                .Setup(m => m.OpenConnection(It.IsAny<string>()))
+                .Returns(mockSqlConnection);
+            mockServiceWrapper
+                .Setup(m => m.BeginTransactionAsync(mockSqlConnection))
+                .Returns(Task.FromResult(mockDbTransaction));
             mockRecordService
-                .Setup(m => m.AddRecordAsync(It.IsAny<RecordModel>(), It.IsAny<string>()))
+                .Setup(m => m.AddRecordAsync(It.IsAny<RecordModel>(), It.IsAny<DbTransaction>(), It.IsAny<SqlConnection>()))
                 .Returns(Task.FromResult(1));
             mockCommentService
-                 .Setup(m => m.SaveCommentsAsync(It.IsAny<IEnumerable<CommentModel>>(), It.IsAny<string>()))
+                 .Setup(m => m.SaveCommentsAsync(It.IsAny<IEnumerable<CommentModel>>(), It.IsAny<DbTransaction>(), It.IsAny<SqlConnection>()))
                  .Returns(Task.FromResult(true));
             mockCorpusRecordService
-                .Setup(m => m.AddCorpusRecordAsync(It.IsAny<IEnumerable<CorpusRecordModel>>(), It.IsAny<string>()))
+                .Setup(m => m.AddCorpusRecordAsync(It.IsAny<IEnumerable<CorpusRecordModel>>(), It.IsAny<DbTransaction>(), It.IsAny<SqlConnection>()))
                 .Returns(Task.FromResult(false));
 
             //Act
@@ -134,18 +165,26 @@ namespace SentimentAnalysisTool.Tests
         public async Task Should_Return_BadRequest_When_AddFrequency_Is_False()
         {
             //Arrange          
+            var mockSqlConnection = It.IsAny<SqlConnection>();
+            var mockDbTransaction = It.IsAny<DbTransaction>();
+            mockServiceWrapper
+                .Setup(m => m.OpenConnection(It.IsAny<string>()))
+                .Returns(mockSqlConnection);
+            mockServiceWrapper
+                .Setup(m => m.BeginTransactionAsync(mockSqlConnection))
+                .Returns(Task.FromResult(mockDbTransaction));
             mockRecordService
-                .Setup(m => m.AddRecordAsync(It.IsAny<RecordModel>(), It.IsAny<string>()))
+                .Setup(m => m.AddRecordAsync(It.IsAny<RecordModel>(), It.IsAny<DbTransaction>(), It.IsAny<SqlConnection>()))
                 .Returns(Task.FromResult(1));
             mockCommentService
-                 .Setup(m => m.SaveCommentsAsync(It.IsAny<IEnumerable<CommentModel>>(), It.IsAny<string>()))
+                 .Setup(m => m.SaveCommentsAsync(It.IsAny<IEnumerable<CommentModel>>(), It.IsAny<DbTransaction>(), It.IsAny<SqlConnection>()))
                  .Returns(Task.FromResult(true));
             mockCorpusRecordService
-                .Setup(m => m.AddCorpusRecordAsync(It.IsAny<IEnumerable<CorpusRecordModel>>(), It.IsAny<string>()))
+                .Setup(m => m.AddCorpusRecordAsync(It.IsAny<IEnumerable<CorpusRecordModel>>(), It.IsAny<DbTransaction>(), It.IsAny<SqlConnection>()))
                 .Returns(Task.FromResult(true));
             mockWordFrequencyService
-               .Setup(m => m.AddWordFrequenciesAsync(It.IsAny<IEnumerable<WordFrequencyModel>>(), It.IsAny<string>()))
-               .Returns(Task.FromResult(false));           
+               .Setup(m => m.AddWordFrequenciesAsync(It.IsAny<IEnumerable<WordFrequencyModel>>(), It.IsAny<DbTransaction>(), It.IsAny<SqlConnection>()))
+               .Returns(Task.FromResult(false));
 
             //Act
             var recordViewModel = Mock.Of<RecordViewModel>();
@@ -161,20 +200,28 @@ namespace SentimentAnalysisTool.Tests
         }
         [Fact]
         public async Task Should_Return_Ok_When_All_Is_True()
-        {
+        {            
             //Arrange          
+            var mockSqlConnection = It.IsAny<SqlConnection>();
+            var mockDbTransaction = It.IsAny<DbTransaction>();
+            mockServiceWrapper
+                .Setup(m => m.OpenConnection(It.IsAny<string>()))
+                .Returns(mockSqlConnection);
+            mockServiceWrapper
+                .Setup(m => m.BeginTransactionAsync(mockSqlConnection))
+                .Returns(Task.FromResult(mockDbTransaction));
             mockRecordService
-                .Setup(m => m.AddRecordAsync(It.IsAny<RecordModel>(), It.IsAny<string>()))
+                .Setup(m => m.AddRecordAsync(It.IsAny<RecordModel>(), It.IsAny<DbTransaction>(),It.IsAny<SqlConnection>()))
                 .Returns(Task.FromResult(1));
             mockCommentService
-                 .Setup(m => m.SaveCommentsAsync(It.IsAny<IEnumerable<CommentModel>>(), It.IsAny<string>()))
+                 .Setup(m => m.SaveCommentsAsync(It.IsAny<IEnumerable<CommentModel>>(), It.IsAny<DbTransaction>(), It.IsAny<SqlConnection>()))
                  .Returns(Task.FromResult(true));
             mockCorpusRecordService
-                .Setup(m => m.AddCorpusRecordAsync(It.IsAny<IEnumerable<CorpusRecordModel>>(), It.IsAny<string>()))
+                .Setup(m => m.AddCorpusRecordAsync(It.IsAny<IEnumerable<CorpusRecordModel>>(), It.IsAny<DbTransaction>(), It.IsAny<SqlConnection>()))
                 .Returns(Task.FromResult(true));
             mockWordFrequencyService
-               .Setup(m => m.AddWordFrequenciesAsync(It.IsAny<IEnumerable<WordFrequencyModel>>(), It.IsAny<string>()))
-               .Returns(Task.FromResult(true));         
+               .Setup(m => m.AddWordFrequenciesAsync(It.IsAny<IEnumerable<WordFrequencyModel>>(), It.IsAny<DbTransaction>(), It.IsAny<SqlConnection>()))
+               .Returns(Task.FromResult(true));
 
             //Act
             var recordViewModel = Mock.Of<RecordViewModel>();
@@ -183,8 +230,8 @@ namespace SentimentAnalysisTool.Tests
             recordViewModel.WordFrequencyViewModels = Mock.Of<IEnumerable<WordFrequencyViewModel>>();
             var result = await recordController.AddRecord(recordViewModel);
             //Assert
-            var contentResult = Assert.IsType<OkResult>(result);            
-            Assert.Equal(result, contentResult);            
+            var contentResult = Assert.IsType<OkResult>(result);
+            Assert.Equal(result, contentResult);
         }
     }
 }
