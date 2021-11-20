@@ -15,7 +15,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
     {
         public async Task<bool> AddCorpusWordAsync(CorpusWordModel corpusWord, string connectionString)
         {
-            var procedure = "SaveCorpusWord";
+            var procedure = StoredProcedures.SP_SAVE_CORPUS_WORD;
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
@@ -29,7 +29,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> AddCorpusWordsAsync(IEnumerable<CorpusWordModel> corpusWords, string connectionString)
         {
-            var procedure = "SaveCorpusWord";
+            var procedure = StoredProcedures.SP_SAVE_CORPUS_WORD;
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
@@ -51,7 +51,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> DeleteCorpusWordAsync(int corpusWordId, string connectionString)
         {
-            var procedure = "DeleteCorpusWord";
+            var procedure = StoredProcedures.SP_DELETE_CORPUS_WORD;
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
@@ -65,7 +65,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<ICollection<CorpusWordModel>> FetchCorpusWordsAsync(int corpusTypeId, string connectionString)
         {
-            var procedure = "FetchCorpusWord";
+            var procedure = StoredProcedures.SP_FETCH_CORPUS_WORD;
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();

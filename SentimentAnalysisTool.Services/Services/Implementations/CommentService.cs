@@ -26,7 +26,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         /// </returns>
         public async Task<ICollection<CommentModel>> FetchCommentsAsync(int pageSize, int pageNumber, string connectionString)
         {
-            var procedure = "PaginateCommentsTable";
+            var procedure = StoredProcedures.SP_PAGINATE_COMMENTS;
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
@@ -52,7 +52,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         /// </returns>
         public async Task<bool> SaveCommentsAsync(IEnumerable<CommentModel> comments, string connectionString)
         {
-            var procedure = "SaveComments";
+            var procedure = StoredProcedures.SP_SAVE_COMMENTS;
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
@@ -77,7 +77,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> SaveCommentsAsync(IEnumerable<CommentModel> comments, DbTransaction transaction, SqlConnection connection)
         {
-            var procedure = "SaveComments";
+            var procedure = StoredProcedures.SP_SAVE_COMMENTS;
             if (connection.State == ConnectionState.Closed)
                 await connection.OpenAsync();
             var rowsAffected = 0;

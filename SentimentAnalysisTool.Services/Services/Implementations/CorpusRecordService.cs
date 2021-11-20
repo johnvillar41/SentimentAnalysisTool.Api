@@ -16,7 +16,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
     {
         public async Task<bool> AddCorpusRecordAsync(CorpusRecordModel corpus, string connectionString)
         {
-            var procedure = "SaveCorpusRecords";
+            var procedure = StoredProcedures.SP_SAVE_CORPUS_RECORDS;
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
@@ -34,7 +34,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> AddCorpusRecordAsync(IEnumerable<CorpusRecordModel> corpuses, string connectionString)
         {
-            var procedure = "SaveCorpusRecords";
+            var procedure = StoredProcedures.SP_SAVE_CORPUS_RECORDS;
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
@@ -57,7 +57,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> AddCorpusRecordAsync(IEnumerable<CorpusRecordModel> corpuses, DbTransaction transaction, SqlConnection connection)
         {
-            var sqlQuery = "SaveCorpusRecords";
+            var sqlQuery = StoredProcedures.SP_SAVE_CORPUS_RECORDS;
             if (connection.State == ConnectionState.Closed)
                 await connection.OpenAsync();
             var rowsAffected = 0;

@@ -16,7 +16,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
     {
         public async Task<bool> AddWordFrequenciesAsync(IEnumerable<WordFrequencyModel> wordFrequencies, string connectionString)
         {
-            var procedure = "SaveWordFrequency";
+            var procedure = StoredProcedures.SP_SAVE_WORD_FREQUENCY;
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
@@ -41,7 +41,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> AddWordFrequenciesAsync(IEnumerable<WordFrequencyModel> wordFrequencies, DbTransaction transaction, SqlConnection connection)
         {
-            var procedure = "SaveWordFrequency";
+            var procedure = StoredProcedures.SP_SAVE_WORD_FREQUENCY;
             if (connection.State == ConnectionState.Closed)
                 await connection.OpenAsync();
             var rowsAffected = 0;

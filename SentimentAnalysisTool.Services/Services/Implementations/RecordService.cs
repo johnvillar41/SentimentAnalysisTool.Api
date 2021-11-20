@@ -11,7 +11,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
     {
         public async Task<int> AddRecordAsync(RecordModel record, string connectionString)
         {
-            var procedure = "SaveRecords";
+            var procedure = StoredProcedures.SP_SAVE_RECORDS;
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
@@ -22,7 +22,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<int> AddRecordAsync(RecordModel record, System.Data.Common.DbTransaction transaction, SqlConnection connection)
         {
-            var procedure = "SaveRecords";
+            var procedure = StoredProcedures.SP_SAVE_RECORDS;
             if (connection.State == ConnectionState.Closed)
                 await connection.OpenAsync();
 
@@ -32,7 +32,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> DeleteRecordAsync(int recordId, string connectionString)
         {
-            var procedure = "DeleteRecords";
+            var procedure = StoredProcedures.SP_DELETE_RECORDS;
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
@@ -49,7 +49,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<RecordModel> FindRecordAsync(int recordId, string connectionString)
         {
-            var procedure = "FetchRecords";
+            var procedure = StoredProcedures.SP_FETCH_RECORDS;
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();

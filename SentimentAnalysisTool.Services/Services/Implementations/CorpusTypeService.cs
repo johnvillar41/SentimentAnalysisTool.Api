@@ -19,7 +19,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         }
         public async Task<bool> AddCorpusTypeAsync(CorpusTypeModel corpusType, string connectionString)
         {
-            var procedure = "SaveCorpusType";
+            var procedure = StoredProcedures.SP_SAVE_CORPUS_TYPE;
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             var transaction = await connection.BeginTransactionAsync();
@@ -54,7 +54,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> DeleteCorpusTypeAsync(int corpusTypeId, string connectionString)
         {
-            var procedure = "DeleteCorpusType";
+            var procedure = StoredProcedures.SP_DELETE_CORPUS_TYPE;
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
@@ -67,7 +67,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<CorpusTypeModel> FindCorpusTypeAsync(int corpusTypeId, string connectionString)
         {
-            var Procedure = "FetchCorpusType";
+            var Procedure = StoredProcedures.SP_FETCH_CORPUS_TYPE;
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();

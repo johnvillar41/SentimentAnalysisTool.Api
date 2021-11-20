@@ -15,7 +15,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
     {
         public async Task<bool> AddSlangRecordAsync(SlangRecordModel slangRecord, string connectionString)
         {
-            var procedure = "SaveSlangRecord";
+            var procedure = StoredProcedures.SP_SAVE_SLANG_RECORD;
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
@@ -33,7 +33,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> AddSlangRecordAsync(IEnumerable<SlangRecordModel> slangRecords, string connectionString)
         {
-            var procedure = "SaveSlangRecord";
+            var procedure = StoredProcedures.SP_SAVE_SLANG_RECORD;
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
@@ -55,7 +55,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> DeleteSlangRecordAsync(int slangRecordId, string connectionString)
         {
-            var procedure = "DeleteSlangRecord";
+            var procedure = StoredProcedures.SP_DELETE_SLANG_RECORD;
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
