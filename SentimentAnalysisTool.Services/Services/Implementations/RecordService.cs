@@ -40,11 +40,11 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                                 @PositivePercent,
                                 @NegativePercent
                             );
-                            SELECT SCOPE_IDENTITY();";    
-            if(connection.State == ConnectionState.Closed)
-                await connection.OpenAsync();            
+                            SELECT SCOPE_IDENTITY();";
+            if (connection.State == ConnectionState.Closed)
+                await connection.OpenAsync();
 
-            var primaryKey = connection.QuerySingle<int>(sqlQuery, record, transaction);            
+            var primaryKey = connection.QuerySingle<int>(sqlQuery, record, transaction);
             return primaryKey;
         }
 
@@ -54,7 +54,10 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             using SqlConnection connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
             using var transaction = await connection.BeginTransactionAsync();
-            var rowsAffected = connection.QuerySingle<int>(sqlQuery, recordId, transaction);
+            var rowsAffected = await connection.ExecuteAsync(sqlQuery, new
+            {
+                RecordId = recordId
+            }, transaction);
             await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;
