@@ -8,6 +8,6 @@ namespace SentimentAnalysisTool.Services.Services.Interfaces
     {
         Task<SqlConnection> OpenConnection(string connectionString);
         Task<DbTransaction> BeginTransactionAsync(SqlConnection connection);
-        Task CommitTransaction(DbTransaction transaction);
+        Task CommitTransactionAsync(DbTransaction transaction);
     }
 }

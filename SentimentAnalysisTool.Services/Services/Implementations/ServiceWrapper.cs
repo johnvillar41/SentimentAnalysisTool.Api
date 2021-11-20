@@ -16,7 +16,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             return await connection.BeginTransactionAsync();
         }
 
-        public async Task CommitTransaction(DbTransaction transaction)
+        public async Task CommitTransactionAsync(DbTransaction transaction)
         {
             await transaction.CommitAsync();
         }

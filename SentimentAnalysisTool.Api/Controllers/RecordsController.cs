@@ -109,7 +109,7 @@ namespace SentimentAnalysisTool.Api.Controllers
                 return BadRequest("Error Adding WordFrequencies!");
 
             //Commitment to database transaction
-            await _serviceWrapper.CommitTransaction(transaction);
+            await _serviceWrapper.CommitTransactionAsync(transaction);
             return Ok();
         }
         //DELETE: api/Records/{id}
