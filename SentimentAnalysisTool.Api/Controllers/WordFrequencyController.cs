@@ -27,6 +27,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
             _recordService = recordService;
         }
+        //POST: api/WordFrequency
         [HttpPost]
         public async Task<IActionResult> AddWordFrequency(WordFrequencyViewModel wordFrequencyViewModel)
         {
@@ -42,6 +43,7 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             return BadRequest();
         }
+        //POST: api/WordFrequency
         [HttpPost]
         public async Task<IActionResult> AddWordFrequencies(IEnumerable<WordFrequencyViewModel> wordFrequencyViewModels)
         {
