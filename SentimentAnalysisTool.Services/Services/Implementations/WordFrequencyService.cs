@@ -61,5 +61,27 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
             return false;
         }
+
+        public async Task<bool> AddWordFrequenciesAsync(WordFrequencyModel wordFrequency, string connectionString)
+        {
+            var procedure = StoredProcedures.SP_SAVE_WORD_FREQUENCY;
+            using var connection = new SqlConnection(connectionString);
+            await connection.OpenAsync();
+            using var transaction = await connection.BeginTransactionAsync();
+
+            var rowsAffected = await connection.ExecuteAsync(procedure,
+                new
+                {
+                    wordFrequency.Record.RecordId,
+                    wordFrequency.Word,
+                    wordFrequency.WordFrequency
+                }, transaction, commandType: CommandType.StoredProcedure);            
+
+            await transaction.CommitAsync();
+            if (rowsAffected > 0)
+                return true;
+
+            return false;
+        }
     }
 }

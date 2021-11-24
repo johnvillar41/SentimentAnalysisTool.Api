@@ -12,6 +12,7 @@ namespace SentimentAnalysisTool.Services.Services.Interfaces
     public interface IWordFrequencyService
     {
         Task<bool> AddWordFrequenciesAsync(IEnumerable<WordFrequencyModel> wordFrequencies, string connectionString);
+        Task<bool> AddWordFrequenciesAsync(WordFrequencyModel wordFrequency, string connectionString);
         Task<bool> AddWordFrequenciesAsync(IEnumerable<WordFrequencyModel> wordFrequencies, DbTransaction transaction, SqlConnection connection);
     }
 }
