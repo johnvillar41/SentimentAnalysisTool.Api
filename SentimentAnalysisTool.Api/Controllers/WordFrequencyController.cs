@@ -42,5 +42,21 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             return BadRequest();
         }
+        [HttpPost]
+        public async Task<IActionResult> AddWordFrequencies(IEnumerable<WordFrequencyViewModel> wordFrequencyViewModels)
+        {
+            var wordFrequencyModelTasks = wordFrequencyViewModels.Select(async m => new WordFrequencyModel()
+            {
+                Record = await _recordService.FindRecordAsync(m.RecordId, ConnectionString),
+                Word = m.Word,
+                WordFrequency = m.WordFrequency
+            });
+            var wordFrequencyModels = await Task.WhenAll(wordFrequencyModelTasks);
+            var result = await _wordFrequencyService.AddWordFrequenciesAsync(wordFrequencyModels, ConnectionString);
+            if (result)
+                return Ok();
+
+            return BadRequest();
+        }
     }
 }
