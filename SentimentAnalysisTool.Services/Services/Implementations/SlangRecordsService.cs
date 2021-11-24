@@ -53,6 +53,26 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             return false;
         }
 
+        public async Task<bool> AddSlangRecordAsync(IEnumerable<SlangRecordModel> slangRecord, System.Data.Common.DbTransaction transaction, SqlConnection connection)
+        {
+            var procedure = StoredProcedures.SP_SAVE_SLANG_RECORD;
+            if (connection.State == ConnectionState.Closed)
+                await connection.OpenAsync();
+            var rowsAffected = 0;
+            foreach (var item in slangRecord)
+            {
+                rowsAffected += await connection.ExecuteAsync(procedure, new
+                {
+                    item.CorpusType.CorpusTypeId,
+                    item.SlangName
+                }, transaction, commandType: CommandType.StoredProcedure);
+            }
+            if (rowsAffected > 0)
+                return true;
+
+            return false;
+        }
+
         public async Task<bool> DeleteSlangRecordAsync(int slangRecordId, string connectionString)
         {
             var procedure = StoredProcedures.SP_DELETE_SLANG_RECORD;

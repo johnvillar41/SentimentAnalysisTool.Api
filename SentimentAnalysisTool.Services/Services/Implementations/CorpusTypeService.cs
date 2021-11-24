@@ -33,14 +33,14 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             if (corpusType.CorpusWords.Any())
             {
                 corpusType.CorpusWords.Select(x => x.CorpusType.CorpusTypeId = primaryKey);
-                var corpusWordResult = await _corpusWordsService.AddCorpusWordsAsync(corpusType.CorpusWords, connectionString);
+                var corpusWordResult = await _corpusWordsService.AddCorpusWordsAsync(corpusType.CorpusWords, transaction, connection);
                 if (!corpusWordResult)
                     return false;
             }
             if (corpusType.SlangRecords.Any())
             {
                 corpusType.SlangRecords.Select(x => x.CorpusType.CorpusTypeId = primaryKey);
-                var slangRecordResult = await _slangRecordsService.AddSlangRecordAsync(corpusType.SlangRecords, connectionString);
+                var slangRecordResult = await _slangRecordsService.AddSlangRecordAsync(corpusType.SlangRecords, transaction, connection);
                 if (!slangRecordResult)
                     return false;
             }

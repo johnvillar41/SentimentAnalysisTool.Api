@@ -67,7 +67,7 @@ namespace SentimentAnalysisTool.Api.Controllers
                 CorpusWord = corpusWord.CorpusWord,
                 CorpusType = await _corpusTypeService.FindCorpusTypeAsync(corpusWord.CorpusTypeId, ConnectionString)
             };
-            var result = await _corpusWordsService.AddCorpusWordAsync(corpusWordModel, ConnectionString);
+            var result = await _corpusWordsService.AddCorpusWordsAsync(corpusWordModel, ConnectionString);
             if (result)
                 return Ok();
 

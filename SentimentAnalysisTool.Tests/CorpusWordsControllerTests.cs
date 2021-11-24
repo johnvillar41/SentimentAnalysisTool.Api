@@ -100,7 +100,7 @@ namespace SentimentAnalysisTool.Tests
             //Arrange
             var corpusWord = Mock.Of<CorpusWordViewModel>();
             mockCorpusWordsService
-                .Setup(m => m.AddCorpusWordAsync(It.IsAny<CorpusWordModel>(), It.IsAny<string>()))
+                .Setup(m => m.AddCorpusWordsAsync(It.IsAny<CorpusWordModel>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(true));
             //Act
             var result = await corpusWordsController.AddCorpusWord(corpusWord);
@@ -113,7 +113,7 @@ namespace SentimentAnalysisTool.Tests
             //Arrange
             var corpusWord = Mock.Of<CorpusWordViewModel>();                
             mockCorpusWordsService
-                .Setup(m => m.AddCorpusWordAsync(It.IsAny<CorpusWordModel>(), It.IsAny<string>()))
+                .Setup(m => m.AddCorpusWordsAsync(It.IsAny<CorpusWordModel>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(false));
             //Act
             var result = await corpusWordsController.AddCorpusWord(corpusWord);
