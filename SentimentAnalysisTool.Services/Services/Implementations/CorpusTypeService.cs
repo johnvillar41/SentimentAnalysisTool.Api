@@ -2,6 +2,7 @@
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,46 +11,19 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 {
     public class CorpusTypeService : ICorpusTypeService
     {
-        private readonly ICorpusWordsService _corpusWordsService;
-        private readonly ISlangRecordsService _slangRecordsService;
-        public CorpusTypeService(ICorpusWordsService corpusWordsService, ISlangRecordsService slangRecordsService)
-        {
-            _corpusWordsService = corpusWordsService;
-            _slangRecordsService = slangRecordsService;
-        }
-        public async Task<bool> AddCorpusTypeAsync(CorpusTypeModel corpusType, string connectionString)
+        public async Task<int> AddCorpusTypeAsync(CorpusTypeModel corpusType, SqlConnection connection, DbTransaction transaction)
         {
             var procedure = StoredProcedures.SP_SAVE_CORPUS_TYPE;
-            using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-            var transaction = await connection.BeginTransactionAsync();
+            if (connection.State == ConnectionState.Closed)
+                await connection.OpenAsync();
+            
             var primaryKey = await connection.QuerySingleAsync<int>(procedure,
                 new
                 {
                     corpusType.CorpusTypeName
                 },
                 transaction, commandType: CommandType.StoredProcedure);
-
-            if (corpusType.CorpusWords.Any())
-            {
-                corpusType.CorpusWords.Select(x => x.CorpusType.CorpusTypeId = primaryKey);
-                var corpusWordResult = await _corpusWordsService.AddCorpusWordsAsync(corpusType.CorpusWords, transaction, connection);
-                if (!corpusWordResult)
-                    return false;
-            }
-            if (corpusType.SlangRecords.Any())
-            {
-                corpusType.SlangRecords.Select(x => x.CorpusType.CorpusTypeId = primaryKey);
-                var slangRecordResult = await _slangRecordsService.AddSlangRecordAsync(corpusType.SlangRecords, transaction, connection);
-                if (!slangRecordResult)
-                    return false;
-            }
-
-            await transaction.CommitAsync();
-            if (primaryKey > 0)
-                return true;
-
-            return false;
+            return primaryKey;           
         }
 
         public async Task<bool> DeleteCorpusTypeAsync(int corpusTypeId, string connectionString)

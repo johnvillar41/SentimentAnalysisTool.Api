@@ -83,7 +83,7 @@ namespace SentimentAnalysisTool.Tests
             var mockSqlConnection = It.IsAny<SqlConnection>();
             var mockDbTransaction = It.IsAny<DbTransaction>();
             mockServiceWrapper
-                .Setup(m => m.OpenConnection(It.IsAny<string>()))
+                .Setup(m => m.OpenConnectionAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(mockSqlConnection));
             mockServiceWrapper
                 .Setup(m => m.BeginTransactionAsync(mockSqlConnection))
@@ -106,7 +106,7 @@ namespace SentimentAnalysisTool.Tests
             var mockSqlConnection = It.IsAny<SqlConnection>();
             var mockDbTransaction = It.IsAny<DbTransaction>();
             mockServiceWrapper
-                .Setup(m => m.OpenConnection(It.IsAny<string>()))
+                .Setup(m => m.OpenConnectionAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(mockSqlConnection));
             mockServiceWrapper
                 .Setup(m => m.BeginTransactionAsync(mockSqlConnection))
@@ -135,7 +135,7 @@ namespace SentimentAnalysisTool.Tests
             var mockSqlConnection = It.IsAny<SqlConnection>();
             var mockDbTransaction = It.IsAny<DbTransaction>();
             mockServiceWrapper
-                .Setup(m => m.OpenConnection(It.IsAny<string>()))
+                .Setup(m => m.OpenConnectionAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(mockSqlConnection));
             mockServiceWrapper
                 .Setup(m => m.BeginTransactionAsync(mockSqlConnection))
@@ -168,7 +168,7 @@ namespace SentimentAnalysisTool.Tests
             var mockSqlConnection = It.IsAny<SqlConnection>();
             var mockDbTransaction = It.IsAny<DbTransaction>();
             mockServiceWrapper
-                .Setup(m => m.OpenConnection(It.IsAny<string>()))
+                .Setup(m => m.OpenConnectionAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(mockSqlConnection));
             mockServiceWrapper
                 .Setup(m => m.BeginTransactionAsync(mockSqlConnection))
@@ -205,7 +205,7 @@ namespace SentimentAnalysisTool.Tests
             var mockSqlConnection = It.IsAny<SqlConnection>();
             var mockDbTransaction = It.IsAny<DbTransaction>();
             mockServiceWrapper
-                .Setup(m => m.OpenConnection(It.IsAny<string>()))
+                .Setup(m => m.OpenConnectionAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(mockSqlConnection));
             mockServiceWrapper
                 .Setup(m => m.BeginTransactionAsync(mockSqlConnection))

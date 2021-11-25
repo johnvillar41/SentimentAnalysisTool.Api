@@ -21,7 +21,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             await transaction.CommitAsync();
         }
 
-        public async Task<SqlConnection> OpenConnection(string connectionString)
+        public async Task<SqlConnection> OpenConnectionAsync(string connectionString)
         {
             var connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
