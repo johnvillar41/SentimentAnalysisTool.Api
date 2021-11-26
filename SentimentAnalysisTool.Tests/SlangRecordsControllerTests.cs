@@ -122,7 +122,7 @@ namespace SentimentAnalysisTool.Tests
             Assert.IsType<OkResult>(result);
         }
         [Fact]
-        public async Task Should_Return_Ok_When_DeleteSlangRecord_Is_False()
+        public async Task Should_Return_BadRequest_When_DeleteSlangRecord_Is_False()
         {
             //Arrange
             mockSlangRecordsService
