@@ -43,6 +43,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             if (corpusTypeViewModel == null)
                 return NotFound();
 
+            //Build CorpusTypeModel
             var corpusModel = new CorpusTypeModel()
             {
                 CorpusTypeId = -1,
@@ -87,6 +88,8 @@ namespace SentimentAnalysisTool.Api.Controllers
                     return BadRequest();
             }
 
+            //Commit Transaction
+            await _serviceWrapper.CommitTransactionAsync(transaction);
             return Ok();
         }
         //DELETE: api/CorpusType/{id}
