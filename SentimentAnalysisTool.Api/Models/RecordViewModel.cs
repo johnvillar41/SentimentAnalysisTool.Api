@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SentimentAnalysisTool.Api.Models
@@ -12,11 +13,14 @@ namespace SentimentAnalysisTool.Api.Models
         public string RecordName { get; set; }
         public int PositivePercent { get; set; }
         public int NegativePercent { get; set; }
-        [JsonProperty("CommentModels")]
+
+        [JsonPropertyName("CommentModels")]
         public IEnumerable<CommentViewModel> CommentViewModels { get; set; }
-        [JsonProperty("CorpusRecordModels")]
+
+        [JsonPropertyName("CorpusRecordModels")]
         public IEnumerable<CorpusRecordViewModel> CorpusRecordViewModels { get; set; }
-        [JsonProperty("WordFrequencyModels")]
+
+        [JsonPropertyName("WordFrequencyModels")]
         public IEnumerable<WordFrequencyViewModel> WordFrequencyViewModels { get; set; }
     }
 }
