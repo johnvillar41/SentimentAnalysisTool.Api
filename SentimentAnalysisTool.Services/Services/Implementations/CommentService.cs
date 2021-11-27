@@ -28,17 +28,13 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         {
             var procedure = StoredProcedures.SP_PAGINATE_COMMENTS;
             using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-            using var transaction = await connection.BeginTransactionAsync();
             var comments = await connection.QueryAsync<CommentModel>(procedure,
                 new
                 {
                     PageNumber = pageNumber,
                     RowsOfPage = pageSize
                 },
-                transaction,
                 commandType: CommandType.StoredProcedure);
-            await transaction.CommitAsync();
             return (ICollection<CommentModel>)comments;
         }
         /// <summary>
@@ -54,8 +50,6 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         {
             var procedure = StoredProcedures.SP_SAVE_COMMENTS;
             using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-            using var transaction = await connection.BeginTransactionAsync();
             var rowsAffected = 0;
             foreach (var item in comments)
             {
@@ -66,9 +60,8 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                         item.CommentScore,
                         item.CommentDetail,
                         item.Date
-                    }, transaction, commandType: CommandType.StoredProcedure);
+                    }, commandType: CommandType.StoredProcedure);
             }
-            await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;
 
@@ -78,8 +71,6 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         public async Task<bool> SaveCommentsAsync(IEnumerable<CommentModel> comments, DbTransaction transaction, SqlConnection connection)
         {
             var procedure = StoredProcedures.SP_SAVE_COMMENTS;
-            if (connection.State == ConnectionState.Closed)
-                await connection.OpenAsync();
             var rowsAffected = 0;
             foreach (var item in comments)
             {
