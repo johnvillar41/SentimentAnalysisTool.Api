@@ -14,7 +14,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         {
             var procedure = StoredProcedures.SP_SAVE_RECORDS;
             using var connection = new SqlConnection(connectionString);
-            var primaryKey = connection.QuerySingle<int>(procedure, record, commandType: CommandType.StoredProcedure);
+            var primaryKey = await connection.QuerySingleAsync<int>(procedure, record, commandType: CommandType.StoredProcedure);
             return primaryKey;
         }
 
