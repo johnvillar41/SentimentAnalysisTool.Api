@@ -4,6 +4,7 @@ using SentimentAnalysisTool.Services.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -17,14 +18,11 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         {
             var procedure = StoredProcedures.SP_SAVE_SLANG_RECORD;
             using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-            using var transaction = await connection.BeginTransactionAsync();
             var rowsAffected = await connection.ExecuteAsync(procedure, new
             {
                 slangRecord.CorpusType.CorpusTypeId,
                 slangRecord.SlangName
-            }, transaction, commandType: CommandType.StoredProcedure);
-            await transaction.CommitAsync();
+            }, commandType: CommandType.StoredProcedure);
             if (rowsAffected > 0)
                 return true;
 
@@ -35,8 +33,6 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         {
             var procedure = StoredProcedures.SP_SAVE_SLANG_RECORD;
             using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-            using var transaction = await connection.BeginTransactionAsync();
             var rowsAffected = 0;
             foreach (var item in slangRecords)
             {
@@ -44,16 +40,15 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                 {
                     item.CorpusType.CorpusTypeId,
                     item.SlangName
-                }, transaction, commandType: CommandType.StoredProcedure);
+                }, commandType: CommandType.StoredProcedure);
             }
-            await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;
 
             return false;
         }
 
-        public async Task<bool> AddSlangRecordAsync(IEnumerable<SlangRecordModel> slangRecord, System.Data.Common.DbTransaction transaction, SqlConnection connection)
+        public async Task<bool> AddSlangRecordAsync(IEnumerable<SlangRecordModel> slangRecord, DbTransaction transaction, SqlConnection connection)
         {
             var procedure = StoredProcedures.SP_SAVE_SLANG_RECORD;
             if (connection.State == ConnectionState.Closed)
@@ -77,10 +72,11 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         {
             var procedure = StoredProcedures.SP_DELETE_SLANG_RECORD;
             using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-            using var transaction = await connection.BeginTransactionAsync();
-            var rowsAffected = await connection.ExecuteAsync(procedure, new { SlangRecordsId = slangRecordId }, transaction, commandType: CommandType.StoredProcedure);
-            await transaction.CommitAsync();
+            var rowsAffected = await connection.ExecuteAsync(procedure,
+                new
+                {
+                    SlangRecordsId = slangRecordId
+                }, commandType: CommandType.StoredProcedure);
             if (rowsAffected > 0)
                 return true;
 

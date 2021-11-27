@@ -16,24 +16,24 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             var procedure = StoredProcedures.SP_SAVE_CORPUS_TYPE;
             if (connection.State == ConnectionState.Closed)
                 await connection.OpenAsync();
-            
+
             var primaryKey = await connection.QuerySingleAsync<int>(procedure,
                 new
                 {
                     corpusType.CorpusTypeName
                 },
                 transaction, commandType: CommandType.StoredProcedure);
-            return primaryKey;           
+            return primaryKey;
         }
 
         public async Task<bool> DeleteCorpusTypeAsync(int corpusTypeId, string connectionString)
         {
             var procedure = StoredProcedures.SP_DELETE_CORPUS_TYPE;
             using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-            using var transaction = await connection.BeginTransactionAsync();
-            var result = await connection.ExecuteAsync(procedure, new { CorpusTypeId = corpusTypeId }, transaction, commandType: CommandType.StoredProcedure);
-            await transaction.CommitAsync();
+            var result = await connection.ExecuteAsync(procedure, new
+            {
+                CorpusTypeId = corpusTypeId
+            }, commandType: CommandType.StoredProcedure);
             if (result > 0)
                 return true;
             return false;
@@ -43,10 +43,10 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         {
             var Procedure = StoredProcedures.SP_FETCH_CORPUS_TYPE;
             using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-            using var transaction = await connection.BeginTransactionAsync();
-            var result = await connection.QueryFirstAsync<CorpusTypeModel>(Procedure, new { CorpusTypeId = corpusTypeId }, transaction, commandType: CommandType.StoredProcedure);
-            await transaction.CommitAsync();
+            var result = await connection.QueryFirstAsync<CorpusTypeModel>(Procedure, new
+            {
+                CorpusTypeId = corpusTypeId
+            }, commandType: CommandType.StoredProcedure);
             return result;
         }
     }

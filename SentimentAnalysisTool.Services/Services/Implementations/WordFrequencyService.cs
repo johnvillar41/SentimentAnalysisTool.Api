@@ -18,8 +18,6 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         {
             var procedure = StoredProcedures.SP_SAVE_WORD_FREQUENCY;
             using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-            using var transaction = await connection.BeginTransactionAsync();
             var rowsAffected = 0;
             foreach (var item in wordFrequencies)
             {
@@ -29,10 +27,9 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                         item.Record.RecordId,
                         item.Word,
                         item.WordFrequency
-                    }, transaction, commandType: CommandType.StoredProcedure);
+                    }, commandType: CommandType.StoredProcedure);
             }
 
-            await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;
 
@@ -66,18 +63,14 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         {
             var procedure = StoredProcedures.SP_SAVE_WORD_FREQUENCY;
             using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-            using var transaction = await connection.BeginTransactionAsync();
-
             var rowsAffected = await connection.ExecuteAsync(procedure,
                 new
                 {
                     wordFrequency.Record.RecordId,
                     wordFrequency.Word,
                     wordFrequency.WordFrequency
-                }, transaction, commandType: CommandType.StoredProcedure);            
+                }, commandType: CommandType.StoredProcedure);            
 
-            await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;
 

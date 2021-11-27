@@ -18,10 +18,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         {
             var procedure = StoredProcedures.SP_SAVE_CORPUS_WORD;
             using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-            using var transaction = await connection.BeginTransactionAsync();
-            var rowsAffected = await connection.ExecuteAsync(procedure, corpusWord, transaction, commandType: CommandType.StoredProcedure);
-            await transaction.CommitAsync();
+            var rowsAffected = await connection.ExecuteAsync(procedure, corpusWord, commandType: CommandType.StoredProcedure);
             if (rowsAffected > 0)
                 return true;
 
@@ -32,8 +29,6 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         {
             var procedure = StoredProcedures.SP_SAVE_CORPUS_WORD;
             using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-            using var transaction = await connection.BeginTransactionAsync();
             var rowsAffected = 0;
             foreach (var corpus in corpusWords)
             {
@@ -41,9 +36,8 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                 {
                     corpus.CorpusType.CorpusTypeId,
                     corpus.CorpusWord
-                }, transaction, commandType: CommandType.StoredProcedure);
+                }, commandType: CommandType.StoredProcedure);
             }
-            await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;
 
@@ -54,7 +48,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         {
             var procedure = StoredProcedures.SP_SAVE_CORPUS_WORD;
             if (connection.State == ConnectionState.Closed)
-                await connection.OpenAsync();            
+                await connection.OpenAsync();
             var rowsAffected = 0;
             foreach (var corpus in corpusWords)
             {
@@ -63,7 +57,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                     corpus.CorpusType.CorpusTypeId,
                     corpus.CorpusWord
                 }, transaction, commandType: CommandType.StoredProcedure);
-            }            
+            }
             if (rowsAffected > 0)
                 return true;
 
@@ -74,10 +68,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         {
             var procedure = StoredProcedures.SP_DELETE_CORPUS_WORD;
             using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-            using var transaction = await connection.BeginTransactionAsync();
-            var rowsAffected = await connection.ExecuteAsync(procedure, corpusWordId, transaction, commandType: CommandType.StoredProcedure);
-            await transaction.CommitAsync();
+            var rowsAffected = await connection.ExecuteAsync(procedure, corpusWordId, commandType: CommandType.StoredProcedure);
             if (rowsAffected > 0)
                 return true;
 
@@ -88,9 +79,11 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         {
             var procedure = StoredProcedures.SP_FETCH_CORPUS_WORD;
             using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-            using var transaction = await connection.BeginTransactionAsync();
-            var corpusWords = await connection.QueryAsync<CorpusWordModel>(procedure, new { CorpusTypeId = corpusTypeId }, transaction, commandType: CommandType.StoredProcedure);
+            var corpusWords = await connection.QueryAsync<CorpusWordModel>(procedure,
+                new
+                {
+                    CorpusTypeId = corpusTypeId
+                }, commandType: CommandType.StoredProcedure);
             return corpusWords.ToList();
         }
     }

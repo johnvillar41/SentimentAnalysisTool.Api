@@ -18,14 +18,11 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         {
             var procedure = StoredProcedures.SP_SAVE_CORPUS_RECORDS;
             using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-            using var transaction = await connection.BeginTransactionAsync();
             var rowsAffected = await connection.ExecuteAsync(procedure, new
             {
                 corpus.Record.RecordId,
                 corpus.CorpusType.CorpusTypeId
-            }, transaction, commandType: CommandType.StoredProcedure);
-            await transaction.CommitAsync();
+            }, commandType: CommandType.StoredProcedure);
             if (rowsAffected > 0)
                 return true;
 
@@ -36,8 +33,6 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         {
             var procedure = StoredProcedures.SP_SAVE_CORPUS_RECORDS;
             using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-            using var transaction = await connection.BeginTransactionAsync();
             var rowsAffected = 0;
             foreach (var corpus in corpuses)
             {
@@ -46,9 +41,8 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                     {
                         corpus.Record.RecordId,
                         corpus.CorpusType.CorpusTypeId
-                    }, transaction, commandType: CommandType.StoredProcedure);
+                    }, commandType: CommandType.StoredProcedure);
             }
-            await transaction.CommitAsync();
             if (rowsAffected > 0)
                 return true;
 

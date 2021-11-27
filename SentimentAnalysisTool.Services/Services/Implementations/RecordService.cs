@@ -2,6 +2,7 @@
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
@@ -13,14 +14,11 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         {
             var procedure = StoredProcedures.SP_SAVE_RECORDS;
             using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-            using var transaction = await connection.BeginTransactionAsync();
-            var primaryKey = connection.QuerySingle<int>(procedure, record, transaction, commandType: CommandType.StoredProcedure);
-            await transaction.CommitAsync();
+            var primaryKey = connection.QuerySingle<int>(procedure, record, commandType: CommandType.StoredProcedure);
             return primaryKey;
         }
 
-        public async Task<int> AddRecordAsync(RecordModel record, System.Data.Common.DbTransaction transaction, SqlConnection connection)
+        public async Task<int> AddRecordAsync(RecordModel record, DbTransaction transaction, SqlConnection connection)
         {
             var procedure = StoredProcedures.SP_SAVE_RECORDS;
             if (connection.State == ConnectionState.Closed)
@@ -34,13 +32,10 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         {
             var procedure = StoredProcedures.SP_DELETE_RECORDS;
             using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-            using var transaction = await connection.BeginTransactionAsync();
             var rowsAffected = await connection.ExecuteAsync(procedure, new
             {
                 RecordId = recordId
-            }, transaction, commandType: CommandType.StoredProcedure);
-            await transaction.CommitAsync();
+            }, commandType: CommandType.StoredProcedure);
             if (rowsAffected > 0)
                 return true;
 
@@ -51,9 +46,11 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         {
             var procedure = StoredProcedures.SP_FETCH_RECORDS;
             using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-            using var transaction = await connection.BeginTransactionAsync();
-            var record = await connection.QueryFirstOrDefaultAsync<RecordModel>(procedure, new { RecordId = recordId }, transaction, commandType: CommandType.StoredProcedure);
+            var record = await connection.QueryFirstOrDefaultAsync<RecordModel>(procedure,
+                new
+                {
+                    RecordId = recordId
+                }, commandType: CommandType.StoredProcedure);
             return record;
         }
     }
