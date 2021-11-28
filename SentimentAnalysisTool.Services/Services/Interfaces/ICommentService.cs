@@ -12,5 +12,6 @@ namespace SentimentAnalysisTool.Services.Services.Interfaces
         Task<bool> SaveCommentsAsync(IEnumerable<CommentModel> comments, string connectionString);
         Task<bool> SaveCommentsAsync(IEnumerable<CommentModel> comments, DbTransaction transaction, SqlConnection connection);
         Task<ICollection<CommentModel>> FetchCommentsAsync(int pageSize, int pageNumber, string connectionString);
+        Task<ICollection<CommentModel>> FetchCommentsAsync(int pageSize, int pageNumber, DbTransaction transaction, SqlConnection connection);
     }
 }

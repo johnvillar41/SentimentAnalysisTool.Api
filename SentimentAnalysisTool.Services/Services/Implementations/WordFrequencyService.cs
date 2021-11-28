@@ -69,12 +69,23 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                     wordFrequency.Record.RecordId,
                     wordFrequency.Word,
                     wordFrequency.WordFrequency
-                }, commandType: CommandType.StoredProcedure);            
+                }, commandType: CommandType.StoredProcedure);
 
             if (rowsAffected > 0)
                 return true;
 
             return false;
+        }
+
+        public async Task<IEnumerable<WordFrequencyModel>> FetchWordFrequenciesAsync(int recordId, DbTransaction transaction, SqlConnection connection)
+        {
+            var procedure = StoredProcedures.SP_FETCH_WORD_FREQUENCIES;
+            var wordFrequencies = await connection.QueryAsync<WordFrequencyModel>(procedure,
+                new
+                {
+                    RecordId = recordId
+                }, transaction, commandType: CommandType.StoredProcedure);
+            return wordFrequencies;
         }
     }
 }

@@ -318,7 +318,8 @@
           "System.Xml.XmlSerializer": "5.0.0.0",
           "System.Xml.XPath": "5.0.0.0",
           "System.Xml.XPath.XDocument": "5.0.0.0",
-          "WindowsBase": "4.0.0.0"
+          "WindowsBase": "4.0.0.0",
+          "Interop.Microsoft.Office.Interop.Excel": "1.9.0.0"
         },
         "runtime": {
           "SentimentAnalysisTool.Api.dll": {}
@@ -2235,6 +2236,12 @@
           "WindowsBase.dll": {}
         },
         "compileOnly": true
+      },
+      "Interop.Microsoft.Office.Interop.Excel/1.9.0.0": {
+        "compile": {
+          "Interop.Microsoft.Office.Interop.Excel.dll": {}
+        },
+        "compileOnly": true
       }
     }
   },
@@ -3797,6 +3804,11 @@
       "sha512": ""
     },
     "WindowsBase/4.0.0.0": {
+      "type": "referenceassembly",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Interop.Microsoft.Office.Interop.Excel/1.9.0.0": {
       "type": "referenceassembly",
       "serviceable": false,
       "sha512": ""

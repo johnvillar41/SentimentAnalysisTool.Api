@@ -11,5 +11,6 @@ namespace SentimentAnalysisTool.Services.Services.Interfaces
         Task<int> AddRecordAsync(RecordModel record, DbTransaction transaction, SqlConnection connection);
         Task<bool> DeleteRecordAsync(int recordId, string connectionString);
         Task<RecordModel> FindRecordAsync(int recordId, string connectionString);
+        Task<RecordModel> FindRecordAsync(int recordId, DbTransaction transaction, SqlConnection connection);
     }
 }

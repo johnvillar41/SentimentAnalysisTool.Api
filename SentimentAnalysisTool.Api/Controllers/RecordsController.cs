@@ -122,5 +122,35 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             return BadRequest();
         }
+        //GET: api/Records/{id}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> FetchRecord(int id)
+        {
+            //Initialize SqlConnection and DbTransaction
+            using var connection = await _serviceWrapper.OpenConnectionAsync(ConnectionString);
+            using var transaction = await _serviceWrapper.BeginTransactionAsync(connection);
+
+            //FetchModels
+            var record = await _recordService.FindRecordAsync(id, transaction, connection);
+            var comments = await _commentService.FetchCommentsAsync(10, 1, transaction, connection);
+            var corpuses = await _corpusRecordService.FetchCorpusRecordAsync(id, transaction, connection);
+            var wordFrequencies = await _wordFrequencyService.FetchWordFrequenciesAsync(id, transaction, connection);
+
+            //Build ViewModel
+            var recordViewModel = new RecordViewModel()
+            {
+                RecordId = id,
+                RecordName = record.RecordName,
+                PositivePercent = record.PositivePercent,
+                NegativePercent = record.NegativePercent,
+                CommentViewModels = comments.Select(m => new CommentViewModel(m)),
+                CorpusRecordViewModels = corpuses.Select(m => new CorpusRecordViewModel(m)),
+                WordFrequencyViewModels = wordFrequencies.Select(m => new WordFrequencyViewModel(m))
+            };
+
+            await _serviceWrapper.CommitTransactionAsync(transaction);
+            return Ok(recordViewModel);
+        }
+
     }
 }

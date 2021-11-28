@@ -53,5 +53,16 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                 }, commandType: CommandType.StoredProcedure);
             return record;
         }
+
+        public async Task<RecordModel> FindRecordAsync(int recordId, DbTransaction transaction, SqlConnection connection)
+        {
+            var procedure = StoredProcedures.SP_FETCH_RECORDS;
+            var record = await connection.QueryFirstOrDefaultAsync<RecordModel>(procedure,
+                new
+                {
+                    RecordId = recordId
+                }, transaction, commandType: CommandType.StoredProcedure);
+            return record;
+        }
     }
 }

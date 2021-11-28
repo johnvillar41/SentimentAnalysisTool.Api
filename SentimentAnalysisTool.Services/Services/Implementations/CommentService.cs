@@ -37,6 +37,20 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                 commandType: CommandType.StoredProcedure);
             return (ICollection<CommentModel>)comments;
         }
+
+        public async Task<ICollection<CommentModel>> FetchCommentsAsync(int pageSize, int pageNumber, DbTransaction transaction, SqlConnection connection)
+        {
+            var procedure = StoredProcedures.SP_PAGINATE_COMMENTS;
+            var comments = await connection.QueryAsync<CommentModel>(procedure,
+                new
+                {
+                    PageNumber = pageNumber,
+                    RowsOfPage = pageSize
+                },
+                commandType: CommandType.StoredProcedure);
+            return (ICollection<CommentModel>)comments;
+        }
+
         /// <summary>
         /// This will save the graded reviews comming from the client application to the database
         /// </summary>

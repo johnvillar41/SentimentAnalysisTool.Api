@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SentimentAnalysisTool.Data.Models;
+using System;
 
 namespace SentimentAnalysisTool.Api.Models
 {
@@ -10,5 +11,13 @@ namespace SentimentAnalysisTool.Api.Models
         public string CommentDetail { get; set; }
         public DateTime Date { get; set; }
         public int PolarityScore { get; set; }
+        public CommentViewModel(CommentModel commentModel)
+        {
+            CommentId = commentModel.CommentId;
+            RecordId = commentModel.Record.RecordId;
+            CommentScore = commentModel.CommentScore;
+            CommentDetail = commentModel.CommentDetail;
+            Date = commentModel.Date;            
+        }
     }
 }

@@ -51,13 +51,11 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> AddCorpusRecordAsync(IEnumerable<CorpusRecordModel> corpuses, DbTransaction transaction, SqlConnection connection)
         {
-            var sqlQuery = StoredProcedures.SP_SAVE_CORPUS_RECORDS;
-            if (connection.State == ConnectionState.Closed)
-                await connection.OpenAsync();
+            var procedure = StoredProcedures.SP_SAVE_CORPUS_RECORDS;
             var rowsAffected = 0;
             foreach (var corpus in corpuses)
             {
-                rowsAffected += await connection.ExecuteAsync(sqlQuery,
+                rowsAffected += await connection.ExecuteAsync(procedure,
                     new
                     {
                         corpus.Record.RecordId,
@@ -68,6 +66,17 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                 return true;
 
             return false;
+        }
+
+        public async Task<IEnumerable<CorpusRecordModel>> FetchCorpusRecordAsync(int id, DbTransaction transaction, SqlConnection connection)
+        {
+            var procedure = StoredProcedures.SP_FETCH_CORPUS_RECORD;
+            var result = await connection.QueryAsync<CorpusRecordModel>(procedure,
+                new
+                {
+                    RecordId = id
+                }, transaction: transaction, commandType: CommandType.StoredProcedure);
+            return result;
         }
     }
 }
