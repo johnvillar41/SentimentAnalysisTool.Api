@@ -33,10 +33,13 @@ namespace SentimentAnalysisTool.Api.Controllers
         //GET: api/Comment/10/1
         [HttpGet("{recordId}/{pageSize}/{pageNumber}")]
         public async Task<IActionResult> FetchComments(
-            [FromHeader] int pageSize = 10, 
-            [FromHeader] int pageNumber = 1, 
+            [FromHeader] int pageSize = 10,
+            [FromHeader] int pageNumber = 1,
             [FromHeader] int recordId = 0)
         {
+            if (recordId == 0)
+                return NotFound("No records found");
+
             var comments = await _commentService.FetchCommentsAsync(pageSize, pageNumber, recordId, ConnectionString);
             if (comments.Count == 0)
                 return NotFound("No Comments Found!");

@@ -17,5 +17,9 @@ namespace SentimentAnalysisTool.Api.Models
             RecordId = corpusRecordModel.Record.RecordId;
             CorpusTypeId = corpusRecordModel.CorpusType.CorpusTypeId;
         }
+        public CorpusRecordViewModel()
+        {
+
+        }
     }
 }

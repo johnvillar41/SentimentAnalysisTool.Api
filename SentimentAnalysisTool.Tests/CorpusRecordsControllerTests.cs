@@ -62,7 +62,7 @@ namespace SentimentAnalysisTool.Tests
                 .Setup(m => m.AddCorpusRecordAsync(It.IsAny<CorpusRecordModel>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(false));
             //Act
-            var result = await corpusRecordsController.AddCorpusRecord(Mock.Of<CorpusRecordViewModel>());
+            var result = await corpusRecordsController.AddCorpusRecord(new Mock<CorpusRecordViewModel>().Object);
             //Assert
             Assert.IsType<BadRequestResult>(result);
         }
