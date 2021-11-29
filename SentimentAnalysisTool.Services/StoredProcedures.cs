@@ -16,8 +16,8 @@ namespace SentimentAnalysisTool.Services
         public const string SP_FETCH_CORPUS_TYPE = "FetchCorpusType";
         public const string SP_FETCH_CORPUS_WORD = "FetchCorpusWord";
         public const string SP_FETCH_RECORDS = "FetchRecords";
-        public const string SP_FETCH_CORPUS_RECORD = "FetchCorpusRecord"; //TODO Build this stored procedure on database
-        public const string SP_FETCH_WORD_FREQUENCIES = "FetchWordFrequencies";//TODO Build this stored procedure on database
+        public const string SP_FETCH_CORPUS_RECORD = "FetchCorpusRecord"; 
+        public const string SP_FETCH_WORD_FREQUENCIES = "FetchWordFrequencies";
 
         public const string SP_PAGINATE_COMMENTS = "PaginateCommentsTable";
 
