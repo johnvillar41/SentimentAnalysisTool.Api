@@ -70,7 +70,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         }
         //DELETE: api/SlangRecord/id
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSlangRecord(int id)
+        public async Task<IActionResult> DeleteSlangRecord([FromHeader] int id)
         {
             var result = await _slangRecordsService.DeleteSlangRecordAsync(id, ConnectionString);
             if (result)

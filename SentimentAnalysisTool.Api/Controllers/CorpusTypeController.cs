@@ -94,7 +94,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         }
         //DELETE: api/CorpusType/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCorpusType(int id)
+        public async Task<IActionResult> DeleteCorpusType([FromHeader] int id)
         {
             var result = await _corpusTypeService.DeleteCorpusTypeAsync(id, ConnectionString);
             if (result)

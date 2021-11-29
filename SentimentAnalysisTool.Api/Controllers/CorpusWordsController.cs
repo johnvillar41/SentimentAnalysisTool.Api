@@ -32,7 +32,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         }
         //GET: api/CorpusWords/1
         [HttpGet("{corpusTypeId}")]
-        public async Task<IActionResult> FetchAllCorpusWords(int corpusTypeId)
+        public async Task<IActionResult> FetchAllCorpusWords([FromHeader] int corpusTypeId)
         {
             var corpusList = await _corpusWordsService.FetchCorpusWordsAsync(corpusTypeId, ConnectionString);
             if (corpusList.Count == 0)
@@ -75,7 +75,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         }
         //DELETE: api/CorpusWords/1
         [HttpDelete("{corpusWordId}")]
-        public async Task<IActionResult> DeleteCorpusWord(int corpusWordId)
+        public async Task<IActionResult> DeleteCorpusWord([FromHeader] int corpusWordId)
         {
             var result = await _corpusWordsService.DeleteCorpusWordAsync(corpusWordId, ConnectionString);
             if (result)

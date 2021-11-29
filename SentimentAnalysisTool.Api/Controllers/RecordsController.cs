@@ -114,7 +114,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         }
         //DELETE: api/Records/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRecord(int id)
+        public async Task<IActionResult> DeleteRecord([FromHeader] int id)
         {
             var result = await _recordService.DeleteRecordAsync(id, ConnectionString);
             if (result)
@@ -124,7 +124,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         }
         //GET: api/Records/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> FetchRecord(int id)
+        public async Task<IActionResult> FetchRecord([FromHeader] int id)
         {
             //Initialize SqlConnection and DbTransaction
             using var connection = await _serviceWrapper.OpenConnectionAsync(ConnectionString);

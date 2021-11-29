@@ -29,7 +29,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         }
         //POST: api/WordFrequency
         [HttpPost]
-        public async Task<IActionResult> AddWordFrequency(WordFrequencyViewModel wordFrequencyViewModel)
+        public async Task<IActionResult> AddWordFrequency([FromBody] WordFrequencyViewModel wordFrequencyViewModel)
         {
             var wordFrequencyModel = new WordFrequencyModel()
             {
@@ -45,7 +45,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         }
         //POST: api/WordFrequency
         [HttpPost]
-        public async Task<IActionResult> AddWordFrequencies(IEnumerable<WordFrequencyViewModel> wordFrequencyViewModels)
+        public async Task<IActionResult> AddWordFrequencies([FromBody] IEnumerable<WordFrequencyViewModel> wordFrequencyViewModels)
         {
             var wordFrequencyModelTasks = wordFrequencyViewModels.Select(async m => new WordFrequencyModel()
             {
