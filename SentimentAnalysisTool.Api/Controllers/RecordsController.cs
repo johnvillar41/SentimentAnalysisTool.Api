@@ -131,8 +131,8 @@ namespace SentimentAnalysisTool.Api.Controllers
             using var transaction = await _serviceWrapper.BeginTransactionAsync(connection);
 
             //FetchModels
-            var record = await _recordService.FindRecordAsync(id, transaction, connection);
-            var comments = await _commentService.FetchCommentsAsync(10, 1, transaction, connection);
+            var record = await _recordService.FindRecordAsync(id, transaction, connection);            
+            var comments = await _commentService.FetchCommentsAsync(10, 1, id, transaction, connection);
             var corpuses = await _corpusRecordService.FetchCorpusRecordAsync(id, transaction, connection);
             var wordFrequencies = await _wordFrequencyService.FetchWordFrequenciesAsync(id, transaction, connection);
 

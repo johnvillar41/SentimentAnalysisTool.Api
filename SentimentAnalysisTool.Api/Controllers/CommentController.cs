@@ -21,7 +21,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         private readonly IConfiguration _configuration;
         private string ConnectionString { get; }
         public CommentController(
-            ICommentService commentService, 
+            ICommentService commentService,
             IConfiguration configuration,
             IFileHelper fileHelper)
         {
@@ -31,10 +31,13 @@ namespace SentimentAnalysisTool.Api.Controllers
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
         }
         //GET: api/Comment/10/1
-        [HttpGet("{pageSize}/{pageNumber}")]
-        public async Task<IActionResult> FetchComments(int pageSize = 10, int pageNumber = 1)
+        [HttpGet("{recordId}/{pageSize}/{pageNumber}")]
+        public async Task<IActionResult> FetchComments(
+            [FromHeader] int pageSize = 10, 
+            [FromHeader] int pageNumber = 1, 
+            [FromHeader] int recordId = 0)
         {
-            var comments = await _commentService.FetchCommentsAsync(pageSize, pageNumber, ConnectionString);
+            var comments = await _commentService.FetchCommentsAsync(pageSize, pageNumber, recordId, ConnectionString);
             if (comments.Count == 0)
                 return NotFound("No Comments Found!");
 
@@ -49,11 +52,11 @@ namespace SentimentAnalysisTool.Api.Controllers
                 return BadRequest("Error Uploading File!");
 
             var result = await _fileHelper.PolarizeCsvFile(csvFormFile);
-            if(result.Count == 0)
+            if (result.Count == 0)
                 return BadRequest("Error Polarizing Files!");
 
             return Ok(result);
-        }          
-        
+        }
+
     }
 }

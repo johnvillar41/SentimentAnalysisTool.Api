@@ -24,7 +24,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         /// <returns>
         /// Collection of graded comments
         /// </returns>
-        public async Task<ICollection<CommentModel>> FetchCommentsAsync(int pageSize, int pageNumber, string connectionString)
+        public async Task<ICollection<CommentModel>> FetchCommentsAsync(int pageSize, int pageNumber, int recordId, string connectionString)
         {
             var procedure = StoredProcedures.SP_PAGINATE_COMMENTS;
             using var connection = new SqlConnection(connectionString);
@@ -32,20 +32,22 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                 new
                 {
                     PageNumber = pageNumber,
-                    RowsOfPage = pageSize
+                    RowsOfPage = pageSize,
+                    RecordId = recordId
                 },
                 commandType: CommandType.StoredProcedure);
             return (ICollection<CommentModel>)comments;
         }
 
-        public async Task<ICollection<CommentModel>> FetchCommentsAsync(int pageSize, int pageNumber, DbTransaction transaction, SqlConnection connection)
+        public async Task<ICollection<CommentModel>> FetchCommentsAsync(int pageSize, int pageNumber, int recordId, DbTransaction transaction, SqlConnection connection)
         {
             var procedure = StoredProcedures.SP_PAGINATE_COMMENTS;
             var comments = await connection.QueryAsync<CommentModel>(procedure,
                 new
                 {
                     PageNumber = pageNumber,
-                    RowsOfPage = pageSize
+                    RowsOfPage = pageSize,
+                    RecordId = recordId
                 },
                 commandType: CommandType.StoredProcedure);
             return (ICollection<CommentModel>)comments;

@@ -36,7 +36,7 @@ namespace SentimentAnalysisTool.Tests
         {
             //Arrange
             mockCommentService
-                .Setup(m => m.FetchCommentsAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()))
+                .Setup(m => m.FetchCommentsAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync(new List<CommentModel>());
             //Act
             var result = await commentController.FetchComments(It.IsAny<int>(), It.IsAny<int>());
@@ -54,7 +54,7 @@ namespace SentimentAnalysisTool.Tests
                 Mock.Of<CommentModel>()
             };
             mockCommentService
-                .Setup(m => m.FetchCommentsAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()))
+                .Setup(m => m.FetchCommentsAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync(mockComments);
             //Act
             var result = await commentController.FetchComments(It.IsAny<int>(), It.IsAny<int>());

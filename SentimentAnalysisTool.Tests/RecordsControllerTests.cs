@@ -200,7 +200,7 @@ namespace SentimentAnalysisTool.Tests
         }
         [Fact]
         public async Task Should_Return_Ok_When_All_Is_True()
-        {            
+        {
             //Arrange          
             var mockSqlConnection = It.IsAny<SqlConnection>();
             var mockDbTransaction = It.IsAny<DbTransaction>();
@@ -211,16 +211,16 @@ namespace SentimentAnalysisTool.Tests
                 .Setup(m => m.BeginTransactionAsync(mockSqlConnection))
                 .Returns(Task.FromResult(mockDbTransaction));
             mockRecordService
-                .Setup(m => m.AddRecordAsync(It.IsAny<RecordModel>(), It.IsAny<DbTransaction>(),It.IsAny<SqlConnection>()))
+                .Setup(m => m.AddRecordAsync(It.IsAny<RecordModel>(), mockDbTransaction, mockSqlConnection))
                 .Returns(Task.FromResult(1));
             mockCommentService
-                 .Setup(m => m.SaveCommentsAsync(It.IsAny<IEnumerable<CommentModel>>(), It.IsAny<DbTransaction>(), It.IsAny<SqlConnection>()))
+                 .Setup(m => m.SaveCommentsAsync(It.IsAny<IEnumerable<CommentModel>>(), mockDbTransaction, mockSqlConnection))
                  .Returns(Task.FromResult(true));
             mockCorpusRecordService
-                .Setup(m => m.AddCorpusRecordAsync(It.IsAny<IEnumerable<CorpusRecordModel>>(), It.IsAny<DbTransaction>(), It.IsAny<SqlConnection>()))
+                .Setup(m => m.AddCorpusRecordAsync(It.IsAny<IEnumerable<CorpusRecordModel>>(), mockDbTransaction, mockSqlConnection))
                 .Returns(Task.FromResult(true));
             mockWordFrequencyService
-               .Setup(m => m.AddWordFrequenciesAsync(It.IsAny<IEnumerable<WordFrequencyModel>>(), It.IsAny<DbTransaction>(), It.IsAny<SqlConnection>()))
+               .Setup(m => m.AddWordFrequenciesAsync(It.IsAny<IEnumerable<WordFrequencyModel>>(), mockDbTransaction, mockSqlConnection))
                .Returns(Task.FromResult(true));
 
             //Act
@@ -231,6 +231,53 @@ namespace SentimentAnalysisTool.Tests
             var result = await recordController.AddRecord(recordViewModel);
             //Assert
             var contentResult = Assert.IsType<OkResult>(result);
+            Assert.Equal(result, contentResult);
+        }
+        [Fact]
+        public async Task Should_Return_Ok_When_FetcthRecord_Is_Successfull()
+        {
+            //Arrange
+            var mockConnection = It.IsAny<SqlConnection>();
+            var mockTransaction = It.IsAny<DbTransaction>();
+            var mockComments = new List<CommentModel>()
+            {
+                new Mock<CommentModel>().Object,
+                new Mock<CommentModel>().Object
+            };
+            var mockCorpuses = new List<CorpusRecordModel>()
+            {
+                new Mock<CorpusRecordModel>().Object,
+                new Mock<CorpusRecordModel>().Object
+            };
+            var mockWordFrequencies = new List<WordFrequencyModel>()
+            {
+                new Mock<WordFrequencyModel>().Object,
+                new Mock<WordFrequencyModel>().Object
+            };
+
+            mockServiceWrapper
+                .Setup(m => m.OpenConnectionAsync(It.IsAny<string>()))
+                .Returns(Task.FromResult(mockConnection));
+            mockServiceWrapper
+                .Setup(m => m.BeginTransactionAsync(mockConnection))
+                .Returns(Task.FromResult(mockTransaction));
+
+            mockRecordService
+                .Setup(m => m.FindRecordAsync(It.IsAny<int>(), mockTransaction, mockConnection))
+                .Returns(Task.FromResult(Mock.Of<RecordModel>()));
+            mockCommentService
+                .Setup(m => m.FetchCommentsAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), mockTransaction, mockConnection))
+                .Returns(Task.FromResult((ICollection<CommentModel>)mockComments));
+            mockCorpusRecordService
+                .Setup(m => m.FetchCorpusRecordAsync(It.IsAny<int>(), mockTransaction, mockConnection))
+                .Returns(Task.FromResult((IEnumerable<CorpusRecordModel>)mockCorpuses));
+            mockWordFrequencyService
+               .Setup(m => m.FetchWordFrequenciesAsync(It.IsAny<int>(), mockTransaction, mockConnection))
+               .Returns(Task.FromResult((IEnumerable<WordFrequencyModel>)mockWordFrequencies));
+            //Act
+            var result = await recordController.FetchRecord(It.IsAny<int>());
+            //Assert
+            var contentResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal(result, contentResult);
         }
     }
