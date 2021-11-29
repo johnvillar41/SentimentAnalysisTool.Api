@@ -19,5 +19,9 @@ namespace SentimentAnalysisTool.Api.Models
             CommentDetail = commentModel.CommentDetail;
             Date = commentModel.Date;            
         }
+        public CommentViewModel()
+        {
+
+        }
     }
 }

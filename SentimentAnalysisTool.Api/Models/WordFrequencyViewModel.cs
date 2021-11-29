@@ -19,5 +19,9 @@ namespace SentimentAnalysisTool.Api.Models
             Word = wordFrequencyModel.Word;
             WordFrequency = wordFrequencyModel.WordFrequency;
         }
+        public WordFrequencyViewModel()
+        {
+
+        }
     }
 }
