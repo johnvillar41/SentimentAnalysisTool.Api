@@ -18,14 +18,14 @@ namespace SentimentAnalysisTool.Tests
 {
     public class RecordsControllerTests
     {
-        private Mock<ICommentService> mockCommentService;
-        private Mock<ICorpusRecordService> mockCorpusRecordService;
-        private Mock<IWordFrequencyService> mockWordFrequencyService;
-        private Mock<IRecordService> mockRecordService;
-        private Mock<ICorpusTypeService> mockCorpusTypeService;
-        private Mock<IConfiguration> mockConfiguration;
-        private Mock<IServiceWrapper> mockServiceWrapper;
-        private RecordsController recordController;
+        private readonly Mock<ICommentService> mockCommentService;
+        private readonly Mock<ICorpusRecordService> mockCorpusRecordService;
+        private readonly Mock<IWordFrequencyService> mockWordFrequencyService;
+        private readonly Mock<IRecordService> mockRecordService;
+        private readonly Mock<ICorpusTypeService> mockCorpusTypeService;
+        private readonly Mock<IConfiguration> mockConfiguration;
+        private readonly Mock<IServiceWrapper> mockServiceWrapper;
+        private readonly RecordsController recordController;
 
         public RecordsControllerTests()
         {
