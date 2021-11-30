@@ -30,6 +30,9 @@ namespace SentimentAnalysisTool.Api.Helpers
         {
             var filePath = await BuildCsvLink(csvFormFile);
 
+            if (filePath.Equals(string.Empty))
+                throw new Exception("File path not generated!");
+
             var application = new Application();
             var workbook = application.Workbooks.Open(filePath);
             var worksheet = workbook.ActiveSheet;
