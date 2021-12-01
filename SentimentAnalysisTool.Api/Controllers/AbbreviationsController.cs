@@ -29,9 +29,9 @@ namespace SentimentAnalysisTool.Api.Controllers
             _configuration = configuration;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
         }
-        [HttpPost("{recordId}")]
+        [HttpPost("{corpusTypeId}")]
         public async Task<IActionResult> AddAbbreviations(
-            [FromHeader] int recordId,
+            [FromHeader] int corpusTypeId,
             [FromBody] IEnumerable<AbbreviationsViewModel> abbreviations)
         {
             var abbreviationModelTasks = abbreviations.Select(async m => new AbbreviationModel()
@@ -42,7 +42,7 @@ namespace SentimentAnalysisTool.Api.Controllers
                 AbbreviationWord = m.AbbreviationWord
             });
             var abbreviationModels = await Task.WhenAll(abbreviationModelTasks);
-            var result = await _abbreviationsService.AddAbbreviationAsync(recordId, abbreviationModels, ConnectionString);
+            var result = await _abbreviationsService.AddAbbreviationAsync(corpusTypeId, abbreviationModels, ConnectionString);
             if (result)
                 return Ok();
 

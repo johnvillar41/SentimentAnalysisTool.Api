@@ -23,6 +23,7 @@ namespace SentimentAnalysisTool.Tests
         private readonly Mock<IServiceWrapper> mockServiceWrapper;
         private readonly Mock<ICorpusWordsService> mockCorpusWordsService;
         private readonly Mock<ISlangRecordsService> mockSlangRecordsService;
+        private readonly Mock<IAbbreviationsService> mockAbbreviationsService;
         private readonly CorpusTypeController corpusTypeController;
         public CorpusTypeControllerTests()
         {
@@ -31,12 +32,14 @@ namespace SentimentAnalysisTool.Tests
             mockServiceWrapper = new Mock<IServiceWrapper>();
             mockCorpusWordsService = new Mock<ICorpusWordsService>();
             mockSlangRecordsService = new Mock<ISlangRecordsService>();
+            mockAbbreviationsService = new Mock<IAbbreviationsService>();
             corpusTypeController = new CorpusTypeController(
                 mockCorpusTypeService.Object,
                 mockConfiguration.Object,
                 mockServiceWrapper.Object,
                 mockCorpusWordsService.Object,
-                mockSlangRecordsService.Object);
+                mockSlangRecordsService.Object,
+                mockAbbreviationsService.Object);
         }
         [Fact]
         public async Task Should_Return_NotFound_When_CorpusTypeViewModel_Is_Null()

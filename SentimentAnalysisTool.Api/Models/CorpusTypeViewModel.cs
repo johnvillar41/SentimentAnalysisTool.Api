@@ -14,5 +14,8 @@ namespace SentimentAnalysisTool.Api.Models
         
         [JsonPropertyName("SlangRecordModels")]
         public IEnumerable<SlangRecordViewModel> SlangRecordViewModels { get; set; } = new List<SlangRecordViewModel>();
+
+        [JsonPropertyName("AbbreviationModels")]
+        public IEnumerable<AbbreviationsViewModel> AbbreviationViewModels{ get; set; } = new List<AbbreviationsViewModel>();
     }
 }

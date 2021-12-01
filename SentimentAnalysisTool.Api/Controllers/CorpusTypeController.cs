@@ -19,6 +19,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         private readonly ICorpusTypeService _corpusTypeService;
         private readonly ICorpusWordsService _corpusWordsService;
         private readonly ISlangRecordsService _slangRecordsService;
+        private readonly IAbbreviationsService _abbreviationsService;
         private readonly IServiceWrapper _serviceWrapper;
         private readonly IConfiguration _configuration;
         private string ConnectionString { get; }
@@ -27,12 +28,14 @@ namespace SentimentAnalysisTool.Api.Controllers
             IConfiguration configuration,
             IServiceWrapper serviceWrapper,
             ICorpusWordsService corpusWordsService,
-            ISlangRecordsService slangRecordsService)
+            ISlangRecordsService slangRecordsService,
+            IAbbreviationsService abbreviationsService)
         {
             _corpusTypeService = corpusTypeService;
             _configuration = configuration;
             _corpusWordsService = corpusWordsService;
             _serviceWrapper = serviceWrapper;
+            _abbreviationsService = abbreviationsService;
             _slangRecordsService = slangRecordsService;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
         }
@@ -59,11 +62,21 @@ namespace SentimentAnalysisTool.Api.Controllers
                 CorpusType = await _corpusTypeService.FindCorpusTypeAsync(x.CorpusTypeId, ConnectionString),
                 SlangName = x.SlangName
             });
+            var abbreviationTasks = corpusTypeViewModel.AbbreviationViewModels.Select(async x => new AbbreviationModel()
+            {
+                AbbreviationsId = -1,
+                CorpusTypeModel = await _corpusTypeService.FindCorpusTypeAsync(x.CorpusTypeId, ConnectionString),
+                Abbreviation = x.Abbreviation,
+                AbbreviationWord = x.AbbreviationWord
+            });
+
             var corpusWords = await Task.WhenAll(corpusWordTasks);
             var slangRecords = await Task.WhenAll(slangRecordTasks);
+            var abbreviations = await Task.WhenAll(abbreviationTasks);
 
             corpusModel.CorpusWords = corpusWords;
             corpusModel.SlangRecords = slangRecords;
+            corpusModel.Abbreviations = abbreviations;
 
             //Initialize Connection and Transaction
             using var connection = await _serviceWrapper.OpenConnectionAsync(ConnectionString);
@@ -84,6 +97,16 @@ namespace SentimentAnalysisTool.Api.Controllers
                 //Insert SlangWords
                 _ = corpusModel.SlangRecords.Select(x => x.CorpusType.CorpusTypeId = resultPrimaryKey);
                 var slangRecordResult = await _slangRecordsService.AddSlangRecordAsync(corpusModel.SlangRecords, transaction, connection);
+                if (!slangRecordResult)
+                    return BadRequest();
+            }
+
+            //TODO: FIX AND REFRACTOR
+            if (corpusModel.Abbreviations.Any())
+            {
+                //Insert Abbreviations
+                _ = corpusModel.Abbreviations.Select(x => x.CorpusTypeModel.CorpusTypeId = resultPrimaryKey);
+                var slangRecordResult = await _abbreviationsService.AddAbbreviationAsync(corpusModel.CorpusTypeId, corpusModel.Abbreviations, connection, transaction);
                 if (!slangRecordResult)
                     return BadRequest();
             }
