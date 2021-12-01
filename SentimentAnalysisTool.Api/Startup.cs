@@ -39,6 +39,7 @@ namespace SentimentAnalysisTool.Api
             services.AddTransient<IRecordService, RecordService>();
             services.AddTransient<IFileHelper, FileHelper>();
             services.AddTransient<IServiceWrapper, ServiceWrapper>();
+            services.AddTransient<IAbbreviationsService, AbbreviationsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

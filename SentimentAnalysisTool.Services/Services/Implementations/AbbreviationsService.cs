@@ -1,7 +1,9 @@
-﻿using SentimentAnalysisTool.Data.Models;
+﻿using Dapper;
+using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
@@ -13,26 +15,69 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
     public class AbbreviationsService : IAbbreviationsService
     {
         ///TODO:
-        ///1)Create Stored Procedure
-        ///2)Implement AbbreviationService using Dapper and Stored procedure
-        ///3)Apply Dependency Injection on AbbreviationsService
-        ///4)Add AbbreviationsController
+        ///1)Create Stored Procedure - DONE
+        ///2)Implement AbbreviationService using Dapper and Stored procedure - DONE
+        ///3)Apply Dependency Injection on AbbreviationsService - DONE
+        ///4)Add AbbreviationsController 
         ///5)Modify CorpusTypeController (Add call for adding of Abbreviations)
         ///6)Modify CorpusTypeModel (Add parameter for AbbreviationsModel)
-        
-        public Task<bool> AddAbbreviationAsync(int recordId, AbbreviationModel abbreviation, string connectionString)
+
+        public async Task<bool> AddAbbreviationAsync(int recordId, AbbreviationModel abbreviation, string connectionString)
         {
-            throw new NotImplementedException();
+            var procedure = StoredProcedures.SP_SAVE_ABBREVIATION;
+            using var connection = new SqlConnection(connectionString);
+            var result = await connection.ExecuteAsync(procedure, new
+            {
+                abbreviation.CorpusTypeModel.CorpusTypeId,
+                abbreviation.Abbreviation,
+                abbreviation.AbbreviationWord
+            }, commandType: CommandType.StoredProcedure);
+
+            if (result > 0)
+                return true;
+
+            return false;
         }
 
-        public Task<bool> AddAbbreviationAsync(int recordId, IEnumerable<AbbreviationModel> abbreviations, SqlConnection connection, DbTransaction transaction)
+        public async Task<bool> AddAbbreviationAsync(int recordId, IEnumerable<AbbreviationModel> abbreviations, SqlConnection connection, DbTransaction transaction)
         {
-            throw new NotImplementedException();
+            var procedure = StoredProcedures.SP_SAVE_ABBREVIATION;
+            var result = 0;
+            foreach (var abbreviation in abbreviations)
+            {
+                result += await connection.ExecuteAsync(procedure, new
+                {
+                    abbreviation.CorpusTypeModel.CorpusTypeId,
+                    abbreviation.Abbreviation,
+                    abbreviation.AbbreviationWord
+                }, transaction, commandType: CommandType.StoredProcedure);
+            }
+
+            if (result > 0)
+                return true;
+
+            return false;
         }
 
-        public Task<bool> AddAbbreviationAsync(int recordId, IEnumerable<AbbreviationModel> abbreviations, string connectionString)
+        public async Task<bool> AddAbbreviationAsync(int recordId, IEnumerable<AbbreviationModel> abbreviations, string connectionString)
         {
-            throw new NotImplementedException();
+            var procedure = StoredProcedures.SP_SAVE_ABBREVIATION;
+            using var connection = new SqlConnection(connectionString);
+            var result = 0;
+            foreach (var abbreviation in abbreviations)
+            {
+                result += await connection.ExecuteAsync(procedure, new
+                {
+                    abbreviation.CorpusTypeModel.CorpusTypeId,
+                    abbreviation.Abbreviation,
+                    abbreviation.AbbreviationWord
+                }, commandType: CommandType.StoredProcedure);
+            }
+
+            if (result > 0)
+                return true;
+
+            return false;
         }
     }
 }

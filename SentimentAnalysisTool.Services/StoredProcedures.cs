@@ -27,6 +27,7 @@ namespace SentimentAnalysisTool.Services
         public const string SP_SAVE_CORPUS_WORD = "SaveCorpusWord";
         public const string SP_SAVE_RECORDS = "SaveRecords";
         public const string SP_SAVE_SLANG_RECORD= "SaveSlangRecord";
-        public const string SP_SAVE_WORD_FREQUENCY = "SaveWordFrequency";        
+        public const string SP_SAVE_WORD_FREQUENCY = "SaveWordFrequency";
+        public const string SP_SAVE_ABBREVIATION = "SaveAbbreviation";
     }
 }
