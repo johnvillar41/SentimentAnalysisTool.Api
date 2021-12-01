@@ -43,11 +43,11 @@ namespace SentimentAnalysisTool.Tests
                 .Setup(m => m.FindCorpusTypeAsync(It.IsAny<int>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(Mock.Of<CorpusTypeModel>()));
             mockAbbreviationsService
-                .Setup(m => m.AddAbbreviationAsync(It.IsAny<int>(), It.IsAny<IEnumerable<AbbreviationModel>>(), It.IsAny<string>()))
+                .Setup(m => m.AddAbbreviationAsync(It.IsAny<IEnumerable<AbbreviationModel>>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(true));
 
             //Act
-            var result = await abbreviationsController.AddAbbreviations(It.IsAny<int>(), mockAbbreviations);
+            var result = await abbreviationsController.AddAbbreviations(mockAbbreviations);
             //Assert
             Assert.IsType<OkResult>(result);
         }
@@ -64,11 +64,11 @@ namespace SentimentAnalysisTool.Tests
                 .Setup(m => m.FindCorpusTypeAsync(It.IsAny<int>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(Mock.Of<CorpusTypeModel>()));
             mockAbbreviationsService
-                .Setup(m => m.AddAbbreviationAsync(It.IsAny<int>(), It.IsAny<IEnumerable<AbbreviationModel>>(), It.IsAny<string>()))
+                .Setup(m => m.AddAbbreviationAsync(It.IsAny<IEnumerable<AbbreviationModel>>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(false));
 
             //Act
-            var result = await abbreviationsController.AddAbbreviations(It.IsAny<int>(), mockAbbreviations);
+            var result = await abbreviationsController.AddAbbreviations(mockAbbreviations);
             //Assert
             Assert.IsType<BadRequestResult>(result);
         }

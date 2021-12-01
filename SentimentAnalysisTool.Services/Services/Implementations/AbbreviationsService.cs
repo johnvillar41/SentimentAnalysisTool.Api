@@ -22,7 +22,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         ///5)Modify CorpusTypeController (Add call for adding of Abbreviations)
         ///6)Modify CorpusTypeModel (Add parameter for AbbreviationsModel)
 
-        public async Task<bool> AddAbbreviationAsync(int corpusTypeId, AbbreviationModel abbreviation, string connectionString)
+        public async Task<bool> AddAbbreviationAsync(AbbreviationModel abbreviation, string connectionString)
         {
             var procedure = StoredProcedures.SP_SAVE_ABBREVIATION;
             using var connection = new SqlConnection(connectionString);
@@ -39,7 +39,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             return false;
         }
 
-        public async Task<bool> AddAbbreviationAsync(int corpusTypeId, IEnumerable<AbbreviationModel> abbreviations, SqlConnection connection, DbTransaction transaction)
+        public async Task<bool> AddAbbreviationAsync(IEnumerable<AbbreviationModel> abbreviations, SqlConnection connection, DbTransaction transaction)
         {
             var procedure = StoredProcedures.SP_SAVE_ABBREVIATION;
             var result = 0;
@@ -59,7 +59,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             return false;
         }
 
-        public async Task<bool> AddAbbreviationAsync(int corpusTypeId, IEnumerable<AbbreviationModel> abbreviations, string connectionString)
+        public async Task<bool> AddAbbreviationAsync(IEnumerable<AbbreviationModel> abbreviations, string connectionString)
         {
             var procedure = StoredProcedures.SP_SAVE_ABBREVIATION;
             using var connection = new SqlConnection(connectionString);
