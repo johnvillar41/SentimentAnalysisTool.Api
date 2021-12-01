@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Range = Microsoft.Office.Interop.Excel.Range;
 
@@ -14,9 +16,13 @@ namespace SentimentAnalysisTool.Api.Helpers
     public class FileHelper : IFileHelper
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public FileHelper(IWebHostEnvironment webHostEnvironment)
+        private readonly HttpClient _httpClient;
+        public FileHelper(
+            IWebHostEnvironment webHostEnvironment,
+            HttpClient httpClient)
         {
             _webHostEnvironment = webHostEnvironment;
+            _httpClient = httpClient;
         }
         public async Task<bool> UploadCsv(IFormFile csvFormFile)
         {
@@ -50,7 +56,6 @@ namespace SentimentAnalysisTool.Api.Helpers
                     rowData[i] = Convert.ToString(row.Cells[1, i + 1].Value2);
                 //Polarize each comment reviews here
             }
-            
             throw new NotImplementedException();
         }
         private async Task<string> BuildCsvLink(IFormFile csvFormFile)
@@ -65,6 +70,16 @@ namespace SentimentAnalysisTool.Api.Helpers
                 return @$"images\customers\{guid}{csvFormFile.FileName}";
             }
             return null;
+        }
+        private async Task<VaderModel> ApplyVader(string comment)
+        {            
+            var response = await _httpClient.GetAsync($"http://192.168.1.105:105/Vader/{comment}");
+            response.EnsureSuccessStatusCode();
+            var responseContent = await response.Content.ReadAsStreamAsync();
+            var vaderModel = await JsonSerializer.DeserializeAsync<VaderModel>
+                          (responseContent,
+                 new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            return vaderModel;
         }
     }
 }
