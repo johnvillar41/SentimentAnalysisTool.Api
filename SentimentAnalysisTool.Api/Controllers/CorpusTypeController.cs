@@ -99,9 +99,7 @@ namespace SentimentAnalysisTool.Api.Controllers
                 var slangRecordResult = await _slangRecordsService.AddSlangRecordAsync(corpusModel.SlangRecords, transaction, connection);
                 if (!slangRecordResult)
                     return BadRequest();
-            }
-
-            //TODO: FIX AND REFRACTOR
+            }            
             if (corpusModel.Abbreviations.Any())
             {
                 //Insert Abbreviations
