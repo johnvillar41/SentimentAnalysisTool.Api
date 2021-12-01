@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using SentimentAnalysisTool.Api.Models;
 using SentimentAnalysisTool.Data.Models;
@@ -21,6 +22,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         private readonly IRecordService _recordService;
         private readonly ICorpusTypeService _corpusTypeService;
         private readonly IServiceWrapper _serviceWrapper;
+        
         private readonly IConfiguration _configuration;
         private string ConnectionString { get; }
         public RecordsController(
@@ -40,6 +42,13 @@ namespace SentimentAnalysisTool.Api.Controllers
             _serviceWrapper = serviceWrapper;
             _configuration = configuration;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
+        }
+        [HttpPost]
+        [Route("Upload")]
+        public async Task<IActionResult> UploadCsv([FromForm] IFormFile file)
+        {
+
+            return Ok();
         }
         //POST: api/Records
         [HttpPost]

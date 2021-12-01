@@ -42,7 +42,7 @@ namespace SentimentAnalysisTool.Api.Helpers
 
             if (filePath.Equals(string.Empty))
                 throw new Exception("File path not generated!");
-
+            
             var application = new Application();
             var workbook = application.Workbooks.Open(filePath);
             var worksheet = workbook.ActiveSheet;
