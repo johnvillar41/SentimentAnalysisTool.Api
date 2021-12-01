@@ -10,7 +10,7 @@ namespace SentimentAnalysisTool.Api.Helpers
     public interface IFileHelper
     {
         Task<string> UploadCsv(IFormFile file);
-        ICollection<CommentModel> PolarizeCsvFile(string filePath);      
+        ICollection<CommentViewModel> PolarizeCsvFile(string filePath);      
         Task<VaderModel> ApplyVader(string comment);
     }
 }

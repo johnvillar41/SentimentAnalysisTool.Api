@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Office.Interop.Excel;
+using SentimentAnalysisTool.Api.Models;
 using SentimentAnalysisTool.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -41,8 +42,9 @@ namespace SentimentAnalysisTool.Api.Helpers
             }
             return string.Empty;
         }
-        public ICollection<CommentModel> PolarizeCsvFile(string filePath)
-        {           
+        public ICollection<CommentViewModel> PolarizeCsvFile(string filePath)
+        {
+            var commentModel = new List<CommentViewModel>();
             if (filePath.Equals(string.Empty))
                 throw new Exception("File path not generated!");
             
@@ -62,6 +64,10 @@ namespace SentimentAnalysisTool.Api.Helpers
                 for (int i = 0; i < row.Columns.Count; i++)
                     rowData[i] = Convert.ToString(row.Cells[1, i + 1].Value2);
                 //Polarize each comment reviews here
+                commentModel.Add(new CommentViewModel()
+                {
+                    
+                });
             }
             throw new NotImplementedException();
         }      
