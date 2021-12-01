@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Office.Interop.Excel;
 using SentimentAnalysisTool.Data.Models;
 using System;
@@ -17,12 +18,15 @@ namespace SentimentAnalysisTool.Api.Helpers
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
         public FileHelper(
             IWebHostEnvironment webHostEnvironment,
-            HttpClient httpClient)
+            HttpClient httpClient,
+            IConfiguration configuration)
         {
             _webHostEnvironment = webHostEnvironment;
             _httpClient = httpClient;
+            _configuration = configuration;
         }
         public async Task<bool> UploadCsv(IFormFile csvFormFile)
         {
@@ -72,8 +76,8 @@ namespace SentimentAnalysisTool.Api.Helpers
             return null;
         }
         private async Task<VaderModel> ApplyVader(string comment)
-        {            
-            var response = await _httpClient.GetAsync($"http://192.168.1.105:105/Vader/{comment}");
+        {           
+            var response = await _httpClient.GetAsync($"{_configuration.GetValue<string>("SentimentAlgorithmnBaseUrl")}/{comment}");
             response.EnsureSuccessStatusCode();
             var responseContent = await response.Content.ReadAsStreamAsync();
             var vaderModel = await JsonSerializer.DeserializeAsync<VaderModel>

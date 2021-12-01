@@ -30,12 +30,12 @@ namespace SentimentAnalysisTool.Api.Controllers
             _configuration = configuration;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
         }
-        //GET: api/Comment/10/1
+        //GET: api/Comment/3012/10/1
         [HttpGet("{recordId}/{pageSize}/{pageNumber}")]
         public async Task<IActionResult> FetchComments(
-            [FromHeader] int pageSize = 10,
-            [FromHeader] int pageNumber = 1,
-            [FromHeader] int recordId = 0)
+            [FromRoute] int recordId = 0,
+            [FromRoute] int pageSize = 10,
+            [FromRoute] int pageNumber = 1)
         {
             if (recordId == 0)
                 return NotFound("No records found");

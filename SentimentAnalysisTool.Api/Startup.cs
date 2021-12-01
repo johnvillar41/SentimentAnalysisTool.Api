@@ -13,6 +13,7 @@ using SentimentAnalysisTool.Services.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SentimentAnalysisTool.Api
@@ -40,6 +41,7 @@ namespace SentimentAnalysisTool.Api
             services.AddTransient<IFileHelper, FileHelper>();
             services.AddTransient<IServiceWrapper, ServiceWrapper>();
             services.AddTransient<IAbbreviationsService, AbbreviationsService>();
+            services.AddTransient<HttpClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
