@@ -14,14 +14,6 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 {
     public class AbbreviationsService : IAbbreviationsService
     {
-        ///TODO:
-        ///1)Create Stored Procedure - DONE
-        ///2)Implement AbbreviationService using Dapper and Stored procedure - DONE
-        ///3)Apply Dependency Injection on AbbreviationsService - DONE
-        ///4)Add AbbreviationsController - DONE
-        ///5)Modify CorpusTypeController (Add call for adding of Abbreviations)
-        ///6)Modify CorpusTypeModel (Add parameter for AbbreviationsModel)
-
         public async Task<bool> AddAbbreviationAsync(AbbreviationModel abbreviation, string connectionString)
         {
             var procedure = StoredProcedures.SP_SAVE_ABBREVIATION;
