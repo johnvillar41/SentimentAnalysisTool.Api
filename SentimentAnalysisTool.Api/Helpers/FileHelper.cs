@@ -38,16 +38,15 @@ namespace SentimentAnalysisTool.Api.Helpers
                 var saveFile = Path.Combine(_webHostEnvironment.WebRootPath, @"files\", $"{guid}{csvFormFile.FileName}");
                 var stream = new FileStream(saveFile, FileMode.Create);
                 await csvFormFile.CopyToAsync(stream);
-                return @$"images\customers\{guid}{csvFormFile.FileName}";
+                return saveFile;
             }
             return string.Empty;
         }
-        public ICollection<CommentViewModel> PolarizeCsvFile(string filePath)
+        public ICollection<double> PolarizeCsvFile(string filePath)
         {
-            var commentModel = new List<CommentViewModel>();
             if (filePath.Equals(string.Empty))
                 throw new Exception("File path not generated!");
-            
+
             var application = new Application();
             var workbook = application.Workbooks.Open(filePath);
             var worksheet = workbook.ActiveSheet;
@@ -57,22 +56,12 @@ namespace SentimentAnalysisTool.Api.Helpers
             //Iterate the rows in the used range
             foreach (Range row in usedRange.Rows)
             {
-                //Do something with the row.
-
-                //Ex. Iterate through the row's data and put in a string array
-                String[] rowData = new String[row.Columns.Count];
-                for (int i = 0; i < row.Columns.Count; i++)
-                    rowData[i] = Convert.ToString(row.Cells[1, i + 1].Value2);
-                //Polarize each comment reviews here
-                commentModel.Add(new CommentViewModel()
-                {
-                    
-                });
+                var cellValue = (string)(row.Cells).Value;
             }
-            throw new NotImplementedException();
-        }      
+            return new List<double>();
+        }
         public async Task<VaderModel> ApplyVader(string comment)
-        {           
+        {
             var response = await _httpClient.GetAsync($"{_configuration.GetValue<string>("SentimentAlgorithmnBaseUrl")}/{comment}");
             response.EnsureSuccessStatusCode();
             var responseContent = await response.Content.ReadAsStreamAsync();

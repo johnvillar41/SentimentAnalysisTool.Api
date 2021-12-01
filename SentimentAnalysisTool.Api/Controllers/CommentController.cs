@@ -45,21 +45,6 @@ namespace SentimentAnalysisTool.Api.Controllers
                 return NotFound("No Comments Found!");
 
             return Ok(comments);
-        }
-        //POST: api/SaveComments
-        [HttpPost]
-        public async Task<IActionResult> SaveComments(IFormFile csvFormFile)
-        {
-            var isSuccessful = await _fileHelper.UploadCsv(csvFormFile);
-            if (!isSuccessful)
-                return BadRequest("Error Uploading File!");
-
-            var result = await _fileHelper.PolarizeCsvFile(csvFormFile);
-            if (result.Count == 0)
-                return BadRequest("Error Polarizing Files!");
-
-            return Ok(result);
-        }
-
+        }       
     }
 }
