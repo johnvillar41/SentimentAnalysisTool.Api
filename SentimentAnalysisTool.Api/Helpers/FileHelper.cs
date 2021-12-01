@@ -28,18 +28,21 @@ namespace SentimentAnalysisTool.Api.Helpers
             _httpClient = httpClient;
             _configuration = configuration;
         }
-        public async Task<bool> UploadCsv(IFormFile csvFormFile)
+        public async Task<string> UploadCsv(IFormFile csvFormFile)
         {
-            var filePath = await BuildCsvLink(csvFormFile);
-            if (filePath == null)
-                return false;
-
-            return true;
+            var fileExtension = Path.GetExtension(csvFormFile.FileName);
+            var guid = Guid.NewGuid();
+            if (fileExtension.Equals(".xlsx", StringComparison.CurrentCultureIgnoreCase))
+            {
+                var saveFile = Path.Combine(_webHostEnvironment.WebRootPath, @"files\", $"{guid}{csvFormFile.FileName}");
+                var stream = new FileStream(saveFile, FileMode.Create);
+                await csvFormFile.CopyToAsync(stream);
+                return @$"images\customers\{guid}{csvFormFile.FileName}";
+            }
+            return string.Empty;
         }
-        public async Task<ICollection<CommentModel>> PolarizeCsvFile(IFormFile csvFormFile)
-        {
-            var filePath = await BuildCsvLink(csvFormFile);
-
+        public ICollection<CommentModel> PolarizeCsvFile(string filePath)
+        {           
             if (filePath.Equals(string.Empty))
                 throw new Exception("File path not generated!");
             
@@ -61,21 +64,8 @@ namespace SentimentAnalysisTool.Api.Helpers
                 //Polarize each comment reviews here
             }
             throw new NotImplementedException();
-        }
-        private async Task<string> BuildCsvLink(IFormFile csvFormFile)
-        {
-            var fileExtension = Path.GetExtension(csvFormFile.FileName);
-            var guid = Guid.NewGuid();
-            if (fileExtension.Equals(".xslx", StringComparison.CurrentCultureIgnoreCase))
-            {
-                var saveFile = Path.Combine(_webHostEnvironment.WebRootPath, @"files\", $"{guid}{csvFormFile.FileName}");
-                var stream = new FileStream(saveFile, FileMode.Create);
-                await csvFormFile.CopyToAsync(stream);
-                return @$"images\customers\{guid}{csvFormFile.FileName}";
-            }
-            return null;
-        }
-        private async Task<VaderModel> ApplyVader(string comment)
+        }      
+        public async Task<VaderModel> ApplyVader(string comment)
         {           
             var response = await _httpClient.GetAsync($"{_configuration.GetValue<string>("SentimentAlgorithmnBaseUrl")}/{comment}");
             response.EnsureSuccessStatusCode();
