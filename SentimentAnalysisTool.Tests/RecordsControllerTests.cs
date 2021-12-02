@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Moq;
@@ -283,6 +284,43 @@ namespace SentimentAnalysisTool.Tests
             //Assert
             var contentResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal(result, contentResult);
+        }
+        [Fact]
+        public async Task Should_Return_BadRequestObjectResult_When_UploadCsv_Fails()
+        {
+            //Arrange
+            mockFileHelper
+                .Setup(m => m.UploadCsv(It.IsAny<IFormFile>()))
+                .Returns(Task.FromResult(string.Empty));
+            //Arrange 
+            var result = await recordController.UploadCsv(It.IsAny<IFormFile>(), It.IsAny<AlgorithmnType>());
+            //Assert
+            var message = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Error Uploading file!", message.Value);
+        }
+        [Fact]
+        public async Task Should_Return_OkObjectResult_When_PolarizeCsvFile_SentiWorNet_Returns_Values()
+        {
+            //Arrange
+            mockFileHelper
+                .Setup(m => m.UploadCsv(It.IsAny<IFormFile>()))
+                .Returns(Task.FromResult("Sample String"));
+            //Arrange 
+            var result = await recordController.UploadCsv(It.IsAny<IFormFile>(), AlgorithmnType.SentiWordNet);
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
+        [Fact]
+        public async Task Should_Return_OkObjectResult_When_PolarizeCsvFile_Vader_Returns_Values()
+        {
+            //Arrange
+            mockFileHelper
+                .Setup(m => m.UploadCsv(It.IsAny<IFormFile>()))
+                .Returns(Task.FromResult("Sample String"));
+            //Arrange 
+            var result = await recordController.UploadCsv(It.IsAny<IFormFile>(), AlgorithmnType.Vader);
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
         }
     }
 }
