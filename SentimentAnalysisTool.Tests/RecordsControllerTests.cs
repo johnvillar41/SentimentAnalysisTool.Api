@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using SentimentAnalysisTool.Api.Controllers;
+using SentimentAnalysisTool.Api.Helpers;
 using SentimentAnalysisTool.Api.Models;
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
@@ -24,6 +25,7 @@ namespace SentimentAnalysisTool.Tests
         private readonly Mock<IRecordService> mockRecordService;
         private readonly Mock<ICorpusTypeService> mockCorpusTypeService;
         private readonly Mock<IConfiguration> mockConfiguration;
+        private readonly Mock<IFileHelper> mockFileHelper;
         private readonly Mock<IServiceWrapper> mockServiceWrapper;
         private readonly RecordsController recordController;
 
@@ -35,6 +37,7 @@ namespace SentimentAnalysisTool.Tests
             mockRecordService = new Mock<IRecordService>();
             mockCorpusTypeService = new Mock<ICorpusTypeService>();
             mockConfiguration = new Mock<IConfiguration>();
+            mockFileHelper = new Mock<IFileHelper>();
             mockServiceWrapper = new Mock<IServiceWrapper>();
             recordController = new RecordsController(
                 mockCommentService.Object,
@@ -43,6 +46,7 @@ namespace SentimentAnalysisTool.Tests
                 mockRecordService.Object,
                 mockCorpusTypeService.Object,
                 mockServiceWrapper.Object,
+                mockFileHelper.Object,
                 mockConfiguration.Object
             );
         }

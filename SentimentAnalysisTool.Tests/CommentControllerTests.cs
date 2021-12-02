@@ -78,58 +78,6 @@ namespace SentimentAnalysisTool.Tests
             //Assert
             var message = Assert.IsType<NotFoundObjectResult>(result);
             Assert.Equal("No records found", message.Value);
-        }        
-        [Fact]
-        public async Task Should_Return_BadRequest_When_UploadCsv_Is_False()
-        {
-            //Arrange
-            var mockFormFile = new Mock<IFormFile>();
-            mockFileHelper
-                .Setup(m => m.UploadCsv(mockFormFile.Object))
-                .Returns(Task.FromResult(false));
-            //Act
-            var result = await commentController.SaveComments(mockFormFile.Object);
-            //Assert
-            var message = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Error Uploading File!", message.Value);
-        }
-        [Fact]
-        public async Task Should_Return_BadRequest_When_PolarizeCsvFile_Returns_Zero()
-        {
-            //Arrange
-            var mockFormFile = new Mock<IFormFile>();
-            mockFileHelper
-               .Setup(m => m.UploadCsv(mockFormFile.Object))
-               .Returns(Task.FromResult(true));
-            mockFileHelper
-                .Setup(m => m.PolarizeCsvFile(mockFormFile.Object))
-                .ReturnsAsync(new List<CommentModel>());
-            //Act
-            var result = await commentController.SaveComments(mockFormFile.Object);
-            //Assert
-            var message = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Error Polarizing Files!", message.Value);
-        }
-        [Fact]
-        public async Task Should_Return_Ok_When_SaveComments_Is_True()
-        {
-            //Arrange
-            var mockFormFile = new Mock<IFormFile>();
-            mockFileHelper
-               .Setup(m => m.UploadCsv(mockFormFile.Object))
-               .Returns(Task.FromResult(true));
-            mockFileHelper
-                .Setup(m => m.PolarizeCsvFile(mockFormFile.Object))
-                .ReturnsAsync(new List<CommentModel>()
-                    {
-                        Mock.Of<CommentModel>(),
-                        Mock.Of<CommentModel>()
-                    });
-            //Act
-            var result = await commentController.SaveComments(mockFormFile.Object);
-            //Assert
-            Assert.IsType<OkObjectResult>(result);
-        }
-
+        }             
     }
 }
