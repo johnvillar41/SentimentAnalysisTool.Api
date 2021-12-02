@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 namespace SentimentAnalysisTool.Api.Helpers.AlgorithmModels
 {
     public class SentiWordNetModel
-    {
-        private SentimentType _sentimentType;
-
+    {        
         [JsonPropertyName("polarityScore")]
         public double PolarityScore { get; set; }
 
