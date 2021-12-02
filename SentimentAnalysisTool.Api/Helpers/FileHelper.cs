@@ -2,17 +2,12 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Office.Interop.Excel;
-using SentimentAnalysisTool.Api.Helpers.AlgorithmModels;
-using SentimentAnalysisTool.Api.Models;
-using SentimentAnalysisTool.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Range = Microsoft.Office.Interop.Excel.Range;
 
 namespace SentimentAnalysisTool.Api.Helpers
 {
@@ -56,7 +51,7 @@ namespace SentimentAnalysisTool.Api.Helpers
             
             for (int i = 2; i <= worksheet.Columns.Count; i++)
             {
-                string cellValue = worksheet.Cells[i, 1].Value;
+                var cellValue = worksheet.Cells[i, 3].Value;
 
                 if (cellValue == null)
                     break;
@@ -65,7 +60,7 @@ namespace SentimentAnalysisTool.Api.Helpers
                 polarizedResults.Add(grade);                
             }
 
-            workbook.Close();
+            workbook.Close(0);
             return polarizedResults;
         }
 
