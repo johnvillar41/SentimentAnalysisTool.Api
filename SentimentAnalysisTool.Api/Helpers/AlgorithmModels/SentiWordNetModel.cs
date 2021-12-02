@@ -19,16 +19,12 @@ namespace SentimentAnalysisTool.Api.Helpers.AlgorithmModels
             get
             {
                 return _sentimentType;
-            }
-            set
-            {
-                if (value.Equals(nameof(SentimentType.Neutral)))
-                    _sentimentType = SentimentType.Neutral;
-                if (value.Equals(nameof(SentimentType.Negative)))
-                    _sentimentType = SentimentType.Negative;
-                if (value.Equals(nameof(SentimentType.Positive)))
-                    _sentimentType = SentimentType.Positive;
-            }
+            }            
+        }
+        public void SetSentiment(string value)
+        {
+            var sentiment = (SentimentType)Enum.Parse(typeof(SentimentType), value);
+            _sentimentType = sentiment;
         }
     }
 }

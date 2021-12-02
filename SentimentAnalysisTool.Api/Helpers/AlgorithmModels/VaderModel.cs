@@ -8,8 +8,21 @@ namespace SentimentAnalysisTool.Api.Helpers
 {
     public class VaderModel
     {
+        private SentimentType _sentimentType;
+
         [JsonPropertyName("compoundScore")]
-        public SentimentType Sentiment { get; set; }
+        public SentimentType Sentiment
+        {
+            get
+            {
+                return _sentimentType;
+            }
+        }
+        public void SetSentiment(string value)
+        {
+            var sentiment = (SentimentType)Enum.Parse(typeof(SentimentType), value);
+            _sentimentType = sentiment;
+        }
 
         [JsonPropertyName("compoundValue")]
         public double CompoundValue { get; set; }
@@ -21,6 +34,6 @@ namespace SentimentAnalysisTool.Api.Helpers
         public double NeutralValue { get; set; }
 
         [JsonPropertyName("positiveValue")]
-        public double PositiveValue { get; set; }
+        public double PositiveValue { get; set; }        
     }
 }
