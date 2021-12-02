@@ -61,6 +61,7 @@ namespace SentimentAnalysisTool.Api.Helpers
             }
 
             workbook.Close(0);
+            application.Quit();
             return polarizedResults;
         }
 
