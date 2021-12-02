@@ -78,7 +78,7 @@ namespace SentimentAnalysisTool.Tests
             //Assert
             var message = Assert.IsType<NotFoundObjectResult>(result);
             Assert.Equal("No records found", message.Value);
-        }
+        }        
         [Fact]
         public async Task Should_Return_BadRequest_When_UploadCsv_Is_False()
         {

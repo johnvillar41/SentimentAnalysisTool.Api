@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using SentimentAnalysisTool.Api.Helpers;
+using SentimentAnalysisTool.Api.Helpers.AlgorithmModels;
 using SentimentAnalysisTool.Api.Models;
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
@@ -48,15 +49,21 @@ namespace SentimentAnalysisTool.Api.Controllers
         }
         [HttpPost]
         [Route("Upload")]
-        public async Task<IActionResult> UploadCsv([FromForm] IFormFile file)
+        public async Task<IActionResult> UploadCsv(
+            [FromForm] IFormFile file,
+            [FromQuery] AlgorithmnType algorithmnType)
         {
             var filePath = await _fileHelper.UploadCsv(file);
             if (filePath.Equals(string.Empty))
                 return BadRequest();
 
-            var commentModels =  await _fileHelper.PolarizeCsvFile(filePath);
+            if (algorithmnType.Equals(AlgorithmnType.SentiWordNet))
+                return Ok(await _fileHelper.PolarizeCsvFile<SentiWordNetModel>(filePath, algorithmnType));
 
-            return Ok(commentModels);
+            if (algorithmnType.Equals(AlgorithmnType.Vader))
+                return Ok(await _fileHelper.PolarizeCsvFile<VaderModel>(filePath, algorithmnType));
+
+            return BadRequest();
         }
         //POST: api/Records
         [HttpPost]
@@ -148,7 +155,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             using var transaction = await _serviceWrapper.BeginTransactionAsync(connection);
 
             //FetchModels
-            var record = await _recordService.FindRecordAsync(id, transaction, connection);            
+            var record = await _recordService.FindRecordAsync(id, transaction, connection);
             var comments = await _commentService.FetchCommentsAsync(10, 1, id, transaction, connection);
             var corpuses = await _corpusRecordService.FetchCorpusRecordAsync(id, transaction, connection);
             var wordFrequencies = await _wordFrequencyService.FetchWordFrequenciesAsync(id, transaction, connection);

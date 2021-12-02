@@ -43,9 +43,9 @@ namespace SentimentAnalysisTool.Api.Helpers
             }
             return string.Empty;
         }
-        public async Task<ICollection<double>> PolarizeCsvFile(string filePath)
+        public async Task<ICollection<T>> PolarizeCsvFile<T>(string filePath, AlgorithmnType algorithmn)
         {
-            var polarizedResults = new List<double>();
+            var polarizedResults = new List<T>();
             if (filePath.Equals(string.Empty))
                 throw new Exception("File path not generated!");
 
@@ -59,31 +59,22 @@ namespace SentimentAnalysisTool.Api.Helpers
             foreach (Range row in usedRange.Rows)
             {
                 var cellValue = (string)(row.Cells).Value;
-                var grade = await ApplyVader(cellValue);
-                polarizedResults.Add(grade.CompoundValue);
+                var grade = await ApplyAlgorithmn<T>(cellValue, algorithmn);
+                polarizedResults.Add(grade);
             }
             return polarizedResults;
         }
-        private async Task<VaderModel> ApplyVader(string comment)
+
+        private async Task<T> ApplyAlgorithmn<T>(string comment, AlgorithmnType algorithmnType)
         {
             var baseUrl = _configuration.GetValue<string>("SentimentAlgorithmnBaseUrl");
-            var response = await _httpClient.GetAsync($"{baseUrl}/{comment}");
+            var response = await _httpClient.GetAsync($"{baseUrl}/{algorithmnType}/{comment}");
             response.EnsureSuccessStatusCode();
             var responseContent = await response.Content.ReadAsStreamAsync();
-            var vaderModel = await JsonSerializer.DeserializeAsync<VaderModel>
+            var jsonModel = await JsonSerializer.DeserializeAsync<T>
                           (responseContent,
                  new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-            return vaderModel;
-        }
-        private async Task<SentiWordNetModel> ApplySentiWordNet(string comment)
-        {
-            var response = await _httpClient.GetAsync($"{_configuration.GetValue<string>("SentimentAlgorithmnBaseUrl")}/{comment}");
-            response.EnsureSuccessStatusCode();
-            var responseContent = await response.Content.ReadAsStreamAsync();
-            var sentiwordModel = await JsonSerializer.DeserializeAsync<SentiWordNetModel>
-                          (responseContent,
-                 new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-            return sentiwordModel;
+            return jsonModel;
         }
     }
 }

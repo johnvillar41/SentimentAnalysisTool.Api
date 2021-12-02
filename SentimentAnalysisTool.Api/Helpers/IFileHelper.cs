@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using SentimentAnalysisTool.Api.Helpers.AlgorithmModels;
 using SentimentAnalysisTool.Api.Models;
 using SentimentAnalysisTool.Data.Models;
 using System;
@@ -11,6 +12,6 @@ namespace SentimentAnalysisTool.Api.Helpers
     public interface IFileHelper
     {
         Task<string> UploadCsv(IFormFile file);
-        Task<ICollection<double>> PolarizeCsvFile(string filePath);     
+        Task<ICollection<T>> PolarizeCsvFile<T>(string filePath, AlgorithmnType algorithmn);       
     }
 }
