@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Office.Interop.Excel;
+using SentimentAnalysisTool.Api.Helpers.AlgorithmModels;
 using SentimentAnalysisTool.Api.Models;
 using SentimentAnalysisTool.Data.Models;
 using System;
@@ -42,8 +43,9 @@ namespace SentimentAnalysisTool.Api.Helpers
             }
             return string.Empty;
         }
-        public ICollection<double> PolarizeCsvFile(string filePath)
+        public async Task<ICollection<double>> PolarizeCsvFile(string filePath)
         {
+            var polarizedResults = new List<double>();
             if (filePath.Equals(string.Empty))
                 throw new Exception("File path not generated!");
 
@@ -57,10 +59,12 @@ namespace SentimentAnalysisTool.Api.Helpers
             foreach (Range row in usedRange.Rows)
             {
                 var cellValue = (string)(row.Cells).Value;
+                var grade = await ApplyVader(cellValue);
+                polarizedResults.Add(grade.CompoundValue);
             }
-            return new List<double>();
+            return polarizedResults;
         }
-        public async Task<VaderModel> ApplyVader(string comment)
+        private async Task<VaderModel> ApplyVader(string comment)
         {
             var response = await _httpClient.GetAsync($"{_configuration.GetValue<string>("SentimentAlgorithmnBaseUrl")}/{comment}");
             response.EnsureSuccessStatusCode();
@@ -69,6 +73,16 @@ namespace SentimentAnalysisTool.Api.Helpers
                           (responseContent,
                  new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             return vaderModel;
+        }
+        private async Task<SentiWordNetModel> ApplySentiWordNet(string comment)
+        {
+            var response = await _httpClient.GetAsync($"{_configuration.GetValue<string>("SentimentAlgorithmnBaseUrl")}/{comment}");
+            response.EnsureSuccessStatusCode();
+            var responseContent = await response.Content.ReadAsStreamAsync();
+            var sentiwordModel = await JsonSerializer.DeserializeAsync<SentiWordNetModel>
+                          (responseContent,
+                 new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            return sentiwordModel;
         }
     }
 }
