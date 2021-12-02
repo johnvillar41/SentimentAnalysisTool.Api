@@ -54,7 +54,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             if (filePath.Equals(string.Empty))
                 return BadRequest();
 
-            var commentModels =  _fileHelper.PolarizeCsvFile(filePath);
+            var commentModels =  await _fileHelper.PolarizeCsvFile(filePath);
 
             return Ok(commentModels);
         }

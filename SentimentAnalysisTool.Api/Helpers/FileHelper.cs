@@ -66,7 +66,8 @@ namespace SentimentAnalysisTool.Api.Helpers
         }
         private async Task<VaderModel> ApplyVader(string comment)
         {
-            var response = await _httpClient.GetAsync($"{_configuration.GetValue<string>("SentimentAlgorithmnBaseUrl")}/{comment}");
+            var baseUrl = _configuration.GetValue<string>("SentimentAlgorithmnBaseUrl");
+            var response = await _httpClient.GetAsync($"{baseUrl}/{comment}");
             response.EnsureSuccessStatusCode();
             var responseContent = await response.Content.ReadAsStreamAsync();
             var vaderModel = await JsonSerializer.DeserializeAsync<VaderModel>
