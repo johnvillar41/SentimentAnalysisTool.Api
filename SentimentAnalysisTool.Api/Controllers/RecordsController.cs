@@ -47,6 +47,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             _fileHelper = fileHelper;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
         }
+        //POST: api/Records/Upload
         [HttpPost]
         [Route("Upload")]
         public async Task<IActionResult> UploadCsv(
@@ -55,7 +56,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         {
             var filePath = await _fileHelper.UploadCsv(file);
             if (filePath.Equals(string.Empty))
-                return BadRequest();
+                return BadRequest("Error Uploading file!");
 
             if (algorithmnType.Equals(AlgorithmnType.SentiWordNet))
                 return Ok(await _fileHelper.PolarizeCsvFile<SentiWordNetModel>(filePath, algorithmnType));
@@ -138,7 +139,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         }
         //DELETE: api/Records/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRecord([FromHeader] int id)
+        public async Task<IActionResult> DeleteRecord([FromRoute] int id)
         {
             var result = await _recordService.DeleteRecordAsync(id, ConnectionString);
             if (result)
@@ -148,7 +149,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         }
         //GET: api/Records/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> FetchRecord([FromHeader] int id)
+        public async Task<IActionResult> FetchRecord([FromRoute] int id)
         {
             //Initialize SqlConnection and DbTransaction
             using var connection = await _serviceWrapper.OpenConnectionAsync(ConnectionString);

@@ -51,17 +51,21 @@ namespace SentimentAnalysisTool.Api.Helpers
 
             var application = new Application();
             var workbook = application.Workbooks.Open(filePath);
-            var worksheet = workbook.ActiveSheet;
-            //Get the used Range
-            Range usedRange = worksheet.UsedRange;
-
-            //Iterate the rows in the used range
-            foreach (Range row in usedRange.Rows)
+            var worksheet = workbook.ActiveSheet;           
+            var usedRange = worksheet.UsedRange;
+            
+            for (int i = 2; i <= worksheet.Columns.Count; i++)
             {
-                var cellValue = (string)(row.Cells).Value;
+                string cellValue = worksheet.Cells[i, 1].Value;
+
+                if (cellValue == null)
+                    break;
+
                 var grade = await ApplyAlgorithmn<T>(cellValue, algorithmn);
-                polarizedResults.Add(grade);
+                polarizedResults.Add(grade);                
             }
+
+            workbook.Close();
             return polarizedResults;
         }
 
