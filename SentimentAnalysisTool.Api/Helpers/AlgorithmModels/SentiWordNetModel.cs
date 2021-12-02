@@ -14,17 +14,6 @@ namespace SentimentAnalysisTool.Api.Helpers.AlgorithmModels
         public double PolarityScore { get; set; }
 
         [JsonPropertyName("sentimentScore")]
-        public SentimentType Sentiment
-        {
-            get
-            {
-                return _sentimentType;
-            }            
-        }
-        public void SetSentiment(string value)
-        {
-            var sentiment = (SentimentType)Enum.Parse(typeof(SentimentType), value);
-            _sentimentType = sentiment;
-        }
+        public string SentimentScore { get; set; }
     }
 }
