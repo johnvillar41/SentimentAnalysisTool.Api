@@ -55,7 +55,7 @@ namespace SentimentAnalysisTool.Api.Helpers
                     RecordId = -1,
                     CommentScore = int.Parse(Convert.ToString(commentScore)),
                     CommentDetail = Convert.ToString(commentDetail),
-                    PolarityScore = Convert.ToString(polarityScore),
+                    CommentPolarity = Convert.ToString(polarityScore),
                     Date = DateTime.Parse(Convert.ToString(commentDate)),
                     AlgorithmnModel = algorithmnModel
                 });

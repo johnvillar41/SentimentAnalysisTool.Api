@@ -6,6 +6,7 @@ using SentimentAnalysisTool.Api.Helpers.AlgorithmModels;
 using SentimentAnalysisTool.Api.Models;
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -63,6 +64,9 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             if (algorithmnType.Equals(AlgorithmnType.Vader))
                 return Ok(await _fileHelper.PolarizeCsvFile<VaderModel>(filePath, algorithmnType));
+
+            if (algorithmnType.Equals(AlgorithmnType.Hybrid))
+                throw new NotImplementedException();
 
             return BadRequest();
         }
