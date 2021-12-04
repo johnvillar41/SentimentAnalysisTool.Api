@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 namespace SentimentAnalysisTool.Api.Helpers
 {
     public class VaderModel
-    {
-        private SentimentType _sentimentType;
-
+    {       
         [JsonPropertyName("compoundScore")]
         public string CompoundScore { get; set; }
 
