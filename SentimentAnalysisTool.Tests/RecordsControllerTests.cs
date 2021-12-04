@@ -76,7 +76,7 @@ namespace SentimentAnalysisTool.Tests
         public async Task Should_Return_NotFound_When_RecordViewModel_Is_Null()
         {
             //Act            
-            var result = await recordController.AddRecord(null);
+            var result = await recordController.AddRecordUsingVader(null);
             //Assert
             var contentResult = Assert.IsType<NotFoundResult>(result);
             Assert.Equal(result, contentResult);
@@ -97,7 +97,7 @@ namespace SentimentAnalysisTool.Tests
                 .Setup(m => m.AddRecordAsync(It.IsAny<RecordModel>(), It.IsAny<DbTransaction>(), It.IsAny<SqlConnection>()))
                 .Returns(Task.FromResult(-1));
             //Act            
-            var result = await recordController.AddRecord(new Mock<RecordViewModel>().Object);
+            var result = await recordController.AddRecordUsingVader(new Mock<RecordViewModel<VaderModel>>().Object);
             //Assert
             var contentResult = Assert.IsType<BadRequestObjectResult>(result);
             var contentResultMessage = contentResult.Value;
@@ -124,9 +124,9 @@ namespace SentimentAnalysisTool.Tests
                  .Returns(Task.FromResult(false));
 
             //Act
-            var recordViewModel = Mock.Of<RecordViewModel>();
-            recordViewModel.CommentViewModels = Mock.Of<IEnumerable<CommentViewModel>>();
-            var result = await recordController.AddRecord(recordViewModel);
+            var recordViewModel = Mock.Of<RecordViewModel<VaderModel>>();
+            recordViewModel.CommentViewModels = Mock.Of<IEnumerable<CommentViewModel<VaderModel>>>();
+            var result = await recordController.AddRecordUsingVader(recordViewModel);
             //Assert
             var contentResult = Assert.IsType<BadRequestObjectResult>(result);
             var contentResultMessage = contentResult.Value;
@@ -156,10 +156,10 @@ namespace SentimentAnalysisTool.Tests
                 .Returns(Task.FromResult(false));
 
             //Act
-            var recordViewModel = Mock.Of<RecordViewModel>();
-            recordViewModel.CommentViewModels = Mock.Of<IEnumerable<CommentViewModel>>();
+            var recordViewModel = Mock.Of<RecordViewModel<VaderModel>>();
+            recordViewModel.CommentViewModels = Mock.Of<IEnumerable<CommentViewModel<VaderModel>>>();
             recordViewModel.CorpusRecordViewModels = Mock.Of<IEnumerable<CorpusRecordViewModel>>();
-            var result = await recordController.AddRecord(recordViewModel);
+            var result = await recordController.AddRecordUsingVader(recordViewModel);
             //Assert
             var contentResult = Assert.IsType<BadRequestObjectResult>(result);
             var contentResultMessage = contentResult.Value;
@@ -192,11 +192,11 @@ namespace SentimentAnalysisTool.Tests
                .Returns(Task.FromResult(false));
 
             //Act
-            var recordViewModel = Mock.Of<RecordViewModel>();
-            recordViewModel.CommentViewModels = Mock.Of<IEnumerable<CommentViewModel>>();
+            var recordViewModel = Mock.Of<RecordViewModel<VaderModel>>();
+            recordViewModel.CommentViewModels = Mock.Of<IEnumerable<CommentViewModel<VaderModel>>>();
             recordViewModel.CorpusRecordViewModels = Mock.Of<IEnumerable<CorpusRecordViewModel>>();
             recordViewModel.WordFrequencyViewModels = Mock.Of<IEnumerable<WordFrequencyViewModel>>();
-            var result = await recordController.AddRecord(recordViewModel);
+            var result = await recordController.AddRecordUsingVader(recordViewModel);
             //Assert
             var contentResult = Assert.IsType<BadRequestObjectResult>(result);
             var contentResultMessage = contentResult.Value;
@@ -229,11 +229,11 @@ namespace SentimentAnalysisTool.Tests
                .Returns(Task.FromResult(true));
 
             //Act
-            var recordViewModel = Mock.Of<RecordViewModel>();
-            recordViewModel.CommentViewModels = Mock.Of<IEnumerable<CommentViewModel>>();
+            var recordViewModel = Mock.Of<RecordViewModel<VaderModel>>();
+            recordViewModel.CommentViewModels = Mock.Of<IEnumerable<CommentViewModel<VaderModel>>>();
             recordViewModel.CorpusRecordViewModels = Mock.Of<IEnumerable<CorpusRecordViewModel>>();
             recordViewModel.WordFrequencyViewModels = Mock.Of<IEnumerable<WordFrequencyViewModel>>();
-            var result = await recordController.AddRecord(recordViewModel);
+            var result = await recordController.AddRecordUsingVader(recordViewModel);
             //Assert
             var contentResult = Assert.IsType<OkResult>(result);
             Assert.Equal(result, contentResult);

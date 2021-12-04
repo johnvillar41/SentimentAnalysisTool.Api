@@ -68,7 +68,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         }
         //POST: api/Records
         [HttpPost]
-        public async Task<IActionResult> AddRecord([FromBody] RecordViewModel recordViewModel)
+        public async Task<IActionResult> AddRecordUsingVader([FromBody] RecordViewModel<VaderModel> recordViewModel)
         {
             if (recordViewModel == null)
                 return NotFound();
@@ -162,13 +162,13 @@ namespace SentimentAnalysisTool.Api.Controllers
             var wordFrequencies = await _wordFrequencyService.FetchWordFrequenciesAsync(id, transaction, connection);
 
             //Build ViewModel
-            var recordViewModel = new RecordViewModel()
+            var recordViewModel = new RecordViewModel<VaderModel>()
             {
                 RecordId = id,
                 RecordName = record.RecordName,
                 PositivePercent = record.PositivePercent,
                 NegativePercent = record.NegativePercent,
-                CommentViewModels = comments.Select(m => new CommentViewModel(m)),
+                CommentViewModels = comments.Select(m => new CommentViewModel<VaderModel>(m)),
                 CorpusRecordViewModels = corpuses.Select(m => new CorpusRecordViewModel(m)),
                 WordFrequencyViewModels = wordFrequencies.Select(m => new WordFrequencyViewModel(m))
             };

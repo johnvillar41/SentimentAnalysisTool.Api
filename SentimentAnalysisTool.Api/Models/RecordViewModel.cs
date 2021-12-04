@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SentimentAnalysisTool.Api.Models
 {
-    public class RecordViewModel
+    public class RecordViewModel<T> where T : class
     {
         public int RecordId { get; set; }
         public string RecordName { get; set; }
@@ -15,7 +15,7 @@ namespace SentimentAnalysisTool.Api.Models
         public int NegativePercent { get; set; }
 
         [JsonPropertyName("CommentModels")]
-        public IEnumerable<CommentViewModel> CommentViewModels { get; set; }
+        public IEnumerable<CommentViewModel<T>> CommentViewModels { get; set; }
 
         [JsonPropertyName("CorpusRecordModels")]
         public IEnumerable<CorpusRecordViewModel> CorpusRecordViewModels { get; set; }
