@@ -41,7 +41,7 @@ namespace SentimentAnalysisTool.Api.Helpers
             for (int i = 2; i <= worksheet.Columns.Count; i++)
             {
                 var commentScore = worksheet.Cells[i, 1].Value;
-                //var commentScore = worksheet.Cells[i, 2].Value;
+                var polarityScore = worksheet.Cells[i, 2].Value;
                 var commentDetail = worksheet.Cells[i, 3].Value;
                 var commentDate = worksheet.Cells[i, 4].Value;
 
@@ -55,6 +55,7 @@ namespace SentimentAnalysisTool.Api.Helpers
                     RecordId = -1,
                     CommentScore = int.Parse(Convert.ToString(commentScore)),
                     CommentDetail = Convert.ToString(commentDetail),
+                    PolarityScore = Convert.ToString(polarityScore),
                     Date = DateTime.Parse(Convert.ToString(commentDate)),
                     AlgorithmnModel = algorithmnModel
                 });
