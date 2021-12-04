@@ -34,7 +34,7 @@ namespace SentimentAnalysisTool.Api.Helpers
                 throw new Exception("File path not generated!");
 
             var application = new Application();
-            var workbook = application.Workbooks.Open(filePath);
+            var workbook = application.Workbooks.Open(filePath, ReadOnly: true, Notify: false);
             var worksheet = workbook.ActiveSheet;
             var usedRange = worksheet.UsedRange;
 
