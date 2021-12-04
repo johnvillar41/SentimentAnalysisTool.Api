@@ -11,18 +11,7 @@ namespace SentimentAnalysisTool.Api.Helpers
         private SentimentType _sentimentType;
 
         [JsonPropertyName("compoundScore")]
-        public SentimentType Sentiment
-        {
-            get
-            {
-                return _sentimentType;
-            }
-        }
-        public void SetSentiment(string value)
-        {
-            var sentiment = (SentimentType)Enum.Parse(typeof(SentimentType), value);
-            _sentimentType = sentiment;
-        }
+        public string CompoundScore { get; set; }
 
         [JsonPropertyName("compoundValue")]
         public double CompoundValue { get; set; }
