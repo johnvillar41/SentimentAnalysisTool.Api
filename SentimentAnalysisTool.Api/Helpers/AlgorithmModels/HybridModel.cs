@@ -11,12 +11,12 @@ namespace SentimentAnalysisTool.Api.Helpers.AlgorithmModels
         /// <summary>
         /// This pertains to the value of the SentimentType
         /// </summary>
-        [JsonPropertyName("sentimentScore")]
-        public string SentimentScore { get; set; }
+        [JsonPropertyName("hybridScore")]
+        public string HybridScore { get; set; }
         /// <summary>
         /// This pertains to the numerical value of the computed SentimentScore
         /// </summary>
-        [JsonPropertyName("overallSentimentScore")]
-        public double OverallSentimentScore { get; set; }
+        [JsonPropertyName("hybridValue")]
+        public double HybridValue { get; set; }
     }
 }

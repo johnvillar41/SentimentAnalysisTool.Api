@@ -66,7 +66,7 @@ namespace SentimentAnalysisTool.Api.Controllers
                 return Ok(await _fileHelper.PolarizeCsvFile<VaderModel>(filePath, algorithmnType));
 
             if (algorithmnType.Equals(AlgorithmnType.Hybrid))
-                throw new NotImplementedException();
+                return Ok(await _fileHelper.PolarizeCsvFile<HybridModel>(filePath, algorithmnType));
 
             return BadRequest();
         }
