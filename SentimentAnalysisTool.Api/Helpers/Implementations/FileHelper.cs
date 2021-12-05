@@ -27,7 +27,23 @@ namespace SentimentAnalysisTool.Api.Helpers
             _configuration = configuration;
         }
 
-        public async Task<ICollection<CommentViewModel<T>>> PolarizeCsvFile<T>(string filePath, AlgorithmnType algorithmn)
+        public async Task<bool> DeleteCsvAsync(string filePath)
+        {            
+            var fileInfo = new FileInfo(filePath);
+            
+            if (fileInfo != null && fileInfo.Exists)
+            {
+                var task = Task.Run(() =>
+                {
+                    fileInfo.Delete();
+                });
+                await task;
+                return true;
+            }                     
+            return false;
+        }
+
+        public async Task<ICollection<CommentViewModel<T>>> PolarizeCsvFileAsync<T>(string filePath, AlgorithmnType algorithmn)
         {
             var polarizedResults = new List<CommentViewModel<T>>();
             if (filePath.Equals(string.Empty))
@@ -60,13 +76,13 @@ namespace SentimentAnalysisTool.Api.Helpers
                     AlgorithmnModel = algorithmnModel
                 });
             }
-
+            
             workbook.Close(0);
-            application.Quit();
+            application.Quit();            
             return polarizedResults;
         }
 
-        public async Task<string> UploadCsv(IFormFile csvFormFile)
+        public async Task<string> UploadCsvAsync(IFormFile csvFormFile)
         {
             var fileExtension = Path.GetExtension(csvFormFile.FileName);
             var guid = Guid.NewGuid();
@@ -74,8 +90,8 @@ namespace SentimentAnalysisTool.Api.Helpers
                 fileExtension.Equals(".csv", StringComparison.CurrentCultureIgnoreCase))
             {
                 var saveFile = Path.Combine(_webHostEnvironment.WebRootPath, @"files\", $"{guid}{csvFormFile.FileName}");
-                var stream = new FileStream(saveFile, FileMode.Create);
-                await csvFormFile.CopyToAsync(stream);
+                using var stream = new FileStream(saveFile, FileMode.Create);
+                await csvFormFile.CopyToAsync(stream);           
                 return saveFile;
             }
             return string.Empty;

@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SentimentAnalysisTool.Api.Controllers
@@ -55,18 +56,26 @@ namespace SentimentAnalysisTool.Api.Controllers
             [FromForm] IFormFile file,
             [FromQuery] AlgorithmnType algorithmnType)
         {
-            var filePath = await _fileHelper.UploadCsv(file);
-            if (filePath.Equals(string.Empty))
-                return BadRequest("Error Uploading file!");
+            var filePath = "";
+            try
+            {
+                filePath = await _fileHelper.UploadCsvAsync(file);
+                if (filePath.Equals(string.Empty))
+                    return BadRequest("Error Uploading file!");
 
-            if (algorithmnType.Equals(AlgorithmnType.SentiWordNet))
-                return Ok(await _fileHelper.PolarizeCsvFile<SentiWordNetModel>(filePath, algorithmnType));
+                if (algorithmnType.Equals(AlgorithmnType.SentiWordNet))
+                    return Ok(await _fileHelper.PolarizeCsvFileAsync<SentiWordNetModel>(filePath, algorithmnType));
 
-            if (algorithmnType.Equals(AlgorithmnType.Vader))
-                return Ok(await _fileHelper.PolarizeCsvFile<VaderModel>(filePath, algorithmnType));
+                if (algorithmnType.Equals(AlgorithmnType.Vader))
+                    return Ok(await _fileHelper.PolarizeCsvFileAsync<VaderModel>(filePath, algorithmnType));
 
-            if (algorithmnType.Equals(AlgorithmnType.Hybrid))
-                return Ok(await _fileHelper.PolarizeCsvFile<HybridModel>(filePath, algorithmnType));
+                if (algorithmnType.Equals(AlgorithmnType.Hybrid))
+                    return Ok(await _fileHelper.PolarizeCsvFileAsync<HybridModel>(filePath, algorithmnType));
+            }
+            catch (HttpRequestException)
+            {
+                await _fileHelper.DeleteCsvAsync(filePath);
+            }
 
             return BadRequest();
         }

@@ -290,7 +290,7 @@ namespace SentimentAnalysisTool.Tests
         {
             //Arrange
             mockFileHelper
-                .Setup(m => m.UploadCsv(It.IsAny<IFormFile>()))
+                .Setup(m => m.UploadCsvAsync(It.IsAny<IFormFile>()))
                 .Returns(Task.FromResult(string.Empty));
             //Arrange 
             var result = await recordController.UploadCsv(It.IsAny<IFormFile>(), It.IsAny<AlgorithmnType>());
@@ -303,7 +303,7 @@ namespace SentimentAnalysisTool.Tests
         {
             //Arrange
             mockFileHelper
-                .Setup(m => m.UploadCsv(It.IsAny<IFormFile>()))
+                .Setup(m => m.UploadCsvAsync(It.IsAny<IFormFile>()))
                 .Returns(Task.FromResult("Sample String"));
             //Arrange 
             var result = await recordController.UploadCsv(It.IsAny<IFormFile>(), AlgorithmnType.SentiWordNet);
@@ -315,7 +315,7 @@ namespace SentimentAnalysisTool.Tests
         {
             //Arrange
             mockFileHelper
-                .Setup(m => m.UploadCsv(It.IsAny<IFormFile>()))
+                .Setup(m => m.UploadCsvAsync(It.IsAny<IFormFile>()))
                 .Returns(Task.FromResult("Sample String"));
             //Arrange 
             var result = await recordController.UploadCsv(It.IsAny<IFormFile>(), AlgorithmnType.Vader);

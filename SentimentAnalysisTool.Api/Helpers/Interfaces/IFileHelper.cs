@@ -11,7 +11,8 @@ namespace SentimentAnalysisTool.Api.Helpers
 {
     public interface IFileHelper
     {
-        Task<string> UploadCsv(IFormFile file);
-        Task<ICollection<CommentViewModel<T>>> PolarizeCsvFile<T>(string filePath, AlgorithmnType algorithmn);       
+        Task<string> UploadCsvAsync(IFormFile file);
+        Task<ICollection<CommentViewModel<T>>> PolarizeCsvFileAsync<T>(string filePath, AlgorithmnType algorithmn);
+        Task<bool> DeleteCsvAsync(string filePath);
     }
 }
