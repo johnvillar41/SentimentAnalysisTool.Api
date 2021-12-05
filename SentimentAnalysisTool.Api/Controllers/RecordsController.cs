@@ -63,18 +63,21 @@ namespace SentimentAnalysisTool.Api.Controllers
                 if (filePath.Equals(string.Empty))
                     return BadRequest("Error Uploading file!");
 
-                if (algorithmnType.Equals(AlgorithmnType.SentiWordNet))
-                    return Ok(await _fileHelper.PolarizeCsvFileAsync<SentiWordNetModel>(filePath, algorithmnType));
-
-                if (algorithmnType.Equals(AlgorithmnType.Vader))
-                    return Ok(await _fileHelper.PolarizeCsvFileAsync<VaderModel>(filePath, algorithmnType));
-
-                if (algorithmnType.Equals(AlgorithmnType.Hybrid))
-                    return Ok(await _fileHelper.PolarizeCsvFileAsync<HybridModel>(filePath, algorithmnType));
+                switch (algorithmnType)
+                {
+                    case AlgorithmnType.SentiWordNet:
+                        return Ok(await _fileHelper.PolarizeCsvFileAsync<SentiWordNetModel>(filePath, algorithmnType));
+                    case AlgorithmnType.Vader:
+                        return Ok(await _fileHelper.PolarizeCsvFileAsync<VaderModel>(filePath, algorithmnType));
+                    case AlgorithmnType.Hybrid:
+                        return Ok(await _fileHelper.PolarizeCsvFileAsync<HybridModel>(filePath, algorithmnType));                        
+                }               
             }
             catch (HttpRequestException)
             {
-                await _fileHelper.DeleteCsvAsync(filePath);
+                var result = await _fileHelper.DeleteCsvAsync(filePath);
+                if (!result)
+                    return BadRequest("Error Deleting File!");
             }
 
             return BadRequest();
