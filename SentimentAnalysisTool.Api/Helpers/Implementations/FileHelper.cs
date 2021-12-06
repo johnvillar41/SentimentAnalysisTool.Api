@@ -100,7 +100,7 @@ namespace SentimentAnalysisTool.Api.Helpers
         private async Task<T> ApplyAlgorithmn<T>(string comment, AlgorithmnType algorithmnType)
         {
             var baseUrl = _configuration.GetValue<string>("SentimentAlgorithmnBaseUrl");
-            var response = await _httpClient.GetAsync($"{baseUrl}/{algorithmnType}/{comment}?key={_configuration.GetValue<string>("Apikey")}");
+            var response = await _httpClient.GetAsync($"{baseUrl}/{algorithmnType}/{comment}");
             
             response.EnsureSuccessStatusCode();
             var responseContent = await response.Content.ReadAsStreamAsync();
