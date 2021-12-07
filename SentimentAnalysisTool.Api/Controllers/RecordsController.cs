@@ -68,7 +68,8 @@ namespace SentimentAnalysisTool.Api.Controllers
                     case AlgorithmnType.SentiWordNet:
                         return Ok(await _fileHelper.PolarizeCsvFileAsync<SentiWordNetModel>(filePath, algorithmnType));
                     case AlgorithmnType.Vader:
-                        return Ok(await _fileHelper.PolarizeCsvFileAsync<VaderModel>(filePath, algorithmnType));
+                        var obj = await _fileHelper.PolarizeCsvFileAsync<VaderModel>(filePath, algorithmnType);
+                        return Ok(obj);
                     case AlgorithmnType.Hybrid:
                         return Ok(await _fileHelper.PolarizeCsvFileAsync<HybridModel>(filePath, algorithmnType));                        
                 }               
