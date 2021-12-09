@@ -7,11 +7,15 @@ using System.Threading.Tasks;
 
 namespace SentimentAnalysisTool.Api.Models
 {
-    public class RecordViewModel<T> where T : class
+    public class RecordViewModel<T>
     {
         public int RecordId { get; set; }
         public string RecordName { get; set; }
+
+        [JsonPropertyName("positivePercent")]
         public int PositivePercent { get; set; }
+
+        [JsonPropertyName("negativePercent")]
         public int NegativePercent { get; set; }
 
         [JsonPropertyName("CommentModels")]

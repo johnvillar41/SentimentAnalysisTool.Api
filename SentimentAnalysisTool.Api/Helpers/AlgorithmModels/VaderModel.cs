@@ -9,7 +9,7 @@ namespace SentimentAnalysisTool.Api.Helpers
     public class VaderModel
     {       
         [JsonPropertyName("compoundScore")]
-        public string CompoundScore { get; set; }
+        public string SentimentResult { get; set; }
 
         [JsonPropertyName("compoundValue")]
         public double CompoundValue { get; set; }

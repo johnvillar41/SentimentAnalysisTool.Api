@@ -18,6 +18,6 @@ namespace SentimentAnalysisTool.Api.Helpers.AlgorithmModels
         public double NegativeScore { get; set; }
 
         [JsonPropertyName("sentimentScore")]
-        public string SentimentScore { get; set; }
+        public string SentimentResult { get; set; }
     }
 }

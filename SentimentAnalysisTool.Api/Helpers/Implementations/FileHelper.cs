@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
+using System.Reflection;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -28,9 +30,9 @@ namespace SentimentAnalysisTool.Api.Helpers
         }
 
         public async Task<bool> DeleteCsvAsync(string filePath)
-        {            
+        {
             var fileInfo = new FileInfo(filePath);
-            
+
             if (fileInfo != null && fileInfo.Exists)
             {
                 var task = Task.Run(() =>
@@ -39,13 +41,15 @@ namespace SentimentAnalysisTool.Api.Helpers
                 });
                 await task;
                 return true;
-            }                     
+            }
             return false;
         }
 
-        public async Task<ICollection<CommentViewModel<T>>> PolarizeCsvFileAsync<T>(string filePath, AlgorithmnType algorithmn)
+        public async Task<RecordViewModel<T>> PolarizeCsvFileAsync<T>(string filePath, AlgorithmnType algorithmn)
         {
             var polarizedResults = new List<CommentViewModel<T>>();
+            var wordFrequencies = new List<WordFrequencyViewModel>();
+
             if (filePath.Equals(string.Empty))
                 throw new Exception("File path not generated!");
 
@@ -54,6 +58,9 @@ namespace SentimentAnalysisTool.Api.Helpers
             var worksheet = workbook.ActiveSheet;
             var usedRange = worksheet.UsedRange;
 
+            var positiveInstance = 0;
+            var negativeInstance = 0;
+            StringBuilder stringBuilder = new();
             for (int i = 2; i <= worksheet.Columns.Count; i++)
             {
                 var commentScore = worksheet.Cells[i, 1].Value;
@@ -75,11 +82,43 @@ namespace SentimentAnalysisTool.Api.Helpers
                     Date = DateTime.Parse(Convert.ToString(commentDate)),
                     AlgorithmnModel = algorithmnModel
                 });
+                stringBuilder.Append(commentDetail);
+
+                Type type = algorithmnModel.GetType();
+                PropertyInfo prop = type.GetProperty("SentimentResult");
+                object value = prop.GetValue(algorithmnModel);
+                if (value.ToString().Equals("Positive"))
+                    positiveInstance++;
+                else
+                    negativeInstance++;
             }
-            
+
+            //Build fullstring here
+            SortedDictionary<string, int> wordFrequencyDictionary = await CalculateWordFrequency(stringBuilder.ToString());
+            foreach (var item in wordFrequencyDictionary)
+            {
+                wordFrequencies.Add(new WordFrequencyViewModel()
+                {
+                    RecordId = -1,
+                    Word = item.Key,
+                    WordFrequency = item.Value
+                });
+            }
+
+            double positivePercent = ((double)positiveInstance / (positiveInstance + negativeInstance)) * 100;
+            double negativePercent = ((double)negativeInstance / (positiveInstance + negativeInstance)) * 100;
+            var recordViewModel = new RecordViewModel<T>()
+            {
+                RecordName = null,
+                PositivePercent = (int)positivePercent,
+                NegativePercent = (int)negativePercent,
+                CommentViewModels = polarizedResults,
+                CorpusRecordViewModels = null,
+                WordFrequencyViewModels = wordFrequencies
+            };
             workbook.Close(0);
-            application.Quit();            
-            return polarizedResults;
+            application.Quit();
+            return recordViewModel;
         }
 
         public async Task<string> UploadCsvAsync(IFormFile csvFormFile)
@@ -91,7 +130,7 @@ namespace SentimentAnalysisTool.Api.Helpers
             {
                 var saveFile = Path.Combine(_webHostEnvironment.WebRootPath, @"files\", $"{guid}{csvFormFile.FileName}");
                 using var stream = new FileStream(saveFile, FileMode.Create);
-                await csvFormFile.CopyToAsync(stream);           
+                await csvFormFile.CopyToAsync(stream);
                 return saveFile;
             }
             return string.Empty;
@@ -101,13 +140,33 @@ namespace SentimentAnalysisTool.Api.Helpers
         {
             var baseUrl = _configuration.GetValue<string>("SentimentAlgorithmnBaseUrl");
             var response = await _httpClient.GetAsync($"{baseUrl}/{algorithmnType}/{comment}");
-            
+
             response.EnsureSuccessStatusCode();
             var responseContent = await response.Content.ReadAsStreamAsync();
             var jsonModel = await JsonSerializer.DeserializeAsync<T>
                           (responseContent,
                  new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             return jsonModel;
+        }
+        private async Task<SortedDictionary<string, int>> CalculateWordFrequency(string comment)
+        {
+            return await Task.Run(() =>
+            {
+                SortedDictionary<String, int> mp = new();
+                string[] arr = comment.Split(' ');
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    if (mp.ContainsKey(arr[i]))
+                    {
+                        mp[arr[i]] = mp[arr[i]] + 1;
+                    }
+                    else
+                    {
+                        mp.Add(arr[i], 1);
+                    }
+                }
+                return mp;
+            });
         }
     }
 }
