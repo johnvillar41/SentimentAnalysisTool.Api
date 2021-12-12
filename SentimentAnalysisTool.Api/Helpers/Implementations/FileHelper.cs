@@ -163,7 +163,7 @@ namespace SentimentAnalysisTool.Api.Helpers
 
                 for (int i = 0; i < commentSplitted.Length; i++)
                 {
-                    if (positiveSentimentsFile.Contains(commentSplitted[i]))
+                    if (positiveSentimentsFile.Contains(commentSplitted[i]) || negativeSentimentsFile.Contains(commentSplitted[i]))
                     {
                         if (mp.ContainsKey(commentSplitted[i]))
                         {
