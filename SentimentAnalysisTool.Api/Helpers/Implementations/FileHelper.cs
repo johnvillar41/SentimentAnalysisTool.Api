@@ -6,6 +6,7 @@ using SentimentAnalysisTool.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
@@ -61,6 +62,8 @@ namespace SentimentAnalysisTool.Api.Helpers
             var positiveInstance = 0;
             var negativeInstance = 0;
             StringBuilder stringBuilder = new();
+
+            //Traverse Excel file
             for (int i = 2; i <= worksheet.Columns.Count; i++)
             {
                 var commentScore = worksheet.Cells[i, 1].Value;
@@ -105,6 +108,7 @@ namespace SentimentAnalysisTool.Api.Helpers
                 });
             }
 
+            //Build RecordViewModel
             double positivePercent = ((double)positiveInstance / (positiveInstance + negativeInstance)) * 100;
             double negativePercent = ((double)negativeInstance / (positiveInstance + negativeInstance)) * 100;
             var recordViewModel = new RecordViewModel<T>()
@@ -148,25 +152,31 @@ namespace SentimentAnalysisTool.Api.Helpers
                  new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             return jsonModel;
         }
-        private async Task<SortedDictionary<string, int>> CalculateWordFrequency(string comment)
+        private async Task<SortedDictionary<string, int>> CalculateWordFrequency(string comments)
         {
-            return await Task.Run(() =>
+            return await Task.Run((Func<SortedDictionary<string, int>>)(() =>
             {
-                SortedDictionary<String, int> mp = new();
-                string[] arr = comment.Split(' ');
-                for (int i = 0; i < arr.Length; i++)
+                SortedDictionary<string, int> mp = new();
+                string[] commentSplitted = comments.Split(' ');
+                var positiveSentimentsFile = File.ReadLines(@"C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Api\wwwroot\sentiment-files\positive-words.txt").ToList();
+                var negativeSentimentsFile = File.ReadLines(@"C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Api\wwwroot\sentiment-files\negative-words.txt");
+
+                for (int i = 0; i < commentSplitted.Length; i++)
                 {
-                    if (mp.ContainsKey(arr[i]))
+                    if (positiveSentimentsFile.Contains(commentSplitted[i]))
                     {
-                        mp[arr[i]] = mp[arr[i]] + 1;
-                    }
-                    else
-                    {
-                        mp.Add(arr[i], 1);
+                        if (mp.ContainsKey(commentSplitted[i]))
+                        {
+                            mp[commentSplitted[i]] = mp[commentSplitted[i]] + 1;
+                        }
+                        else
+                        {
+                            mp.Add(commentSplitted[i], 1);
+                        }
                     }
                 }
                 return mp;
-            });
+            }));
         }
     }
 }
