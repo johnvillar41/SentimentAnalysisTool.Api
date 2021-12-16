@@ -3,6 +3,7 @@ using SentimentAnalysisTool.Api.Helpers.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SentimentAnalysisTool.Api.Helpers.Implementations
@@ -16,14 +17,52 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
             _configuration = configuration;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
         }
-        public Task<string> RemoveSlangWordAsync(string comment)
+        public async Task<string> RemoveSlangWordAsync(string comment)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() =>
+            {
+                //Sample slangs should be inside database
+                var sampleSlangList = new List<string>
+                {
+                    "hahabells",
+                    "huhubells",
+                    "ratbu"
+                };
+                var commentList = comment.Split(" ").ToList();
+                foreach (var commentItem in commentList)
+                {
+                    if (sampleSlangList.Contains(commentItem))
+                    {
+                        commentList.Remove(commentItem);
+                    }
+                }
+                var finalComment = string.Join(" ", commentList);
+                return finalComment;
+            });
         }
 
-        public Task<string> RemoveSpecialCharsAsync(string comment, int totalChars)
+        public async Task<string> RemoveSpecialCharsAsync(string comment, int totalChars)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() =>
+            {
+                //Sample chars should be inside database
+                var sampleCharsList = new List<string>
+                {
+                    "hahabells",
+                    "huhubells",
+                    "ratbu"
+                };
+                var commentList = comment.Split(" ").ToList();
+                foreach (var commentItem in commentList)
+                {
+                    if (sampleCharsList.Contains(commentItem))
+                    {
+                        commentList.Remove(commentItem);
+                    }
+                }
+                var finalComment = string.Join(" ", commentList);
+                return finalComment;
+            });
         }
 
         public Task<string> ReplaceAbbreviationAsync(string comment)
