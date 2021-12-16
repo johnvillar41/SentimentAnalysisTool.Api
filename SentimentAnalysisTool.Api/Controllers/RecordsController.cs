@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using SentimentAnalysisTool.Api.Helpers;
 using SentimentAnalysisTool.Api.Helpers.AlgorithmModels;
+using SentimentAnalysisTool.Api.Helpers.Interfaces;
 using SentimentAnalysisTool.Api.Models;
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
@@ -25,8 +26,10 @@ namespace SentimentAnalysisTool.Api.Controllers
         private readonly IWordFrequencyService _wordFrequencyService;
         private readonly IRecordService _recordService;
         private readonly ICorpusTypeService _corpusTypeService;
+        private readonly ISlangRecordsService _slangRecordsService;
         private readonly IServiceWrapper _serviceWrapper;
         private readonly IFileHelper _fileHelper;
+        private readonly ITextProcessor _textProcessor;
         private readonly IConfiguration _configuration;
         private string ConnectionString { get; }
         public RecordsController(
@@ -54,7 +57,8 @@ namespace SentimentAnalysisTool.Api.Controllers
         [Route("Upload")]
         public async Task<IActionResult> UploadCsv(
             [FromForm] IFormFile file,
-            [FromQuery] AlgorithmnType algorithmnType)
+            [FromQuery] AlgorithmnType algorithmnType,
+            [FromQuery] bool shouldRemoveSlangs)
         {
             var filePath = "";
             try
@@ -66,13 +70,13 @@ namespace SentimentAnalysisTool.Api.Controllers
                 switch (algorithmnType)
                 {
                     case AlgorithmnType.SentiWordNet:
-                        return Ok(await _fileHelper.PolarizeCsvFileAsync<SentiWordNetModel>(filePath, algorithmnType));
+                        return Ok(await _fileHelper.PolarizeCsvFileAsync<SentiWordNetModel>(filePath, algorithmnType, shouldRemoveSlangs));
                     case AlgorithmnType.Vader:
-                        var obj = await _fileHelper.PolarizeCsvFileAsync<VaderModel>(filePath, algorithmnType);
+                        var obj = await _fileHelper.PolarizeCsvFileAsync<VaderModel>(filePath, algorithmnType, shouldRemoveSlangs);
                         return Ok(obj);
                     case AlgorithmnType.Hybrid:
-                        return Ok(await _fileHelper.PolarizeCsvFileAsync<HybridModel>(filePath, algorithmnType));                        
-                }               
+                        return Ok(await _fileHelper.PolarizeCsvFileAsync<HybridModel>(filePath, algorithmnType, shouldRemoveSlangs));
+                }
             }
             catch (HttpRequestException)
             {

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Office.Interop.Excel;
+using SentimentAnalysisTool.Api.Helpers.Interfaces;
 using SentimentAnalysisTool.Api.Models;
 using System;
 using System.Collections.Generic;
@@ -19,14 +20,17 @@ namespace SentimentAnalysisTool.Api.Helpers
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly HttpClient _httpClient;
+        private readonly ITextProcessor _textProcessor;
         private readonly IConfiguration _configuration;
         public FileHelper(
             IWebHostEnvironment webHostEnvironment,
             HttpClient httpClient,
+            ITextProcessor textProcessor,
             IConfiguration configuration)
         {
             _webHostEnvironment = webHostEnvironment;
             _httpClient = httpClient;
+            _textProcessor = textProcessor;
             _configuration = configuration;
         }
 
@@ -46,7 +50,7 @@ namespace SentimentAnalysisTool.Api.Helpers
             return false;
         }
 
-        public async Task<RecordViewModel<T>> PolarizeCsvFileAsync<T>(string filePath, AlgorithmnType algorithmn)
+        public async Task<RecordViewModel<T>> PolarizeCsvFileAsync<T>(string filePath, AlgorithmnType algorithmn, bool shouldRemoveSlangs)
         {
             var polarizedResults = new List<CommentViewModel<T>>();
             var wordFrequencies = new List<WordFrequencyViewModel>();
@@ -73,6 +77,12 @@ namespace SentimentAnalysisTool.Api.Helpers
 
                 if (commentDetail == null)
                     break;
+
+                if (shouldRemoveSlangs)
+                {
+                    var updatedComment = await _textProcessor.RemoveSlangWordAsync(commentDetail);
+                    worksheet.Cells[i, 3] = updatedComment;                    
+                }
 
                 var algorithmnModel = await ApplyAlgorithmn<T>(commentDetail, algorithmn);
                 CreatePolarizedResults<T>(polarizedResults, ref positiveInstance, ref negativeInstance, stringBuilder, commentScore, polarityScore, commentDetail, commentDate, algorithmnModel);
