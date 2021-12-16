@@ -8,6 +8,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SentimentAnalysisTool.Api.Helpers;
+using SentimentAnalysisTool.Api.Helpers.Implementations;
+using SentimentAnalysisTool.Api.Helpers.Interfaces;
 using SentimentAnalysisTool.Services.Services.Implementations;
 using SentimentAnalysisTool.Services.Services.Interfaces;
 using System;
@@ -41,6 +43,7 @@ namespace SentimentAnalysisTool.Api
             services.AddTransient<IFileHelper, FileHelper>();
             services.AddTransient<IServiceWrapper, ServiceWrapper>();
             services.AddTransient<IAbbreviationsService, AbbreviationsService>();
+            services.AddTransient<ITextProcessor, TextProcessor>();
             services.AddTransient<HttpClient>();
         }
 

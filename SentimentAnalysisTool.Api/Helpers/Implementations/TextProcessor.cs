@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SentimentAnalysisTool.Api.Helpers.Interfaces;
+using SentimentAnalysisTool.Services.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,58 +12,32 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
     public class TextProcessor : ITextProcessor
     {
         private readonly IConfiguration _configuration;
+        private readonly ISlangRecordsService _slangRecordsService;
         private string ConnectionString { get; }
-        public TextProcessor(IConfiguration configuration)
+        public TextProcessor(IConfiguration configuration, ISlangRecordsService slangRecordsService)
         {
             _configuration = configuration;
+            _slangRecordsService = slangRecordsService;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
         }
         public async Task<string> RemoveSlangWordAsync(string comment)
         {
-            return await Task.Run(() =>
+            var commentList = comment.Split(" ").ToList();
+            foreach (var commentItem in commentList)
             {
-                //Sample slangs should be inside database
-                var sampleSlangList = new List<string>
+                var slangRecord = await _slangRecordsService.FindSlangRecordAsync(commentItem, ConnectionString);
+                if (commentItem.Equals(slangRecord.SlangName))
                 {
-                    "hahabells",
-                    "huhubells",
-                    "ratbu"
-                };
-                var commentList = comment.Split(" ").ToList();
-                foreach (var commentItem in commentList)
-                {
-                    if (sampleSlangList.Contains(commentItem))
-                    {
-                        commentList.Remove(commentItem);
-                    }
+                    commentList.Remove(commentItem);
                 }
-                var finalComment = string.Join(" ", commentList);
-                return finalComment;
-            });
+            }
+            var finalComment = string.Join(" ", commentList);
+            return finalComment;
         }
 
         public async Task<string> RemoveSpecialCharsAsync(string comment, int totalChars)
         {
-            return await Task.Run(() =>
-            {
-                //Sample chars should be inside database
-                var sampleCharsList = new List<string>
-                {
-                    "hahabells",
-                    "huhubells",
-                    "ratbu"
-                };
-                var commentList = comment.Split(" ").ToList();
-                foreach (var commentItem in commentList)
-                {
-                    if (sampleCharsList.Contains(commentItem))
-                    {
-                        commentList.Remove(commentItem);
-                    }
-                }
-                var finalComment = string.Join(" ", commentList);
-                return finalComment;
-            });
+            throw new NotImplementedException();
         }
 
         public Task<string> ReplaceAbbreviationAsync(string comment)
