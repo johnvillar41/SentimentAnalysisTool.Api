@@ -20,17 +20,17 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
             _slangRecordsService = slangRecordsService;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
         }
-        public async Task<string> RemoveSlangWordAsync(string comment)
+        public async Task<string> ConvertSlangWordToBaseWordAsync(string comment)
         {
             var commentList = comment.Split(" ").ToList();
-            foreach (var commentItem in commentList)
+            for(int i = 0; i < commentList.Count; i++)
             {
-                var slangRecord = await _slangRecordsService.FindSlangRecordAsync(commentItem, ConnectionString);
-                if (commentItem.Equals(slangRecord.SlangName))
+                var slangRecord = await _slangRecordsService.FindSlangRecordAsync(commentList[i], ConnectionString);
+                if (commentList[i].Equals(slangRecord.SlangName))
                 {
-                    commentList.Remove(commentItem);
+                    commentList[i] = slangRecord.SlangMeaning;
                 }
-            }
+            }           
             var finalComment = string.Join(" ", commentList);
             return finalComment;
         }

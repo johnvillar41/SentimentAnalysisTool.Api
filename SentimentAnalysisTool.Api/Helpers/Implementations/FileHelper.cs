@@ -50,7 +50,10 @@ namespace SentimentAnalysisTool.Api.Helpers
             return false;
         }
 
-        public async Task<RecordViewModel<T>> PolarizeCsvFileAsync<T>(string filePath, AlgorithmnType algorithmn, bool shouldRemoveSlangs)
+        public async Task<RecordViewModel<T>> PolarizeCsvFileAsync<T>(
+            string filePath, 
+            AlgorithmnType algorithmn, 
+            bool shouldRemoveSlangs)
         {
             var polarizedResults = new List<CommentViewModel<T>>();
             var wordFrequencies = new List<WordFrequencyViewModel>();
@@ -59,7 +62,7 @@ namespace SentimentAnalysisTool.Api.Helpers
                 throw new Exception("File path not generated!");
 
             var application = new Application();
-            var workbook = application.Workbooks.Open(filePath, ReadOnly: true, Notify: false);
+            var workbook = application.Workbooks.Open(filePath, Notify: false);
             var worksheet = workbook.ActiveSheet;
             var usedRange = worksheet.UsedRange;
 
@@ -80,7 +83,7 @@ namespace SentimentAnalysisTool.Api.Helpers
 
                 if (shouldRemoveSlangs)
                 {
-                    var updatedComment = await _textProcessor.RemoveSlangWordAsync(commentDetail);
+                    var updatedComment = await _textProcessor.ConvertSlangWordToBaseWordAsync(commentDetail);
                     worksheet.Cells[i, 3] = updatedComment;                    
                 }
 
