@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Office.Interop.Excel;
 using SentimentAnalysisTool.Api.Helpers.Interfaces;
 using SentimentAnalysisTool.Api.Models;
+using SentimentAnalysisTool.Services.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,17 +22,20 @@ namespace SentimentAnalysisTool.Api.Helpers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly HttpClient _httpClient;
         private readonly ITextProcessor _textProcessor;
+        private readonly ICorpusTypeService _corpusTypeService;
         private readonly IConfiguration _configuration;
         public FileHelper(
             IWebHostEnvironment webHostEnvironment,
             HttpClient httpClient,
             ITextProcessor textProcessor,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ICorpusTypeService corpusTypeService)
         {
             _webHostEnvironment = webHostEnvironment;
             _httpClient = httpClient;
             _textProcessor = textProcessor;
             _configuration = configuration;
+            _corpusTypeService = corpusTypeService;
         }
 
         public async Task<bool> DeleteCsvAsync(string filePath)
@@ -51,9 +55,10 @@ namespace SentimentAnalysisTool.Api.Helpers
         }
 
         public async Task<RecordViewModel<T>> PolarizeCsvFileAsync<T>(
-            string filePath, 
-            AlgorithmnType algorithmn, 
-            bool shouldRemoveSlangs)
+            string filePath,
+            AlgorithmnType algorithmn,
+            bool shouldRemoveSlangs,
+            string corpusType)
         {
             var polarizedResults = new List<CommentViewModel<T>>();
             var wordFrequencies = new List<WordFrequencyViewModel>();
@@ -70,6 +75,9 @@ namespace SentimentAnalysisTool.Api.Helpers
             var negativeInstance = 0;
             StringBuilder stringBuilder = new();
 
+            //Find CorpusTypeId
+            var corpusTypeModel = await _corpusTypeService.FindCorpusTypeAsync(corpusType, _configuration.GetConnectionString("SentimentDBConnection"));
+
             //Traverse Excel file
             for (int i = 2; i <= worksheet.Columns.Count; i++)
             {
@@ -83,8 +91,8 @@ namespace SentimentAnalysisTool.Api.Helpers
 
                 if (shouldRemoveSlangs)
                 {
-                    var updatedComment = await _textProcessor.ConvertSlangWordToBaseWordAsync(commentDetail);
-                    worksheet.Cells[i, 3] = updatedComment;                    
+                    var updatedComment = await _textProcessor.ConvertSlangWordToBaseWordAsync(commentDetail, corpusTypeModel.CorpusTypeId);
+                    worksheet.Cells[i, 3] = updatedComment;
                 }
 
                 var algorithmnModel = await ApplyAlgorithmn<T>(commentDetail, algorithmn);

@@ -20,12 +20,12 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
             _slangRecordsService = slangRecordsService;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
         }
-        public async Task<string> ConvertSlangWordToBaseWordAsync(string comment)
+        public async Task<string> ConvertSlangWordToBaseWordAsync(string comment, int corpusTypeId)
         {
             var commentList = comment.Split(" ").ToList();
             for(int i = 0; i < commentList.Count; i++)
             {
-                var slangRecord = await _slangRecordsService.FindSlangRecordAsync(commentList[i], ConnectionString);
+                var slangRecord = await _slangRecordsService.FindSlangRecordAsync(commentList[i], corpusTypeId, ConnectionString);
                 if (commentList[i].Equals(slangRecord.SlangName))
                 {
                     commentList[i] = slangRecord.SlangMeaning;

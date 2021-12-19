@@ -13,6 +13,7 @@ namespace SentimentAnalysisTool.Services.Services.Interfaces
     {
         Task<int> AddCorpusTypeAsync(CorpusTypeModel corpusType, SqlConnection connection, DbTransaction transaction);
         Task<CorpusTypeModel> FindCorpusTypeAsync(int corpusTypeId, string connectionString);
+        Task<CorpusTypeModel> FindCorpusTypeAsync(string corpusType, string connectionString);
         Task<bool> DeleteCorpusTypeAsync(int corpusTypeId, string connectionString);
     }
 }

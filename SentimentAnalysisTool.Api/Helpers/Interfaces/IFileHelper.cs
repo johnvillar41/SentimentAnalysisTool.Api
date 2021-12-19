@@ -12,7 +12,7 @@ namespace SentimentAnalysisTool.Api.Helpers
     public interface IFileHelper
     {
         Task<string> UploadCsvAsync(IFormFile file);
-        Task<RecordViewModel<T>> PolarizeCsvFileAsync<T>(string filePath, AlgorithmnType algorithmn, bool shouldRemoveSlangs);
+        Task<RecordViewModel<T>> PolarizeCsvFileAsync<T>(string filePath, AlgorithmnType algorithmn, bool shouldRemoveSlangs, string corpusType);
         Task<bool> DeleteCsvAsync(string filePath);
     }
 }

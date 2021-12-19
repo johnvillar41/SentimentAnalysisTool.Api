@@ -49,5 +49,10 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             }, commandType: CommandType.StoredProcedure);
             return result;
         }
+
+        public Task<CorpusTypeModel> FindCorpusTypeAsync(string corpusType, string connectionString)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

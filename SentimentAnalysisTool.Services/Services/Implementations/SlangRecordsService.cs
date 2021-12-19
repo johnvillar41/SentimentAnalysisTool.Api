@@ -83,15 +83,16 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             return false;
         }
 
-        public async Task<SlangRecordModel> FindSlangRecordAsync(string slangRecord, string connectionString)
+        public async Task<SlangRecordModel> FindSlangRecordAsync(string slangRecord, int corpusTypeId, string connectionString)
         {
             //TODO: Convert to Stored Proc
-            var sqlQuery = "SELECT * FROM SlangRecordsTable WHERE SlangName = @SlangName";
+            var sqlQuery = "SELECT * FROM SlangRecordsTable WHERE SlangName = @SlangName AND CorpusTypeId = @CorpusTypeId";
             using var connection = new SqlConnection(connectionString);
             var record = await connection.QueryFirstOrDefaultAsync<SlangRecordModel>(sqlQuery,
                 new
                 {
-                    SlangName = slangRecord
+                    SlangName = slangRecord,
+                    CorpusTypeId = corpusTypeId
                 }, commandType: CommandType.Text);
             return record;
         }

@@ -58,7 +58,8 @@ namespace SentimentAnalysisTool.Api.Controllers
         public async Task<IActionResult> UploadCsv(
             [FromForm] IFormFile file,
             [FromQuery] AlgorithmnType algorithmnType,
-            [FromQuery] bool shouldRemoveSlangs)
+            [FromQuery] bool shouldRemoveSlangs,
+            [FromQuery] string corpusType)
         {
             var filePath = "";
             try
@@ -70,12 +71,12 @@ namespace SentimentAnalysisTool.Api.Controllers
                 switch (algorithmnType)
                 {
                     case AlgorithmnType.SentiWordNet:
-                        return Ok(await _fileHelper.PolarizeCsvFileAsync<SentiWordNetModel>(filePath, algorithmnType, shouldRemoveSlangs));
+                        return Ok(await _fileHelper.PolarizeCsvFileAsync<SentiWordNetModel>(filePath, algorithmnType, shouldRemoveSlangs, corpusType));
                     case AlgorithmnType.Vader:
-                        var obj = await _fileHelper.PolarizeCsvFileAsync<VaderModel>(filePath, algorithmnType, shouldRemoveSlangs);
+                        var obj = await _fileHelper.PolarizeCsvFileAsync<VaderModel>(filePath, algorithmnType, shouldRemoveSlangs, corpusType);
                         return Ok(obj);
                     case AlgorithmnType.Hybrid:
-                        return Ok(await _fileHelper.PolarizeCsvFileAsync<HybridModel>(filePath, algorithmnType, shouldRemoveSlangs));
+                        return Ok(await _fileHelper.PolarizeCsvFileAsync<HybridModel>(filePath, algorithmnType, shouldRemoveSlangs, corpusType));
                 }
             }
             catch (HttpRequestException)
