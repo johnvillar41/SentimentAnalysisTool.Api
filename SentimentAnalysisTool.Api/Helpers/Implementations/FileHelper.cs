@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using SentimentAnalysisTool.Api.Helpers.Enums;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -30,14 +31,19 @@ namespace SentimentAnalysisTool.Api.Helpers
             }
             return false;
         }
-        public async Task<string> UploadCsvAsync(IFormFile csvFormFile)
+        public async Task<string> UploadCsvAsync(IFormFile csvFormFile, UploadType uploadType)
         {
             var fileExtension = Path.GetExtension(csvFormFile.FileName);
             var guid = Guid.NewGuid();
             if (fileExtension.Equals(".xlsx", StringComparison.CurrentCultureIgnoreCase) ||
                 fileExtension.Equals(".csv", StringComparison.CurrentCultureIgnoreCase))
             {
-                var saveFile = Path.Combine(_webHostEnvironment.WebRootPath, @"files\", $"{guid}{csvFormFile.FileName}");
+                var saveFile = string.Empty;
+                if(uploadType == UploadType.Comment)
+                    saveFile = Path.Combine(_webHostEnvironment.WebRootPath, @"files\", $"{guid}{csvFormFile.FileName}");
+                if(uploadType == UploadType.Slang)
+                    saveFile = Path.Combine(_webHostEnvironment.WebRootPath, @"slangs\", $"{guid}{csvFormFile.FileName}");
+
                 using var stream = new FileStream(saveFile, FileMode.Create);
                 await csvFormFile.CopyToAsync(stream);
                 return saveFile;

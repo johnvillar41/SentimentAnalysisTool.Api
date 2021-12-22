@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Office.Interop.Excel;
 using SentimentAnalysisTool.Api.Helpers;
+using SentimentAnalysisTool.Api.Helpers.Enums;
 using SentimentAnalysisTool.Api.Models;
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
@@ -58,7 +59,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         [Route("AddSlangRecords/Csv/{corpusTypeId}")]
         public async Task<IActionResult> AddSlangRecords([FromForm] IFormFile file, [FromHeader] int corpusTypeId)
         {
-            var result = await _fileHelper.UploadCsvAsync(file);
+            var result = await _fileHelper.UploadCsvAsync(file, UploadType.Slang);
             var slangRecords = TraverseSlangRecordFile(result);
             var slangRecordsResult = await _slangRecordsService.AddSlangRecordAsync(slangRecords, corpusTypeId,  ConnectionString);
             if (slangRecordsResult)

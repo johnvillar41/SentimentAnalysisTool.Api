@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using SentimentAnalysisTool.Api.Helpers.AlgorithmModels;
+using SentimentAnalysisTool.Api.Helpers.Enums;
 using SentimentAnalysisTool.Api.Models;
 using SentimentAnalysisTool.Data.Models;
 using System;
@@ -11,7 +12,7 @@ namespace SentimentAnalysisTool.Api.Helpers
 {
     public interface IFileHelper
     {
-        Task<string> UploadCsvAsync(IFormFile file);        
+        Task<string> UploadCsvAsync(IFormFile file, UploadType uploadType);        
         Task<bool> DeleteCsvAsync(string filePath);
     }
 }

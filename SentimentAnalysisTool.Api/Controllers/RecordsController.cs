@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using SentimentAnalysisTool.Api.Helpers;
 using SentimentAnalysisTool.Api.Helpers.AlgorithmModels;
+using SentimentAnalysisTool.Api.Helpers.Enums;
 using SentimentAnalysisTool.Api.Helpers.Interfaces;
 using SentimentAnalysisTool.Api.Models;
 using SentimentAnalysisTool.Data.Models;
@@ -39,7 +40,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             ICorpusTypeService corpusTypeService,
             IServiceWrapper serviceWrapper,
             IFileHelper fileHelper,
-            IConfiguration configuration, 
+            IConfiguration configuration,
             IPolarizer polarizer)
         {
             _commentService = commentService;
@@ -63,7 +64,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             var filePath = "";
             try
             {
-                filePath = await _fileHelper.UploadCsvAsync(file);
+                filePath = await _fileHelper.UploadCsvAsync(file, UploadType.Comment);
                 if (filePath.Equals(string.Empty))
                     return BadRequest("Error Uploading file!");
 

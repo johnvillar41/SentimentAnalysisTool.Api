@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Moq;
 using SentimentAnalysisTool.Api.Controllers;
 using SentimentAnalysisTool.Api.Helpers;
+using SentimentAnalysisTool.Api.Helpers.Enums;
 using SentimentAnalysisTool.Api.Helpers.Interfaces;
 using SentimentAnalysisTool.Api.Models;
 using SentimentAnalysisTool.Data.Models;
@@ -50,7 +51,7 @@ namespace SentimentAnalysisTool.Tests
                 mockRecordService.Object,
                 mockCorpusTypeService.Object,
                 mockServiceWrapper.Object,
-                mockFileHelper.Object,                
+                mockFileHelper.Object,
                 mockConfiguration.Object,
                 mockPolarizer.Object
             );
@@ -294,7 +295,7 @@ namespace SentimentAnalysisTool.Tests
         {
             //Arrange
             mockFileHelper
-                .Setup(m => m.UploadCsvAsync(It.IsAny<IFormFile>()))
+                .Setup(m => m.UploadCsvAsync(It.IsAny<IFormFile>(), UploadType.Comment))
                 .Returns(Task.FromResult(string.Empty));
             //Arrange 
             var result = await recordController.UploadCsv(It.IsAny<IFormFile>(), It.IsAny<UploadCsvFileViewModel>());
@@ -307,7 +308,7 @@ namespace SentimentAnalysisTool.Tests
         {
             //Arrange
             mockFileHelper
-                .Setup(m => m.UploadCsvAsync(It.IsAny<IFormFile>()))
+                .Setup(m => m.UploadCsvAsync(It.IsAny<IFormFile>(), UploadType.Comment))
                 .Returns(Task.FromResult("Sample String"));
             //Arrange 
             var result = await recordController.UploadCsv(It.IsAny<IFormFile>(), It.IsAny<UploadCsvFileViewModel>());
@@ -319,7 +320,7 @@ namespace SentimentAnalysisTool.Tests
         {
             //Arrange
             mockFileHelper
-                .Setup(m => m.UploadCsvAsync(It.IsAny<IFormFile>()))
+                .Setup(m => m.UploadCsvAsync(It.IsAny<IFormFile>(), UploadType.Comment))
                 .Returns(Task.FromResult("Sample String"));
             //Arrange 
             var result = await recordController.UploadCsv(It.IsAny<IFormFile>(), It.IsAny<UploadCsvFileViewModel>());
