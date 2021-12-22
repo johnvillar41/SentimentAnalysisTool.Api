@@ -43,7 +43,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
             return finalComment;
         }
 
-        public async Task<string> ConvertAbbreviationToBaseWordAsync(string comment, int corpusTypeId, string connectionString)
+        public async Task<string> ConvertAbbreviationToBaseWordAsync(string comment, int corpusTypeId)
         {
             var commentList = comment.Split(" ").ToList();
             for (int i = 0; i < commentList.Count; i++)

@@ -15,6 +15,9 @@ namespace SentimentAnalysisTool.Api.Models
         [JsonPropertyName("shouldConvertSlangs")]
         public bool ShouldConvertSlangs { get; set; }
 
+        [JsonPropertyName("shouldConvertAbbreviations")]
+        public bool ShouldConvertAbbreviations { get; set; }
+
         [JsonPropertyName("corpusType")]
         public string CorpusType { get; set; }
     }

@@ -28,7 +28,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
             _textProcessor = textProcessor;
             _corpusTypeService = corpusTypeService;
             _configuration = configuration;
-        }      
+        }
 
         public async Task<RecordViewModel<T>> PolarizeCsvFileAsync<T>(PolarizeCsvFileViewModel polarizeCsvFileViewModel)
         {
@@ -68,7 +68,8 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                     updatedComment = await _textProcessor.ConvertSlangWordToBaseWordAsync(commentDetail, corpusTypeModel.CorpusTypeId);
 
                 //Convertion of Abbreviation Words
-                //TODO
+                if (polarizeCsvFileViewModel.ShouldConvertAbbreviations)
+                    updatedComment = await _textProcessor.ConvertAbbreviationToBaseWordAsync(commentDetail, corpusTypeModel.CorpusTypeId);
 
                 //Polarization using CorpusWords
                 //TODO
@@ -80,7 +81,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 else
                     algorithmnModel = await ApplyAlgorithmn<T>(updatedComment, polarizeCsvFileViewModel.Algorithmn);
 
-                CreatePolarizedResults<T>(polarizedResults, ref updatedComment , ref positiveInstance, ref negativeInstance, stringBuilder, commentScore, polarityScore, commentDetail, commentDate, algorithmnModel);
+                CreatePolarizedResults<T>(polarizedResults, ref updatedComment, ref positiveInstance, ref negativeInstance, stringBuilder, commentScore, polarityScore, commentDetail, commentDate, algorithmnModel);
             }
 
             await BuildFullStringAsync(wordFrequencies, stringBuilder);
@@ -151,7 +152,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
             return recordViewModel;
         }
 
-        
+
 
         private async Task<T> ApplyAlgorithmn<T>(string comment, AlgorithmnType algorithmnType)
         {
