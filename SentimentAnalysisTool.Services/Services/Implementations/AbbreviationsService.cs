@@ -71,5 +71,10 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
             return false;
         }
+
+        public Task<AbbreviationModel> FindAbbreviationAsync(string abbreviation, int corpusTypeId, string connectionString)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -9,6 +9,6 @@ namespace SentimentAnalysisTool.Api.Helpers.Interfaces
     {
         Task<string> RemoveSpecialCharsAsync(string comment, int totalChars);
         Task<string> ConvertSlangWordToBaseWordAsync(string comment, int corpusTypeId);
-        Task<string> ReplaceAbbreviationAsync(string comment);
+        Task<string> ConvertAbbreviationToBaseWordAsync(string comment, int corpusTypeId, string connectionString);
     }
 }
