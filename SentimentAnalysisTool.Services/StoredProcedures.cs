@@ -18,6 +18,7 @@ namespace SentimentAnalysisTool.Services
         public const string SP_FETCH_RECORDS = "FetchRecords";
         public const string SP_FETCH_CORPUS_RECORD = "FetchCorpusRecord"; 
         public const string SP_FETCH_WORD_FREQUENCIES = "FetchWordFrequencies";
+        public const string SP_FETCH_SLANG_RECORD = "FetchSlangRecord";
 
         public const string SP_PAGINATE_COMMENTS = "PaginateCommentsTable";
 

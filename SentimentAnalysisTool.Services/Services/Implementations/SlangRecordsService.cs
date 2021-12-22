@@ -83,18 +83,15 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<SlangRecordModel> FindSlangRecordAsync(string slangRecord, int corpusTypeId, string connectionString)
         {
-            //TODO: Convert to Stored Proc
-            var sqlQuery = "SELECT * FROM SlangRecordsTable WHERE SlangName = @SlangName AND CorpusTypeId = @CorpusTypeId";
+            var procedure = StoredProcedures.SP_FETCH_SLANG_RECORD;
             using var connection = new SqlConnection(connectionString);
-            var record = await connection.QueryFirstOrDefaultAsync<SlangRecordModel>(sqlQuery,
+            var record = await connection.QueryFirstOrDefaultAsync<SlangRecordModel>(procedure,
                 new
                 {
                     SlangName = slangRecord,
                     CorpusTypeId = corpusTypeId
-                }, commandType: CommandType.Text);
+                }, commandType: CommandType.StoredProcedure);
             return record;
-        }
-       
-        
+        }      
     }
 }
