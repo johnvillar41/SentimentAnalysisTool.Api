@@ -54,20 +54,16 @@ namespace SentimentAnalysisTool.Api.Helpers
             return false;
         }
 
-        public async Task<RecordViewModel<T>> PolarizeCsvFileAsync<T>(
-            string filePath,
-            AlgorithmnType algorithmn,
-            bool shouldRemoveSlangs,
-            string corpusType)
+        public async Task<RecordViewModel<T>> PolarizeCsvFileAsync<T>(PolarizeCsvFileViewModel polarizeCsvFileViewModel)
         {
             var polarizedResults = new List<CommentViewModel<T>>();
             var wordFrequencies = new List<WordFrequencyViewModel>();
 
-            if (filePath.Equals(string.Empty))
+            if (polarizeCsvFileViewModel.FilePath.Equals(string.Empty))
                 throw new Exception("File path not generated!");
 
             var application = new Application();
-            var workbook = application.Workbooks.Open(filePath, Notify: false);
+            var workbook = application.Workbooks.Open(polarizeCsvFileViewModel.FilePath, Notify: false);
             var worksheet = workbook.ActiveSheet;
             var usedRange = worksheet.UsedRange;
 
@@ -76,7 +72,7 @@ namespace SentimentAnalysisTool.Api.Helpers
             StringBuilder stringBuilder = new();
 
             //Find CorpusTypeId
-            var corpusTypeModel = await _corpusTypeService.FindCorpusTypeAsync(corpusType, _configuration.GetConnectionString("SentimentDBConnection"));
+            var corpusTypeModel = await _corpusTypeService.FindCorpusTypeAsync(polarizeCsvFileViewModel.CorpusType, _configuration.GetConnectionString("SentimentDBConnection"));
 
             //Traverse Excel file
             for (int i = 2; i <= worksheet.Columns.Count; i++)
@@ -89,13 +85,13 @@ namespace SentimentAnalysisTool.Api.Helpers
                 if (commentDetail == null)
                     break;
 
-                if (shouldRemoveSlangs)
+                if (polarizeCsvFileViewModel.ShouldRemoveSlangs)
                 {
                     var updatedComment = await _textProcessor.ConvertSlangWordToBaseWordAsync(commentDetail, corpusTypeModel.CorpusTypeId);
                     worksheet.Cells[i, 3] = updatedComment;
                 }
 
-                var algorithmnModel = await ApplyAlgorithmn<T>(commentDetail, algorithmn);
+                var algorithmnModel = await ApplyAlgorithmn<T>(commentDetail, polarizeCsvFileViewModel.Algorithmn);
                 CreatePolarizedResults<T>(polarizedResults, ref positiveInstance, ref negativeInstance, stringBuilder, commentScore, polarityScore, commentDetail, commentDate, algorithmnModel);
             }
 

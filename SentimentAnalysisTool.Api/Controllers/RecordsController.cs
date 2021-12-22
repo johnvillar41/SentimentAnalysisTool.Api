@@ -55,28 +55,32 @@ namespace SentimentAnalysisTool.Api.Controllers
         //POST: api/Records/Upload
         [HttpPost]
         [Route("Upload")]
-        public async Task<IActionResult> UploadCsv(
-            [FromForm] IFormFile file,
-            [FromQuery] AlgorithmnType algorithmnType,
-            [FromQuery] bool shouldRemoveSlangs,
-            [FromQuery] string corpusType)
+        public async Task<IActionResult> UploadCsv([FromBody] UploadCsvFileViewModel uploadCsvFileViewModel)
         {
             var filePath = "";
             try
             {
-                filePath = await _fileHelper.UploadCsvAsync(file);
+                filePath = await _fileHelper.UploadCsvAsync(uploadCsvFileViewModel.CsvFormFile);
                 if (filePath.Equals(string.Empty))
                     return BadRequest("Error Uploading file!");
 
-                switch (algorithmnType)
+                var polarizeCsvFileViewModel = new PolarizeCsvFileViewModel()
+                {
+                    FilePath = filePath,
+                    Algorithmn = uploadCsvFileViewModel.Algorithmn,
+                    ShouldRemoveSlangs = uploadCsvFileViewModel.ShouldRemoveSlangs,
+                    CorpusType = uploadCsvFileViewModel.CorpusType
+                };
+
+                switch (uploadCsvFileViewModel.Algorithmn)
                 {
                     case AlgorithmnType.SentiWordNet:
-                        return Ok(await _fileHelper.PolarizeCsvFileAsync<SentiWordNetModel>(filePath, algorithmnType, shouldRemoveSlangs, corpusType));
+                        return Ok(await _fileHelper.PolarizeCsvFileAsync<SentiWordNetModel>(polarizeCsvFileViewModel));
                     case AlgorithmnType.Vader:
-                        var obj = await _fileHelper.PolarizeCsvFileAsync<VaderModel>(filePath, algorithmnType, shouldRemoveSlangs, corpusType);
+                        var obj = await _fileHelper.PolarizeCsvFileAsync<VaderModel>(polarizeCsvFileViewModel);
                         return Ok(obj);
                     case AlgorithmnType.Hybrid:
-                        return Ok(await _fileHelper.PolarizeCsvFileAsync<HybridModel>(filePath, algorithmnType, shouldRemoveSlangs, corpusType));
+                        return Ok(await _fileHelper.PolarizeCsvFileAsync<HybridModel>(polarizeCsvFileViewModel));
                 }
             }
             catch (HttpRequestException)
