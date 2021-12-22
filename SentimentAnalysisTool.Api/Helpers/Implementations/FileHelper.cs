@@ -63,7 +63,7 @@ namespace SentimentAnalysisTool.Api.Helpers
                 throw new Exception("File path not generated!");
 
             var application = new Application();
-            var workbook = application.Workbooks.Open(polarizeCsvFileViewModel.FilePath, Notify: false);
+            var workbook = application.Workbooks.Open(polarizeCsvFileViewModel.FilePath, Notify: false, ReadOnly:true);
             var worksheet = workbook.ActiveSheet;
             var usedRange = worksheet.UsedRange;
 
@@ -85,13 +85,22 @@ namespace SentimentAnalysisTool.Api.Helpers
                 if (commentDetail == null)
                     break;
 
-                if (polarizeCsvFileViewModel.ShouldConvertSlangs)
-                {
-                    var updatedComment = await _textProcessor.ConvertSlangWordToBaseWordAsync(commentDetail, corpusTypeModel.CorpusTypeId);
-                    worksheet.Cells[i, 3] = updatedComment;
-                }
+                var updatedComment = string.Empty;
 
-                var algorithmnModel = await ApplyAlgorithmn<T>(commentDetail, polarizeCsvFileViewModel.Algorithmn);
+                //Convertion of Slang Words
+                if (polarizeCsvFileViewModel.ShouldConvertSlangs)
+                    updatedComment = await _textProcessor.ConvertSlangWordToBaseWordAsync(commentDetail, corpusTypeModel.CorpusTypeId);
+                
+                //Convertion of Abbreviation Words
+                //TODO
+
+                //Polarization of the updated comment
+                dynamic algorithmnModel = null;
+                if(updatedComment == string.Empty)
+                    algorithmnModel = await ApplyAlgorithmn<T>(commentDetail, polarizeCsvFileViewModel.Algorithmn);
+                else
+                    algorithmnModel = await ApplyAlgorithmn<T>(updatedComment, polarizeCsvFileViewModel.Algorithmn);
+                
                 CreatePolarizedResults<T>(polarizedResults, ref positiveInstance, ref negativeInstance, stringBuilder, commentScore, polarityScore, commentDetail, commentDate, algorithmnModel);
             }
 

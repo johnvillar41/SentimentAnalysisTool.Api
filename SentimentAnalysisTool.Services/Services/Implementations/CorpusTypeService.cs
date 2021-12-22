@@ -41,18 +41,24 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<CorpusTypeModel> FindCorpusTypeAsync(int corpusTypeId, string connectionString)
         {
-            var Procedure = StoredProcedures.SP_FETCH_CORPUS_TYPE;
+            var procedure = StoredProcedures.SP_FETCH_CORPUS_TYPE;
             using var connection = new SqlConnection(connectionString);
-            var result = await connection.QueryFirstAsync<CorpusTypeModel>(Procedure, new
+            var result = await connection.QueryFirstAsync<CorpusTypeModel>(procedure, new
             {
                 CorpusTypeId = corpusTypeId
             }, commandType: CommandType.StoredProcedure);
             return result;
         }
 
-        public Task<CorpusTypeModel> FindCorpusTypeAsync(string corpusType, string connectionString)
+        public async Task<CorpusTypeModel> FindCorpusTypeAsync(string corpusType, string connectionString)
         {
-            throw new System.NotImplementedException();
+            var sqlQuery = @"SELECT * FROM CorpusTypeTable WHERE CorpusTypeName = @CorpusType";
+            using var connection = new SqlConnection(connectionString);
+            var result = await connection.QueryFirstOrDefaultAsync<CorpusTypeModel>(sqlQuery, new
+            {
+                CorpusType = corpusType
+            }, commandType: CommandType.Text);
+            return result;
         }
     }
 }

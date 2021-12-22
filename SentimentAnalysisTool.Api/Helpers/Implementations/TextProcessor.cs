@@ -26,10 +26,13 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
             for(int i = 0; i < commentList.Count; i++)
             {
                 var slangRecord = await _slangRecordsService.FindSlangRecordAsync(commentList[i], corpusTypeId, ConnectionString);
-                if (commentList[i].Equals(slangRecord.SlangName))
+                if(slangRecord != null)
                 {
-                    commentList[i] = slangRecord.SlangMeaning;
-                }
+                    if (commentList[i].Equals(slangRecord.SlangName))
+                    {
+                        commentList[i] = slangRecord.SlangMeaning;
+                    }
+                }                
             }           
             var finalComment = string.Join(" ", commentList);
             return finalComment;

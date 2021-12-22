@@ -55,12 +55,14 @@ namespace SentimentAnalysisTool.Api.Controllers
         //POST: api/Records/Upload
         [HttpPost]
         [Route("Upload")]
-        public async Task<IActionResult> UploadCsv([FromBody] UploadCsvFileViewModel uploadCsvFileViewModel)
+        public async Task<IActionResult> UploadCsv(
+            [FromForm] IFormFile file,
+            [FromForm] UploadCsvFileViewModel uploadCsvFileViewModel)
         {
             var filePath = "";
             try
             {
-                filePath = await _fileHelper.UploadCsvAsync(uploadCsvFileViewModel.CsvFormFile);
+                filePath = await _fileHelper.UploadCsvAsync(file);
                 if (filePath.Equals(string.Empty))
                     return BadRequest("Error Uploading file!");
 
