@@ -44,6 +44,7 @@ namespace SentimentAnalysisTool.Api
             services.AddTransient<IServiceWrapper, ServiceWrapper>();
             services.AddTransient<IAbbreviationsService, AbbreviationsService>();
             services.AddTransient<ITextProcessor, TextProcessor>();
+            services.AddTransient<IPolarizer, Polarizer>();
             services.AddTransient<HttpClient>();
         }
 

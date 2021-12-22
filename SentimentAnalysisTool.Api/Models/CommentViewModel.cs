@@ -26,6 +26,9 @@ namespace SentimentAnalysisTool.Api.Models
 
         [JsonPropertyName("algorithmnObject")]
         public T AlgorithmnModel { get; set; }
+
+        [JsonPropertyName("transformedCommentDetail")]
+        public string TransformedComment { get; set; }
         public CommentViewModel(CommentModel commentModel)
         {
             CommentId = commentModel.CommentId;

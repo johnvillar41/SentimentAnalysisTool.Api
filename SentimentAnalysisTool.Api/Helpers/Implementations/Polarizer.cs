@@ -80,7 +80,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 else
                     algorithmnModel = await ApplyAlgorithmn<T>(updatedComment, polarizeCsvFileViewModel.Algorithmn);
 
-                CreatePolarizedResults<T>(polarizedResults, ref positiveInstance, ref negativeInstance, stringBuilder, commentScore, polarityScore, commentDetail, commentDate, algorithmnModel);
+                CreatePolarizedResults<T>(polarizedResults, ref updatedComment , ref positiveInstance, ref negativeInstance, stringBuilder, commentScore, polarityScore, commentDetail, commentDate, algorithmnModel);
             }
 
             await BuildFullStringAsync(wordFrequencies, stringBuilder);
@@ -90,8 +90,11 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
         }
 
 
-        private void CreatePolarizedResults<T>(List<CommentViewModel<T>> polarizedResults, ref int positiveInstance, ref int negativeInstance, StringBuilder stringBuilder, dynamic commentScore, dynamic polarityScore, dynamic commentDetail, dynamic commentDate, dynamic algorithmnModel)
+        private void CreatePolarizedResults<T>(List<CommentViewModel<T>> polarizedResults, ref string updatedComment, ref int positiveInstance, ref int negativeInstance, StringBuilder stringBuilder, dynamic commentScore, dynamic polarityScore, dynamic commentDetail, dynamic commentDate, dynamic algorithmnModel)
         {
+            if (updatedComment.Equals(string.Empty))
+                updatedComment = commentDetail;
+
             polarizedResults.Add(new CommentViewModel<T>
             {
                 CommentId = -1,
@@ -100,7 +103,8 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 CommentDetail = Convert.ToString(commentDetail),
                 CommentPolarity = Convert.ToString(polarityScore),
                 Date = DateTime.Parse(Convert.ToString(commentDate)),
-                AlgorithmnModel = algorithmnModel
+                AlgorithmnModel = algorithmnModel,
+                TransformedComment = updatedComment
             });
             stringBuilder.Append(commentDetail);
 
