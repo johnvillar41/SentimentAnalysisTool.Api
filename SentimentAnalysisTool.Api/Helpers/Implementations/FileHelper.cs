@@ -85,7 +85,7 @@ namespace SentimentAnalysisTool.Api.Helpers
                 if (commentDetail == null)
                     break;
 
-                if (polarizeCsvFileViewModel.ShouldRemoveSlangs)
+                if (polarizeCsvFileViewModel.ShouldConvertSlangs)
                 {
                     var updatedComment = await _textProcessor.ConvertSlangWordToBaseWordAsync(commentDetail, corpusTypeModel.CorpusTypeId);
                     worksheet.Cells[i, 3] = updatedComment;
