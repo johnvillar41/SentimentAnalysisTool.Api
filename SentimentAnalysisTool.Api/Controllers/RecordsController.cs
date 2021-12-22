@@ -26,7 +26,6 @@ namespace SentimentAnalysisTool.Api.Controllers
         private readonly IWordFrequencyService _wordFrequencyService;
         private readonly IRecordService _recordService;
         private readonly ICorpusTypeService _corpusTypeService;
-        private readonly ISlangRecordsService _slangRecordsService;
         private readonly IServiceWrapper _serviceWrapper;
         private readonly IFileHelper _fileHelper;
         private readonly ITextProcessor _textProcessor;

@@ -293,7 +293,7 @@ namespace SentimentAnalysisTool.Tests
                 .Setup(m => m.UploadCsvAsync(It.IsAny<IFormFile>()))
                 .Returns(Task.FromResult(string.Empty));
             //Arrange 
-            var result = await recordController.UploadCsv(It.IsAny<UploadCsvFileViewModel>());
+            var result = await recordController.UploadCsv(It.IsAny<IFormFile>(), It.IsAny<UploadCsvFileViewModel>());
             //Assert
             var message = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Error Uploading file!", message.Value);
@@ -306,7 +306,7 @@ namespace SentimentAnalysisTool.Tests
                 .Setup(m => m.UploadCsvAsync(It.IsAny<IFormFile>()))
                 .Returns(Task.FromResult("Sample String"));
             //Arrange 
-            var result = await recordController.UploadCsv(It.IsAny<UploadCsvFileViewModel>());
+            var result = await recordController.UploadCsv(It.IsAny<IFormFile>(), It.IsAny<UploadCsvFileViewModel>());
             //Assert
             Assert.IsType<OkObjectResult>(result);
         }
@@ -318,7 +318,7 @@ namespace SentimentAnalysisTool.Tests
                 .Setup(m => m.UploadCsvAsync(It.IsAny<IFormFile>()))
                 .Returns(Task.FromResult("Sample String"));
             //Arrange 
-            var result = await recordController.UploadCsv(It.IsAny<UploadCsvFileViewModel>());
+            var result = await recordController.UploadCsv(It.IsAny<IFormFile>(), It.IsAny<UploadCsvFileViewModel>());
             //Assert
             Assert.IsType<OkObjectResult>(result);
         }
