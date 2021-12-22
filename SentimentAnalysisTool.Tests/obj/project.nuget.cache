@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "z7DG5OjTjfhqk7BSUXjILXkuLIkkTnze9WaD1ujXKC6xwCWDaMYZcHctr5VV/nAfG2NxJjipIb/KLyqg/tet9Q==",
+  "dgSpecHash": "e9NMZifhC1gb/cpyrzHHbROAw0vuuGgfdwI33JLBten5JNnAQn+9QRPSKa2UxDcz++6dpzx5hssMZX+PNvuv6A==",
   "success": true,
   "projectFilePath": "C:\\Users\\Villar\\Desktop\\SentimentAnalysisToolBackend\\SentimentAnalysisTool.Tests\\SentimentAnalysisTool.Tests.csproj",
   "expectedPackageFiles": [
@@ -15,6 +15,7 @@
     "C:\\Users\\Villar\\.nuget\\packages\\microsoft.net.test.sdk\\16.7.1\\microsoft.net.test.sdk.16.7.1.nupkg.sha512",
     "C:\\Users\\Villar\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\Villar\\.nuget\\packages\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",
+    "C:\\Users\\Villar\\.nuget\\packages\\microsoft.office.interop.excel\\15.0.4795.1000\\microsoft.office.interop.excel.15.0.4795.1000.nupkg.sha512",
     "C:\\Users\\Villar\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
     "C:\\Users\\Villar\\.nuget\\packages\\microsoft.testplatform.objectmodel\\16.7.1\\microsoft.testplatform.objectmodel.16.7.1.nupkg.sha512",
     "C:\\Users\\Villar\\.nuget\\packages\\microsoft.testplatform.testhost\\16.7.1\\microsoft.testplatform.testhost.16.7.1.nupkg.sha512",
@@ -122,5 +123,16 @@
     "C:\\Users\\Villar\\.nuget\\packages\\xunit.extensibility.execution\\2.4.1\\xunit.extensibility.execution.2.4.1.nupkg.sha512",
     "C:\\Users\\Villar\\.nuget\\packages\\xunit.runner.visualstudio\\2.4.3\\xunit.runner.visualstudio.2.4.3.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'Microsoft.Office.Interop.Excel 15.0.4795.1000' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework 'net5.0'. This package may not be fully compatible with your project.",
+      "libraryId": "Microsoft.Office.Interop.Excel",
+      "targetGraphs": [
+        "net5.0"
+      ]
+    }
+  ]
 }

@@ -28,7 +28,6 @@ namespace SentimentAnalysisTool.Api.Controllers
         private readonly ICorpusTypeService _corpusTypeService;
         private readonly IServiceWrapper _serviceWrapper;
         private readonly IFileHelper _fileHelper;
-        private readonly ITextProcessor _textProcessor;
         private readonly IConfiguration _configuration;
         private string ConnectionString { get; }
         public RecordsController(
