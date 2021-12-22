@@ -59,7 +59,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         public async Task<IActionResult> AddSlangRecords([FromForm] IFormFile file, [FromRoute] int corpusTypeId)
         {
             var result = await _fileHelper.UploadCsvAsync(file, UploadType.Slang);
-            var slangRecords = await TraverseSlangRecordFileAsync(result, corpusTypeId);
+            var slangRecords = await _fileHelper.TraverseSlangRecordFileAsync(result, corpusTypeId);
             var slangRecordsResult = await _slangRecordsService.AddSlangRecordAsync(slangRecords, corpusTypeId, ConnectionString);
             if (slangRecordsResult)
                 return Ok();
@@ -96,28 +96,6 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             return BadRequest();
         }
-        private async Task<IEnumerable<SlangRecordModel>> TraverseSlangRecordFileAsync(string filePath, int corpusTypeId)
-        {
-            List<SlangRecordModel> slangRecords = new();
-            var application = new Application();
-            var workbook = application.Workbooks.Open(filePath, Notify: false, ReadOnly: true);
-            Worksheet worksheet = (Worksheet)workbook.ActiveSheet;
-            for (int i = 2; i <= worksheet.Columns.Count; i++)
-            {
-                if (worksheet.Cells[i, 1].Value == null)
-                    break;
-
-                var slangRecord = worksheet.Cells[i, 1].Value;
-                var slangDefinition = worksheet.Cells[i, 2].Value;
-                slangRecords.Add(new SlangRecordModel()
-                {
-                    CorpusType = await _corpusTypeService.FindCorpusTypeAsync(corpusTypeId, ConnectionString),
-                    SlangName = slangRecord,
-                    SlangMeaning = slangDefinition
-                });
-            }
-
-            return slangRecords;
-        }
+        
     }
 }

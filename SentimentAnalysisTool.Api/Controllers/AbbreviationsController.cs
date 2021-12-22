@@ -41,7 +41,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             [FromRoute] int corpusTypeId)
         {
             var filepath = await _fileHelper.UploadCsvAsync(file, UploadType.Abbreviation);
-            var abbreviations = await TraverseAbbreviationsFileAsync(filepath, corpusTypeId);
+            var abbreviations = await _fileHelper.TraverseAbbreviationsFileAsync(filepath, corpusTypeId);
             var result = await _abbreviationsService.AddAbbreviationAsync((IEnumerable<AbbreviationModel>)abbreviations, ConnectionString);
             if (result)
                 return Ok();
@@ -67,28 +67,6 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             return BadRequest();
         }
-        private async Task<IEnumerable<SlangRecordModel>> TraverseAbbreviationsFileAsync(string filePath, int corpusTypeId)
-        {
-            List<AbbreviationModel> abbreviations = new();
-            var application = new Application();
-            var workbook = application.Workbooks.Open(filePath, Notify: false, ReadOnly: true);
-            Worksheet worksheet = (Worksheet)workbook.ActiveSheet;
-            for (int i = 2; i <= worksheet.Columns.Count; i++)
-            {
-                if (worksheet.Cells[i, 1].Value == null)
-                    break;
-
-                var abbreviation = worksheet.Cells[i, 1].Value;
-                var abbreviationMeaning = worksheet.Cells[i, 2].Value;
-                abbreviations.Add(new AbbreviationModel()
-                {
-                    CorpusType = await _corpusTypeService.FindCorpusTypeAsync(corpusTypeId, ConnectionString),
-                    Abbreviation = abbreviation,
-                    AbbreviationWord = abbreviationMeaning
-                });
-            }
-
-            return (IEnumerable<SlangRecordModel>)abbreviations;
-        }
+        
     }
 }
