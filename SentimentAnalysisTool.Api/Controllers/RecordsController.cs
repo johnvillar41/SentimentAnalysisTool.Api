@@ -28,6 +28,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         private readonly ICorpusTypeService _corpusTypeService;
         private readonly IServiceWrapper _serviceWrapper;
         private readonly IFileHelper _fileHelper;
+        private readonly IPolarizer _polarizer;
         private readonly IConfiguration _configuration;
         private string ConnectionString { get; }
         public RecordsController(
@@ -38,7 +39,8 @@ namespace SentimentAnalysisTool.Api.Controllers
             ICorpusTypeService corpusTypeService,
             IServiceWrapper serviceWrapper,
             IFileHelper fileHelper,
-            IConfiguration configuration)
+            IConfiguration configuration, 
+            IPolarizer polarizer)
         {
             _commentService = commentService;
             _corpusRecordService = corpusRecordService;
@@ -49,6 +51,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             _configuration = configuration;
             _fileHelper = fileHelper;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
+            _polarizer = polarizer;
         }
         //POST: api/Records/Upload
         [HttpPost]
@@ -75,12 +78,12 @@ namespace SentimentAnalysisTool.Api.Controllers
                 switch (uploadCsvFileViewModel.Algorithmn)
                 {
                     case AlgorithmnType.SentiWordNet:
-                        return Ok(await _fileHelper.PolarizeCsvFileAsync<SentiWordNetModel>(polarizeCsvFileViewModel));
+                        return Ok(await _polarizer.PolarizeCsvFileAsync<SentiWordNetModel>(polarizeCsvFileViewModel));
                     case AlgorithmnType.Vader:
-                        var obj = await _fileHelper.PolarizeCsvFileAsync<VaderModel>(polarizeCsvFileViewModel);
+                        var obj = await _polarizer.PolarizeCsvFileAsync<VaderModel>(polarizeCsvFileViewModel);
                         return Ok(obj);
                     case AlgorithmnType.Hybrid:
-                        return Ok(await _fileHelper.PolarizeCsvFileAsync<HybridModel>(polarizeCsvFileViewModel));
+                        return Ok(await _polarizer.PolarizeCsvFileAsync<HybridModel>(polarizeCsvFileViewModel));
                 }
             }
             catch (HttpRequestException)

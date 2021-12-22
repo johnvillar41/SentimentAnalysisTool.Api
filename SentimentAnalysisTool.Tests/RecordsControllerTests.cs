@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Moq;
 using SentimentAnalysisTool.Api.Controllers;
 using SentimentAnalysisTool.Api.Helpers;
+using SentimentAnalysisTool.Api.Helpers.Interfaces;
 using SentimentAnalysisTool.Api.Models;
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
@@ -27,6 +28,7 @@ namespace SentimentAnalysisTool.Tests
         private readonly Mock<ICorpusTypeService> mockCorpusTypeService;
         private readonly Mock<IConfiguration> mockConfiguration;
         private readonly Mock<IFileHelper> mockFileHelper;
+        private readonly Mock<IPolarizer> mockPolarizer;
         private readonly Mock<IServiceWrapper> mockServiceWrapper;
         private readonly RecordsController recordController;
 
@@ -39,6 +41,7 @@ namespace SentimentAnalysisTool.Tests
             mockCorpusTypeService = new Mock<ICorpusTypeService>();
             mockConfiguration = new Mock<IConfiguration>();
             mockFileHelper = new Mock<IFileHelper>();
+            mockPolarizer = new Mock<IPolarizer>();
             mockServiceWrapper = new Mock<IServiceWrapper>();
             recordController = new RecordsController(
                 mockCommentService.Object,
@@ -47,8 +50,9 @@ namespace SentimentAnalysisTool.Tests
                 mockRecordService.Object,
                 mockCorpusTypeService.Object,
                 mockServiceWrapper.Object,
-                mockFileHelper.Object,
-                mockConfiguration.Object
+                mockFileHelper.Object,                
+                mockConfiguration.Object,
+                mockPolarizer.Object
             );
         }
 
