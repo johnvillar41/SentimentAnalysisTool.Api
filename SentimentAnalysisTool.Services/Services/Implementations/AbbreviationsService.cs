@@ -20,7 +20,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             using var connection = new SqlConnection(connectionString);
             var result = await connection.ExecuteAsync(procedure, new
             {
-                abbreviation.CorpusTypeModel.CorpusTypeId,
+                abbreviation.CorpusType.CorpusTypeId,
                 abbreviation.Abbreviation,
                 abbreviation.AbbreviationWord
             }, commandType: CommandType.StoredProcedure);
@@ -39,7 +39,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             {
                 result += await connection.ExecuteAsync(procedure, new
                 {
-                    abbreviation.CorpusTypeModel.CorpusTypeId,
+                    abbreviation.CorpusType.CorpusTypeId,
                     abbreviation.Abbreviation,
                     abbreviation.AbbreviationWord
                 }, transaction, commandType: CommandType.StoredProcedure);
@@ -60,7 +60,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             {
                 result += await connection.ExecuteAsync(procedure, new
                 {
-                    abbreviation.CorpusTypeModel.CorpusTypeId,
+                    abbreviation.CorpusType.CorpusTypeId,
                     abbreviation.Abbreviation,
                     abbreviation.AbbreviationWord
                 }, commandType: CommandType.StoredProcedure);

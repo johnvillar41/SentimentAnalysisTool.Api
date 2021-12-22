@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Moq;
 using SentimentAnalysisTool.Api.Controllers;
+using SentimentAnalysisTool.Api.Helpers;
 using SentimentAnalysisTool.Api.Models;
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
@@ -19,16 +20,20 @@ namespace SentimentAnalysisTool.Tests
         private readonly Mock<IAbbreviationsService> mockAbbreviationsService;
         private readonly Mock<ICorpusTypeService> mockCorpusTypeService;
         private readonly Mock<IConfiguration> mockConfiguration;
+        private readonly Mock<IFileHelper> mockFileHelper;
         private readonly AbbreviationsController abbreviationsController;
         public AbbreviationsControllerTests()
         {
             mockAbbreviationsService = new Mock<IAbbreviationsService>();
             mockCorpusTypeService = new Mock<ICorpusTypeService>();
             mockConfiguration = new Mock<IConfiguration>();
+            mockFileHelper = new Mock<IFileHelper>();
             abbreviationsController = new AbbreviationsController(
                 mockAbbreviationsService.Object,
                 mockCorpusTypeService.Object,
-                mockConfiguration.Object);
+                mockConfiguration.Object,
+                mockFileHelper.Object
+                );
         }
         [Fact]
         public async Task Should_Return_Ok_When_AddAbbreviation_Returns_True()

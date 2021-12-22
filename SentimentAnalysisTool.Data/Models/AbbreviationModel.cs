@@ -9,7 +9,7 @@ namespace SentimentAnalysisTool.Data.Models
     public class AbbreviationModel
     {
         public int AbbreviationsId { get; set; }
-        public CorpusTypeModel CorpusTypeModel { get; set; }
+        public CorpusTypeModel CorpusType { get; set; }
         public string Abbreviation { get; set; }
         public string AbbreviationWord { get; set; }
     }

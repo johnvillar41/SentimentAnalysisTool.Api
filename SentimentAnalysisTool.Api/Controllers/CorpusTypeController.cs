@@ -65,7 +65,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             var abbreviationTasks = corpusTypeViewModel.AbbreviationViewModels.Select(async x => new AbbreviationModel()
             {
                 AbbreviationsId = -1,
-                CorpusTypeModel = await _corpusTypeService.FindCorpusTypeAsync(x.CorpusTypeId, ConnectionString),
+                CorpusType = await _corpusTypeService.FindCorpusTypeAsync(x.CorpusTypeId, ConnectionString),
                 Abbreviation = x.Abbreviation,
                 AbbreviationWord = x.AbbreviationWord
             });
@@ -103,7 +103,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             if (corpusModel.Abbreviations.Any())
             {
                 //Insert Abbreviations
-                _ = corpusModel.Abbreviations.Select(x => x.CorpusTypeModel.CorpusTypeId = resultPrimaryKey);
+                _ = corpusModel.Abbreviations.Select(x => x.CorpusType.CorpusTypeId = resultPrimaryKey);
                 var slangRecordResult = await _abbreviationsService.AddAbbreviationAsync(corpusModel.Abbreviations, connection, transaction);
                 if (!slangRecordResult)
                     return BadRequest();

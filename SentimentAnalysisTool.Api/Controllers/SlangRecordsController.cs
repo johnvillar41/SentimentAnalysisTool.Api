@@ -98,7 +98,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         }
         private async Task<IEnumerable<SlangRecordModel>> TraverseSlangRecordFileAsync(string filePath, int corpusTypeId)
         {
-            List<SlangRecordModel> slangRecords = new List<SlangRecordModel>();
+            List<SlangRecordModel> slangRecords = new();
             var application = new Application();
             var workbook = application.Workbooks.Open(filePath, Notify: false, ReadOnly: true);
             Worksheet worksheet = (Worksheet)workbook.ActiveSheet;

@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Office.Interop.Excel;
+using SentimentAnalysisTool.Api.Helpers;
+using SentimentAnalysisTool.Api.Helpers.Enums;
 using SentimentAnalysisTool.Api.Models;
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
@@ -17,26 +20,43 @@ namespace SentimentAnalysisTool.Api.Controllers
     {
         private readonly IAbbreviationsService _abbreviationsService;
         private readonly ICorpusTypeService _corpusTypeService;
+        private readonly IFileHelper _fileHelper;
         private readonly IConfiguration _configuration;
         private string ConnectionString { get; }
         public AbbreviationsController(
             IAbbreviationsService abbreviationsService,
             ICorpusTypeService corpusTypeService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IFileHelper fileHelper)
         {
             _abbreviationsService = abbreviationsService;
             _corpusTypeService = corpusTypeService;
             _configuration = configuration;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
+            _fileHelper = fileHelper;
         }
+        [HttpPost("{corpusTypeId}")]
+        public async Task<IActionResult> AddAbbreviations(
+            [FromForm] IFormFile file,
+            [FromRoute] int corpusTypeId)
+        {
+            var filepath = await _fileHelper.UploadCsvAsync(file, UploadType.Abbreviation);
+            var abbreviations = await TraverseAbbreviationsFileAsync(filepath, corpusTypeId);
+            var result = await _abbreviationsService.AddAbbreviationAsync((IEnumerable<AbbreviationModel>)abbreviations, ConnectionString);
+            if (result)
+                return Ok();
+
+            return BadRequest();
+        }
+
         [HttpPost]
-        public async Task<IActionResult> AddAbbreviations(            
+        public async Task<IActionResult> AddAbbreviations(
             [FromBody] IEnumerable<AbbreviationsViewModel> abbreviations)
         {
             var abbreviationModelTasks = abbreviations.Select(async m => new AbbreviationModel()
             {
                 AbbreviationsId = -1,
-                CorpusTypeModel = await _corpusTypeService.FindCorpusTypeAsync(m.CorpusTypeId, ConnectionString),
+                CorpusType = await _corpusTypeService.FindCorpusTypeAsync(m.CorpusTypeId, ConnectionString),
                 Abbreviation = m.Abbreviation,
                 AbbreviationWord = m.AbbreviationWord
             });
@@ -46,6 +66,29 @@ namespace SentimentAnalysisTool.Api.Controllers
                 return Ok();
 
             return BadRequest();
+        }
+        private async Task<IEnumerable<SlangRecordModel>> TraverseAbbreviationsFileAsync(string filePath, int corpusTypeId)
+        {
+            List<AbbreviationModel> abbreviations = new();
+            var application = new Application();
+            var workbook = application.Workbooks.Open(filePath, Notify: false, ReadOnly: true);
+            Worksheet worksheet = (Worksheet)workbook.ActiveSheet;
+            for (int i = 2; i <= worksheet.Columns.Count; i++)
+            {
+                if (worksheet.Cells[i, 1].Value == null)
+                    break;
+
+                var abbreviation = worksheet.Cells[i, 1].Value;
+                var abbreviationMeaning = worksheet.Cells[i, 2].Value;
+                abbreviations.Add(new AbbreviationModel()
+                {
+                    CorpusType = await _corpusTypeService.FindCorpusTypeAsync(corpusTypeId, ConnectionString),
+                    Abbreviation = abbreviation,
+                    AbbreviationWord = abbreviationMeaning
+                });
+            }
+
+            return (IEnumerable<SlangRecordModel>)abbreviations;
         }
     }
 }
