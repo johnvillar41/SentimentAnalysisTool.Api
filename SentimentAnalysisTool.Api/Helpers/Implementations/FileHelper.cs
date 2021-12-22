@@ -43,7 +43,7 @@ namespace SentimentAnalysisTool.Api.Helpers
             }
             return false;
         }
-        public async Task<IEnumerable<SlangRecordModel>> TraverseAbbreviationsFileAsync(string filePath, int corpusTypeId)
+        public async Task<IEnumerable<AbbreviationModel>> TraverseAbbreviationsFileAsync(string filePath, int corpusTypeId)
         {
             List<AbbreviationModel> abbreviations = new();
             var application = new Application();
@@ -64,7 +64,7 @@ namespace SentimentAnalysisTool.Api.Helpers
                 });
             }
 
-            return (IEnumerable<SlangRecordModel>)abbreviations;
+            return abbreviations;
         }
         public async Task<IEnumerable<SlangRecordModel>> TraverseSlangRecordFileAsync(string filePath, int corpusTypeId)
         {

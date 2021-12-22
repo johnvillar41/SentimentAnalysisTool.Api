@@ -15,6 +15,6 @@ namespace SentimentAnalysisTool.Api.Helpers
         Task<string> UploadCsvAsync(IFormFile file, UploadType uploadType);
         Task<bool> DeleteCsvAsync(string filePath);
         Task<IEnumerable<SlangRecordModel>> TraverseSlangRecordFileAsync(string filePath, int corpusTypeId);
-        Task<IEnumerable<SlangRecordModel>> TraverseAbbreviationsFileAsync(string filePath, int corpusTypeId);
+        Task<IEnumerable<AbbreviationModel>> TraverseAbbreviationsFileAsync(string filePath, int corpusTypeId);
     }
 }
