@@ -200,10 +200,6 @@
               "target": "Package",
               "version": "[5.0.12, )"
             },
-            "Microsoft.Office.Interop.Excel": {
-              "target": "Package",
-              "version": "[15.0.4795.1000, )"
-            },
             "System.Data.SqlClient": {
               "target": "Package",
               "version": "[4.8.3, )"

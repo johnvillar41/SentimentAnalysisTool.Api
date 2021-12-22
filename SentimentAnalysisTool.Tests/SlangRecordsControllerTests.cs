@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Moq;
 using SentimentAnalysisTool.Api.Controllers;
+using SentimentAnalysisTool.Api.Helpers;
 using SentimentAnalysisTool.Api.Models;
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
@@ -19,16 +20,19 @@ namespace SentimentAnalysisTool.Tests
         private readonly Mock<ISlangRecordsService> mockSlangRecordsService;
         private readonly Mock<ICorpusTypeService> mockCorpusTypeService;
         private readonly Mock<IConfiguration> mockConfiguration;
+        private readonly Mock<IFileHelper> mockFileHelper;
         private readonly SlangRecordsController slangRecordsController;
         public SlangRecordsControllerTests()
         {
             mockSlangRecordsService = new Mock<ISlangRecordsService>();
             mockCorpusTypeService = new Mock<ICorpusTypeService>();
             mockConfiguration = new Mock<IConfiguration>();
+            mockFileHelper = new Mock<IFileHelper>();
             slangRecordsController = new SlangRecordsController(
                 mockSlangRecordsService.Object,
                 mockConfiguration.Object,
-                mockCorpusTypeService.Object);
+                mockCorpusTypeService.Object,
+                mockFileHelper.Object);
         }
         [Fact]
         public async Task Should_Return_NotFound_When_AddSlangRecord_Is_Null()
@@ -85,7 +89,7 @@ namespace SentimentAnalysisTool.Tests
                .Setup(m => m.FindCorpusTypeAsync(It.IsAny<int>(), It.IsAny<string>()))
                .Returns(Task.FromResult(Mock.Of<CorpusTypeModel>()));
             mockSlangRecordsService
-                .Setup(m => m.AddSlangRecordAsync(It.IsAny<IEnumerable<SlangRecordModel>>(), It.IsAny<string>()))
+                .Setup(m => m.AddSlangRecordAsync(It.IsAny<IEnumerable<SlangRecordModel>>(),It.IsAny<int>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(true));
             //Act
             var result = await slangRecordsController.AddSlangRecords(mockListSlangRecordsViewModel);

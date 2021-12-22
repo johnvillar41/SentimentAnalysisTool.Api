@@ -1,15 +1,10 @@
 ﻿using Dapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Office.Interop.Excel;
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SentimentAnalysisTool.Services.Services.Implementations
@@ -31,11 +26,8 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             return false;
         }
 
-        public async Task<bool> AddSlangRecordAsync(IFormFile slangRecordsCsv, int corpusTypeId, string connectionString)
+        public async Task<bool> AddSlangRecordAsync(IEnumerable<SlangRecordModel> slangRecords, int corpusTypeId, string connectionString)
         {
-            var filePath = SaveCsvFile(slangRecordsCsv);
-            var slangRecords = TraverseSlangRecordFile(filePath);
-
             var procedure = StoredProcedures.SP_SAVE_SLANG_RECORD;
             using var connection = new SqlConnection(connectionString);
             var rowsAffected = 0;
@@ -44,8 +36,8 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                 rowsAffected += await connection.ExecuteAsync(procedure, new
                 {
                     CorpusTypeId = corpusTypeId,
-                    SlangName = item.Key,
-                    SlangMeaning = item.Value
+                    item.SlangName,
+                    item.SlangMeaning
                 }, commandType: CommandType.StoredProcedure);
             }
             if (rowsAffected > 0)
@@ -102,25 +94,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                 }, commandType: CommandType.Text);
             return record;
         }
-        private string SaveCsvFile(IFormFile file)
-        {
-            throw new NotImplementedException();
-        }
-        private Dictionary<string,string> TraverseSlangRecordFile(string filePath)
-        {
-            Dictionary<string, string> slangRecordDictionary = new Dictionary<string, string>();
-
-            var application = new Application();
-            var workbook = application.Workbooks.Open(filePath, Notify: false, ReadOnly: true);
-            Worksheet worksheet = (Worksheet)workbook.ActiveSheet;
-            for (int i = 2; i <= worksheet.Columns.Count; i++)
-            {
-                var slangRecord = worksheet.Cells[i, 1].ToString();
-                var slangDefinition = worksheet.Cells[i, 2].ToString();
-                slangRecordDictionary.Add(slangRecord, slangDefinition);
-            }
-
-            return slangRecordDictionary;
-        }
+       
+        
     }
 }
