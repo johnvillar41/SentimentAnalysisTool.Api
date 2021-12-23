@@ -63,13 +63,17 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
 
                 var updatedComment = string.Empty;
 
+                //Removal of SpecialCharacters
+                //TODO Set character limit of 250 chars max
+                updatedComment = _textProcessor.RemoveSpecialChars(commentDetail, -1);
+
                 //Convertion of Slang Words
                 if (polarizeCsvFileViewModel.ShouldConvertSlangs)
-                    updatedComment = await _textProcessor.ConvertSlangWordToBaseWordAsync(commentDetail, corpusTypeModel.CorpusTypeId);
+                    updatedComment = await _textProcessor.ConvertSlangWordToBaseWordAsync(updatedComment, corpusTypeModel.CorpusTypeId);
 
                 //Convertion of Abbreviation Words
                 if (polarizeCsvFileViewModel.ShouldConvertAbbreviations)
-                    updatedComment = await _textProcessor.ConvertAbbreviationToBaseWordAsync(commentDetail, corpusTypeModel.CorpusTypeId);
+                    updatedComment = await _textProcessor.ConvertAbbreviationToBaseWordAsync(updatedComment, corpusTypeModel.CorpusTypeId);
 
                 //Polarization using CorpusWords
                 //TODO

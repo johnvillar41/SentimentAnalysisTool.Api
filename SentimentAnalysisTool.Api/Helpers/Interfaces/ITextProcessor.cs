@@ -7,7 +7,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Interfaces
 {
     public interface ITextProcessor
     {
-        string RemoveSpecialCharsAsync(string comment, int totalChars);
+        string RemoveSpecialChars(string comment, int totalChars);
         Task<string> ConvertSlangWordToBaseWordAsync(string comment, int corpusTypeId);
         Task<string> ConvertAbbreviationToBaseWordAsync(string comment, int corpusTypeId);
     }

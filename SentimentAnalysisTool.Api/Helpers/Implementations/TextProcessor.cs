@@ -61,17 +61,20 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
             return finalComment;
         }
 
-        public string RemoveSpecialCharsAsync(string comment, int totalChars)
+        public string RemoveSpecialChars(string comment, int totalChars)
         {
             var specialChars = @"!#$%&'()*+,-./:;<=>?@[\]^_`{|}~";
             var specialCharArray = specialChars.ToCharArray();             
             var builder = new StringBuilder();
-            foreach (var c in comment)
-            {
-                builder.Append(c);
-                if (specialCharArray.Contains(c))
+            foreach (var character in comment)
+            {                
+                if (specialCharArray.Contains(character))
                 {
                     builder.Append("");
+                }
+                else
+                {
+                    builder.Append(character);
                 }
             }
             comment = builder.ToString();
