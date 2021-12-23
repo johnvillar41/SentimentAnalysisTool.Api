@@ -19,8 +19,8 @@ namespace SentimentAnalysisTool.Api.Helpers
         private readonly IConfiguration _configuration;
 
         public FileHelper(
-            IWebHostEnvironment webHostEnvironment, 
-            ICorpusTypeService corpusTypeService, 
+            IWebHostEnvironment webHostEnvironment,
+            ICorpusTypeService corpusTypeService,
             IConfiguration configuration)
         {
             _webHostEnvironment = webHostEnvironment;
@@ -102,6 +102,8 @@ namespace SentimentAnalysisTool.Api.Helpers
                     saveFile = Path.Combine(_webHostEnvironment.WebRootPath, @"files\", $"{guid}{csvFormFile.FileName}");
                 if (uploadType == UploadType.Slang)
                     saveFile = Path.Combine(_webHostEnvironment.WebRootPath, @"slangs\", $"{guid}{csvFormFile.FileName}");
+                if (uploadType == UploadType.Abbreviation)
+                    saveFile = Path.Combine(_webHostEnvironment.WebRootPath, @"abbreviaitons\", $"{guid}{csvFormFile.FileName}");
 
                 using var stream = new FileStream(saveFile, FileMode.Create);
                 await csvFormFile.CopyToAsync(stream);

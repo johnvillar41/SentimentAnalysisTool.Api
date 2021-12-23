@@ -42,7 +42,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         {
             var filepath = await _fileHelper.UploadCsvAsync(file, UploadType.Abbreviation);
             var abbreviations = await _fileHelper.TraverseAbbreviationsFileAsync(filepath, corpusTypeId);
-            var result = await _abbreviationsService.AddAbbreviationAsync((IEnumerable<AbbreviationModel>)abbreviations, ConnectionString);
+            var result = await _abbreviationsService.AddAbbreviationAsync(abbreviations, ConnectionString);
             if (result)
                 return Ok();
 
