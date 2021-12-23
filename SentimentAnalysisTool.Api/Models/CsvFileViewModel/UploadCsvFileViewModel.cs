@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 namespace SentimentAnalysisTool.Api.Models
 {
     public class UploadCsvFileViewModel : CsvFileViewModel
-    {       
-        
+    {
+        [JsonProperty("file")]
+        public IFormFile File { get; set; }
     }
 }

@@ -58,13 +58,23 @@ namespace SentimentAnalysisTool.Api.Controllers
         [HttpPost]
         [Route("Upload")]
         public async Task<IActionResult> UploadCsv(
-            [FromForm] IFormFile file,
-            [FromForm] UploadCsvFileViewModel uploadCsvFileViewModel)
+            [FromForm] UploadCsvFileFormViewModel uploadCsvFileFormViewModel)
         {
+
+            var uploadCsvFileViewModel = new UploadCsvFileViewModel()
+            {
+                File = uploadCsvFileFormViewModel.File,
+                Algorithmn = (AlgorithmnType)Enum.Parse(typeof(AlgorithmnType), uploadCsvFileFormViewModel.Algorithmn),
+                ShouldDeleteSlangs = Convert.ToBoolean(uploadCsvFileFormViewModel.ShouldDeleteSlangs),
+                ShouldConvertAbbreviations = Convert.ToBoolean(uploadCsvFileFormViewModel.ShouldConvertAbbreviations),
+                CorpusType = uploadCsvFileFormViewModel.CorpusType,
+                MaxNumberOfChars = int.Parse(uploadCsvFileFormViewModel.MaxNumberOfChars)
+            };
+
             var filePath = "";
             try
             {
-                filePath = await _fileHelper.UploadCsvAsync(file, UploadType.Comment);
+                filePath = await _fileHelper.UploadCsvAsync(uploadCsvFileViewModel.File, UploadType.Comment);
                 if (filePath.Equals(string.Empty))
                     return BadRequest("Error Uploading file!");
 
