@@ -64,8 +64,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 var updatedComment = string.Empty;
 
                 //Removal of SpecialCharacters
-                //TODO Set character limit of 250 chars max
-                updatedComment = _textProcessor.RemoveSpecialChars(commentDetail, -1);
+                updatedComment = _textProcessor.RemoveSpecialChars(commentDetail, polarizeCsvFileViewModel.MaxNumberOfChars);
 
                 //Convertion of Slang Words
                 if (polarizeCsvFileViewModel.ShouldConvertSlangs)

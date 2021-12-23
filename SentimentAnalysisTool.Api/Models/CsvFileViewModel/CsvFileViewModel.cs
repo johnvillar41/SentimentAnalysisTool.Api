@@ -20,5 +20,8 @@ namespace SentimentAnalysisTool.Api.Models
 
         [JsonPropertyName("corpusType")]
         public string CorpusType { get; set; }
+
+        [JsonPropertyName("maxNumberOfChars")]
+        public int MaxNumberOfChars { get; set; }
     }
 }
