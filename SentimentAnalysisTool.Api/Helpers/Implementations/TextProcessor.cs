@@ -33,7 +33,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 var slangRecord = await _slangRecordsService.FindSlangRecordAsync(commentList[i], corpusTypeId, ConnectionString);
                 if (slangRecord != null)
                 {
-                    if (commentList[i].Equals(slangRecord.SlangName))
+                    if (commentList[i].Equals(slangRecord.SlangName, StringComparison.OrdinalIgnoreCase))
                     {
                         commentList[i] = string.Empty;
                     }
@@ -51,7 +51,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 var abbreviationRecord = await _abbreviationsService.FindAbbreviationAsync(commentList[i], corpusTypeId, ConnectionString);
                 if (abbreviationRecord != null)
                 {
-                    if (commentList[i].Equals(abbreviationRecord.Abbreviation))
+                    if (commentList[i].Equals(abbreviationRecord.Abbreviation, StringComparison.OrdinalIgnoreCase))
                     {
                         commentList[i] = abbreviationRecord.AbbreviationWord;
                     }
