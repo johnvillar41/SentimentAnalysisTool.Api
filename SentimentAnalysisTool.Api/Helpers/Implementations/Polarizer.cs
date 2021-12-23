@@ -66,9 +66,10 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 //Removal of SpecialCharacters
                 updatedComment = _textProcessor.RemoveSpecialChars(commentDetail, polarizeCsvFileViewModel.MaxNumberOfChars);
 
-                //Convertion of Slang Words
+                //Deletion of Slang Words
+                //TODO
                 if (polarizeCsvFileViewModel.ShouldConvertSlangs)
-                    updatedComment = await _textProcessor.ConvertSlangWordToBaseWordAsync(updatedComment, corpusTypeModel.CorpusTypeId);
+                    updatedComment = await _textProcessor.RemoveSlangWordAsync(updatedComment, corpusTypeModel.CorpusTypeId);
 
                 //Convertion of Abbreviation Words
                 if (polarizeCsvFileViewModel.ShouldConvertAbbreviations)

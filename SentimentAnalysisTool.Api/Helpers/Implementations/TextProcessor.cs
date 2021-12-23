@@ -25,7 +25,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
             _abbreviationsService = abbreviationsService;
         }
-        public async Task<string> ConvertSlangWordToBaseWordAsync(string comment, int corpusTypeId)
+        public async Task<string> RemoveSlangWordAsync(string comment, int corpusTypeId)
         {
             var commentList = comment.Split(" ").ToList();
             for (int i = 0; i < commentList.Count; i++)
@@ -35,7 +35,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 {
                     if (commentList[i].Equals(slangRecord.SlangName))
                     {
-                        commentList[i] = slangRecord.SlangMeaning;
+                        commentList[i] = string.Empty;
                     }
                 }
             }

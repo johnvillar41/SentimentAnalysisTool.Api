@@ -9,3 +9,4 @@ C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Data\
 C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Data\obj\Debug\net5.0\SentimentAnalysisTool.Data.dll
 C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Data\obj\Debug\net5.0\ref\SentimentAnalysisTool.Data.dll
 C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Data\obj\Debug\net5.0\SentimentAnalysisTool.Data.pdb
+C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Data\obj\Debug\net5.0\SentimentAnalysisTool.Data.csprojAssemblyReference.cache

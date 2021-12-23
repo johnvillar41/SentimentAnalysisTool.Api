@@ -82,8 +82,7 @@ namespace SentimentAnalysisTool.Api.Helpers
                 slangRecords.Add(new SlangRecordModel()
                 {
                     CorpusType = await _corpusTypeService.FindCorpusTypeAsync(corpusTypeId, _configuration.GetConnectionString("SentimentDBConnection")),
-                    SlangName = slangRecord,
-                    SlangMeaning = slangDefinition
+                    SlangName = slangRecord
                 });
             }
 
