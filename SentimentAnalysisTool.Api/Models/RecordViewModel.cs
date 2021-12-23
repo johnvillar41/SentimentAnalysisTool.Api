@@ -12,19 +12,19 @@ namespace SentimentAnalysisTool.Api.Models
         public int RecordId { get; set; }
         public string RecordName { get; set; }
 
-        [JsonPropertyName("positivePercent")]
+        [JsonProperty("positivePercent")]
         public int PositivePercent { get; set; }
 
-        [JsonPropertyName("negativePercent")]
+        [JsonProperty("negativePercent")]
         public int NegativePercent { get; set; }
 
-        [JsonPropertyName("CommentModels")]
+        [JsonProperty("CommentModels")]
         public IEnumerable<CommentViewModel<T>> CommentViewModels { get; set; }
 
-        [JsonPropertyName("CorpusRecordModels")]
+        [JsonProperty("CorpusRecordModels")]
         public IEnumerable<CorpusRecordViewModel> CorpusRecordViewModels { get; set; }
 
-        [JsonPropertyName("WordFrequencyModels")]
+        [JsonProperty("WordFrequencyModels")]
         public IEnumerable<WordFrequencyViewModel> WordFrequencyViewModels { get; set; }
     }
 }

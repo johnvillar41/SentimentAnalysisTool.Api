@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace SentimentAnalysisTool.Api.Models
 {
@@ -9,13 +8,13 @@ namespace SentimentAnalysisTool.Api.Models
         public int CorpusTypeId { get; set; }
         public string CorpusTypeName { get; set; }
         
-        [JsonPropertyName("CorpusWordModels")]
+        [JsonProperty("CorpusWordModels")]
         public IEnumerable<CorpusWordViewModel> CorpusWordViewModels { get; set; } = new List<CorpusWordViewModel>();
         
-        [JsonPropertyName("SlangRecordModels")]
+        [JsonProperty("SlangRecordModels")]
         public IEnumerable<SlangRecordViewModel> SlangRecordViewModels { get; set; } = new List<SlangRecordViewModel>();
 
-        [JsonPropertyName("AbbreviationModels")]
+        [JsonProperty("AbbreviationModels")]
         public IEnumerable<AbbreviationsViewModel> AbbreviationViewModels{ get; set; } = new List<AbbreviationsViewModel>();
     }
 }

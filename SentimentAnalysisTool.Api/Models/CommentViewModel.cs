@@ -1,4 +1,5 @@
-﻿using SentimentAnalysisTool.Data.Models;
+﻿using Newtonsoft.Json;
+using SentimentAnalysisTool.Data.Models;
 using System;
 using System.Text.Json.Serialization;
 
@@ -6,28 +7,28 @@ namespace SentimentAnalysisTool.Api.Models
 {
     public class CommentViewModel<T>
     {
-        [JsonPropertyName("commentId")]
+        [JsonProperty("commentId")]
         public int CommentId { get; set; }
 
-        [JsonPropertyName("recordId")]
+        [JsonProperty("recordId")]
         public int RecordId { get; set; }
 
-        [JsonPropertyName("commentScore")]
+        [JsonProperty("commentScore")]
         public int CommentScore { get; set; }
 
-        [JsonPropertyName("commentPolarity")]
+        [JsonProperty("commentPolarity")]
         public string CommentPolarity { get; set; }
 
-        [JsonPropertyName("commentDetail")]
+        [JsonProperty("commentDetail")]
         public string CommentDetail { get; set; }
 
-        [JsonPropertyName("date")]
+        [JsonProperty("date")]
         public DateTime Date { get; set; }
 
-        [JsonPropertyName("algorithmnObject")]
+        [JsonProperty("algorithmnObject")]
         public T AlgorithmnModel { get; set; }
 
-        [JsonPropertyName("transformedCommentDetail")]
+        [JsonProperty("transformedCommentDetail")]
         public string TransformedComment { get; set; }
         public CommentViewModel(CommentModel commentModel)
         {

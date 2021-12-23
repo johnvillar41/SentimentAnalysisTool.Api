@@ -1,27 +1,23 @@
-﻿using SentimentAnalysisTool.Api.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
+using SentimentAnalysisTool.Api.Helpers;
 
 namespace SentimentAnalysisTool.Api.Models
 {
     public abstract class CsvFileViewModel
     {
-        [JsonPropertyName("algorithmn")]
+        [JsonProperty("algorithmn")]
         public AlgorithmnType Algorithmn { get; set; }
 
-        [JsonPropertyName("shouldConvertSlangs")]
+        [JsonProperty("shouldConvertSlangs")]
         public bool ShouldConvertSlangs { get; set; }
 
-        [JsonPropertyName("shouldConvertAbbreviations")]
+        [JsonProperty("shouldConvertAbbreviations")]
         public bool ShouldConvertAbbreviations { get; set; }
 
-        [JsonPropertyName("corpusType")]
+        [JsonProperty("corpusType")]
         public string CorpusType { get; set; }
 
-        [JsonPropertyName("maxNumberOfChars")]
+        [JsonProperty("maxNumberOfChars")]
         public int MaxNumberOfChars { get; set; }
     }
 }
