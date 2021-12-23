@@ -8,8 +8,8 @@ namespace SentimentAnalysisTool.Api.Models
         [JsonProperty("algorithmn")]
         public AlgorithmnType Algorithmn { get; set; }
 
-        [JsonProperty("shouldConvertSlangs")]
-        public bool ShouldConvertSlangs { get; set; }
+        [JsonProperty("shouldDeleteSlangs")]
+        public bool ShouldDeleteSlangs { get; set; }
 
         [JsonProperty("shouldConvertAbbreviations")]
         public bool ShouldConvertAbbreviations { get; set; }

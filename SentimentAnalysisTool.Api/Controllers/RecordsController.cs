@@ -72,7 +72,7 @@ namespace SentimentAnalysisTool.Api.Controllers
                 {
                     FilePath = filePath,
                     Algorithmn = uploadCsvFileViewModel.Algorithmn,
-                    ShouldConvertSlangs = uploadCsvFileViewModel.ShouldConvertSlangs,
+                    ShouldDeleteSlangs = uploadCsvFileViewModel.ShouldDeleteSlangs,
                     ShouldConvertAbbreviations = uploadCsvFileViewModel.ShouldConvertAbbreviations,
                     CorpusType = uploadCsvFileViewModel.CorpusType,
                     MaxNumberOfChars = uploadCsvFileViewModel.MaxNumberOfChars
