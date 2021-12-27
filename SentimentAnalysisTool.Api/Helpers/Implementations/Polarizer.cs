@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Office.Interop.Excel;
 using SentimentAnalysisTool.Api.Helpers.Interfaces;
 using SentimentAnalysisTool.Api.Models;
@@ -21,11 +22,18 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
         private readonly ITextProcessor _textProcessor;
         private readonly ICorpusTypeService _corpusTypeService;
         private readonly IConfiguration _configuration;
-        public Polarizer(HttpClient httpClient, ITextProcessor textProcessor, ICorpusTypeService corpusTypeService, IConfiguration configuration)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public Polarizer(
+            HttpClient httpClient, 
+            ITextProcessor textProcessor, 
+            ICorpusTypeService corpusTypeService, 
+            IConfiguration configuration,
+            IWebHostEnvironment webHostEnvironment)
         {
             _httpClient = httpClient;
             _textProcessor = textProcessor;
             _corpusTypeService = corpusTypeService;
+            _webHostEnvironment = webHostEnvironment;
             _configuration = configuration;
         }
 
@@ -174,8 +182,8 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
             {
                 SortedDictionary<string, int> mp = new();
                 string[] commentSplitted = comments.Split(' ');
-                var positiveSentimentsFile = File.ReadLines(@"C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Api\wwwroot\sentiment-files\positive-words.txt").ToList();
-                var negativeSentimentsFile = File.ReadLines(@"C:\Users\Villar\Desktop\SentimentAnalysisToolBackend\SentimentAnalysisTool.Api\wwwroot\sentiment-files\negative-words.txt");
+                var positiveSentimentsFile = File.ReadLines(Path.Combine(_webHostEnvironment.WebRootPath, @"sentiment-files\", "positive-words.txt"));
+                var negativeSentimentsFile = File.ReadLines(Path.Combine(_webHostEnvironment.WebRootPath, @"sentiment-files\", "negative-words.txt"));
 
                 for (int i = 0; i < commentSplitted.Length; i++)
                 {

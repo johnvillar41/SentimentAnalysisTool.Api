@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\SentimentAnalysisTool.Api"
+    "\\SentimentAnalysisTool.Api",
+    "\\SentimentAnalysisTool.Api\\Helpers",
+    "\\SentimentAnalysisTool.Api\\Helpers\\Implementations"
   ],
   "SelectedNode": "\\SentimentAnalysisTool.Api\\SentimentAnalysisTool.Api.sln",
   "PreviewInSolutionExplorer": false

@@ -69,23 +69,18 @@ namespace SentimentAnalysisTool.Api.Helpers
         public async Task<IEnumerable<SlangRecordModel>> TraverseSlangRecordFileAsync(string filePath, int corpusTypeId)
         {
             List<SlangRecordModel> slangRecords = new();
-            var application = new Application();
-            var workbook = application.Workbooks.Open(filePath, Notify: false, ReadOnly: true);
-            Worksheet worksheet = (Worksheet)workbook.ActiveSheet;
-            for (int i = 2; i <= worksheet.Columns.Count; i++)
+            if (File.Exists(Path.Combine(filePath)))
             {
-                if (worksheet.Cells[i, 1].Value == null)
-                    break;
-
-                var slangRecord = worksheet.Cells[i, 1].Value;
-                var slangDefinition = worksheet.Cells[i, 2].Value;
-                slangRecords.Add(new SlangRecordModel()
+                var slangNames = await File.ReadAllLinesAsync(Path.Combine(filePath));
+                foreach (var item in slangNames)
                 {
-                    CorpusType = await _corpusTypeService.FindCorpusTypeAsync(corpusTypeId, _configuration.GetConnectionString("SentimentDBConnection")),
-                    SlangName = slangRecord
-                });
+                    slangRecords.Add(new SlangRecordModel()
+                    {
+                        SlangName = item,
+                        CorpusType  = await _corpusTypeService.FindCorpusTypeAsync(corpusTypeId, _configuration.GetConnectionString("SentimentDBConnection"))
+                    });
+                }
             }
-
             return slangRecords;
         }
 
@@ -94,7 +89,8 @@ namespace SentimentAnalysisTool.Api.Helpers
             var fileExtension = Path.GetExtension(csvFormFile.FileName);
             var guid = Guid.NewGuid();
             if (fileExtension.Equals(".xlsx", StringComparison.CurrentCultureIgnoreCase) ||
-                fileExtension.Equals(".csv", StringComparison.CurrentCultureIgnoreCase))
+                fileExtension.Equals(".csv", StringComparison.CurrentCultureIgnoreCase) ||
+                fileExtension.Equals(".txt", StringComparison.CurrentCultureIgnoreCase))
             {
                 var saveFile = string.Empty;
                 if (uploadType == UploadType.Comment)
