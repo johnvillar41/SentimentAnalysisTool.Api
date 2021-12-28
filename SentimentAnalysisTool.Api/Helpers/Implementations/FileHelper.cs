@@ -8,6 +8,7 @@ using SentimentAnalysisTool.Services.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SentimentAnalysisTool.Api.Helpers
@@ -68,20 +69,18 @@ namespace SentimentAnalysisTool.Api.Helpers
         }
         public async Task<IEnumerable<SlangRecordModel>> TraverseSlangRecordFileAsync(string filePath, int corpusTypeId)
         {
-            List<SlangRecordModel> slangRecords = new();
             if (File.Exists(Path.Combine(filePath)))
             {
-                var slangNames = await File.ReadAllLinesAsync(Path.Combine(filePath));
-                foreach (var item in slangNames)
+                var slangNames = File.ReadLines(Path.Combine(filePath)).ToList();
+                var slangRecordsTasks = slangNames.Select(async x => new SlangRecordModel()
                 {
-                    slangRecords.Add(new SlangRecordModel()
-                    {
-                        SlangName = item,
-                        CorpusType  = await _corpusTypeService.FindCorpusTypeAsync(corpusTypeId, _configuration.GetConnectionString("SentimentDBConnection"))
-                    });
-                }
+                    SlangName = x,
+                    CorpusType = await _corpusTypeService.FindCorpusTypeAsync(corpusTypeId, _configuration.GetConnectionString("SentimentDBConnection"))
+                });
+                var slangRecords = await Task.WhenAll(slangRecordsTasks);
+                return slangRecords;
             }
-            return slangRecords;
+            return new List<SlangRecordModel>();
         }
 
         public async Task<string> UploadCsvAsync(IFormFile csvFormFile, UploadType uploadType)
