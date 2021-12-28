@@ -30,13 +30,16 @@ namespace SentimentAnalysisTool.Api.Models
 
         [JsonProperty("transformedCommentDetail")]
         public string TransformedComment { get; set; }
+
+        [JsonProperty("manualTransformedComment")]
+        public string ManualTransformedComment { get; set; }
         public CommentViewModel(CommentModel commentModel)
         {
             CommentId = commentModel.CommentId;
             RecordId = commentModel.Record.RecordId;
             CommentScore = commentModel.CommentScore;
             CommentDetail = commentModel.CommentDetail;
-            Date = commentModel.Date;            
+            Date = commentModel.Date;      
         }
         public CommentViewModel()
         {

@@ -64,6 +64,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 var polarityScore = worksheet.Cells[i, 2].Value;
                 var commentDetail = worksheet.Cells[i, 3].Value;
                 var commentDate = worksheet.Cells[i, 4].Value;
+                var manualTransformedComment = worksheet.Cells[i, 6].Value;
 
                 if (commentDetail == null)
                     break;
@@ -91,17 +92,17 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 else
                     algorithmnModel = await ApplyAlgorithmn<T>(updatedComment, polarizeCsvFileViewModel.Algorithmn);
 
-                CreatePolarizedResults<T>(polarizedResults, ref updatedComment, ref positiveInstance, ref negativeInstance, stringBuilder, commentScore, polarityScore, commentDetail, commentDate, algorithmnModel);
+                CreatePolarizedResults<T>(polarizedResults, ref updatedComment, ref positiveInstance, ref negativeInstance, stringBuilder, commentScore, polarityScore, commentDetail, commentDate, algorithmnModel, manualTransformedComment);
             }
 
-            await BuildFullStringAsync(wordFrequencies, stringBuilder);
+            await BuildWordFrequencyModels(wordFrequencies, stringBuilder);
 
             RecordViewModel<T> recordViewModel = BuildRecordViewModel(polarizedResults, wordFrequencies, application, workbook, positiveInstance, negativeInstance);
             return recordViewModel;
         }
 
 
-        private void CreatePolarizedResults<T>(List<CommentViewModel<T>> polarizedResults, ref string updatedComment, ref int positiveInstance, ref int negativeInstance, StringBuilder stringBuilder, dynamic commentScore, dynamic polarityScore, dynamic commentDetail, dynamic commentDate, dynamic algorithmnModel)
+        private void CreatePolarizedResults<T>(List<CommentViewModel<T>> polarizedResults, ref string updatedComment, ref int positiveInstance, ref int negativeInstance, StringBuilder stringBuilder, dynamic commentScore, dynamic polarityScore, dynamic commentDetail, dynamic commentDate, dynamic algorithmnModel, dynamic manualTransformedComment)
         {
             if (updatedComment.Equals(string.Empty))
                 updatedComment = commentDetail;
@@ -115,7 +116,8 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 CommentPolarity = Convert.ToString(polarityScore),
                 Date = DateTime.Parse(Convert.ToString(commentDate)),
                 AlgorithmnModel = algorithmnModel,
-                TransformedComment = updatedComment
+                TransformedComment = updatedComment,
+                ManualTransformedComment = Convert.ToString(manualTransformedComment)
             });
             stringBuilder.Append(commentDetail);
 
@@ -128,7 +130,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 negativeInstance++;
         }
 
-        private async Task BuildFullStringAsync(List<WordFrequencyViewModel> wordFrequencies, StringBuilder stringBuilder)
+        private async Task BuildWordFrequencyModels(List<WordFrequencyViewModel> wordFrequencies, StringBuilder stringBuilder)
         {
             //Build fullstring here
             SortedDictionary<string, int> wordFrequencyDictionary = await CalculateWordFrequency(stringBuilder.ToString());
