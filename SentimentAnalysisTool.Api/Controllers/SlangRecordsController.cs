@@ -54,8 +54,8 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             return BadRequest();
         }
-        //POST: api/SlangRecords/AddSlangRecords/Csv/{corpusTypeId}
-        [HttpPost("AddSlangRecords/Csv/{corpusTypeId}")]
+        //POST: api/SlangRecords/AddSlangRecords/{corpusTypeId}
+        [HttpPost("AddSlangRecords/{corpusTypeId}")]
         public async Task<IActionResult> AddSlangRecords([FromForm] IFormFile file, [FromRoute] int corpusTypeId)
         {
             var result = await _fileHelper.UploadCsvAsync(file, UploadType.Slang);

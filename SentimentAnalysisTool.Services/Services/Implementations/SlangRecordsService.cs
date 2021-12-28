@@ -28,18 +28,18 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> AddSlangRecordAsync(IEnumerable<SlangRecordModel> slangRecords, int corpusTypeId, string connectionString)
         {
+            List<int> rowsAffected = new();
             var procedure = StoredProcedures.SP_SAVE_SLANG_RECORD;
             using var connection = new SqlConnection(connectionString);
-            var rowsAffected = 0;
             foreach (var item in slangRecords)
             {
-                rowsAffected += await connection.ExecuteAsync(procedure, new
+                rowsAffected.Add(await connection.ExecuteAsync(procedure, new
                 {
                     CorpusTypeId = corpusTypeId,
                     item.SlangName
-                }, commandType: CommandType.StoredProcedure);
+                }, commandType: CommandType.StoredProcedure));
             }
-            if (rowsAffected > 0)
+            if (rowsAffected.Contains(1))
                 return true;
 
             return false;
@@ -47,19 +47,19 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<bool> AddSlangRecordAsync(IEnumerable<SlangRecordModel> slangRecord, DbTransaction transaction, SqlConnection connection)
         {
+            List<int> rowsAffected = new();
             var procedure = StoredProcedures.SP_SAVE_SLANG_RECORD;
             if (connection.State == ConnectionState.Closed)
                 await connection.OpenAsync();
-            var rowsAffected = 0;
             foreach (var item in slangRecord)
             {
-                rowsAffected += await connection.ExecuteAsync(procedure, new
+                rowsAffected.Add(await connection.ExecuteAsync(procedure, new
                 {
                     item.CorpusType.CorpusTypeId,
                     item.SlangName
-                }, transaction, commandType: CommandType.StoredProcedure);
+                }, transaction, commandType: CommandType.StoredProcedure));
             }
-            if (rowsAffected > 0)
+            if (rowsAffected.Contains(1))
                 return true;
 
             return false;
