@@ -36,6 +36,16 @@ namespace SentimentAnalysisTool.Api.Controllers
             _fileHelper = fileHelper;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
         }
+        //GET: api/SlangRecords/{corpusTypeId}
+        [HttpGet("{corpusTypeId?}")]
+        public async Task<IActionResult> GetSlangRecord([FromRoute] int? corpusTypeId)
+        {
+            var slangs = await _slangRecordsService.FetchSlangRecordAsync(corpusTypeId, ConnectionString);
+            if (slangs == null)
+                return NotFound();
+
+            return Ok(slangs);
+        }
         //POST: api/SlangRecords
         [HttpPost]
         public async Task<IActionResult> AddSlangRecord([FromBody] SlangRecordViewModel slangRecordViewModel)

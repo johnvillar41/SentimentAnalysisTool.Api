@@ -14,5 +14,6 @@ namespace SentimentAnalysisTool.Services.Services.Interfaces
         Task<bool> AddSlangRecordAsync(IEnumerable<SlangRecordModel> slangRecord, DbTransaction transaction, SqlConnection connection);
         Task<bool> DeleteSlangRecordAsync(int slangRecordId, string connectionString);
         Task<SlangRecordModel> FindSlangRecordAsync(string slangRecord, int corpusTypeId, string connectionString);
+        Task<IEnumerable<SlangRecordModel>> FetchSlangRecordAsync(int? corpusTypeId, string connectionString);
     }
 }

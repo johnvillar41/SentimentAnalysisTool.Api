@@ -80,6 +80,23 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             return false;
         }
 
+        public async Task<IEnumerable<SlangRecordModel>> FetchSlangRecordAsync(int? corpusTypeId, string connectionString)
+        {
+            var procedure = string.Empty;
+            if (corpusTypeId == null)
+                procedure = StoredProcedures.SP_FETCH_ALL_SLANG_RECORDS;
+            else
+                procedure = StoredProcedures.SP_FETCH_SLANG_RECORDS;
+
+            using var connection = new SqlConnection(connectionString);
+            var records = await connection.QueryAsync<SlangRecordModel>(procedure,
+                new
+                {
+                    CorpusTypeId = corpusTypeId
+                }, commandType: CommandType.StoredProcedure);
+            return records;
+        }
+
         public async Task<SlangRecordModel> FindSlangRecordAsync(string slangRecord, int corpusTypeId, string connectionString)
         {
             var procedure = StoredProcedures.SP_FETCH_SLANG_RECORD;
@@ -91,6 +108,6 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                     CorpusTypeId = corpusTypeId
                 }, commandType: CommandType.StoredProcedure);
             return record;
-        }      
+        }
     }
 }
