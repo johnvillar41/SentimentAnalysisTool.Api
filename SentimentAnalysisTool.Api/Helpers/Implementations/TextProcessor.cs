@@ -66,24 +66,15 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
             var specialChars = @"!#$%&'()*+,-./:;<=>?@[\]^_`{|}~";
             var specialCharArray = specialChars.ToCharArray();
             var builder = new StringBuilder();
-            int index = 0;
             foreach (var character in comment)
             {
-                index++;
-                if (index <= totalChars)
+                if (specialCharArray.Contains(character))
                 {
-                    if (specialCharArray.Contains(character))
-                    {
-                        builder.Append("");
-                    }
-                    else
-                    {
-                        builder.Append(character);
-                    }
+                    builder.Append("");
                 }
                 else
                 {
-                    builder.Append("");
+                    builder.Append(character);
                 }
             }
             comment = builder.ToString();
