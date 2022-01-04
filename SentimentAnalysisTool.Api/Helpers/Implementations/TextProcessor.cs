@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SentimentAnalysisTool.Api.Helpers.Implementations
@@ -63,6 +64,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
 
         public string RemoveSpecialChars(string comment, int totalChars)
         {
+            comment = Regex.Replace(comment, @"http[^\s]+", "");
             var specialChars = @"!#$%&'()*+,-./:;<=>?@[\]^_`{|}~";
             var specialCharArray = specialChars.ToCharArray();
             var builder = new StringBuilder();
@@ -78,6 +80,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 }
             }
             comment = builder.ToString();
+            
             return comment;
         }
     }
