@@ -40,7 +40,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                     }
                 }
             }
-            var finalComment = string.Join(" ", commentList);
+            var finalComment = string.Join(" ", commentList).Trim();
             return finalComment;
         }
 
@@ -58,7 +58,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                     }
                 }
             }
-            var finalComment = string.Join(" ", commentList);
+            var finalComment = string.Join(" ", commentList).Trim();
             return finalComment;
         }
 

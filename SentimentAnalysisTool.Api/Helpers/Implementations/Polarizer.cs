@@ -24,9 +24,9 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _webHostEnvironment;
         public Polarizer(
-            HttpClient httpClient, 
-            ITextProcessor textProcessor, 
-            ICorpusTypeService corpusTypeService, 
+            HttpClient httpClient,
+            ITextProcessor textProcessor,
+            ICorpusTypeService corpusTypeService,
             IConfiguration configuration,
             IWebHostEnvironment webHostEnvironment)
         {
@@ -85,13 +85,13 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 //Polarization using CorpusWords
                 //TODO
 
+                //Stopper for polarization
+                if (updatedComment == string.Empty)
+                    continue;
+
                 //Polarization of the updated comment
                 dynamic algorithmnModel = null;
-                if (updatedComment == string.Empty)
-                    algorithmnModel = await ApplyAlgorithmn<T>(commentDetail, polarizeCsvFileViewModel.Algorithmn);
-                else
-                    algorithmnModel = await ApplyAlgorithmn<T>(updatedComment, polarizeCsvFileViewModel.Algorithmn);
-
+                algorithmnModel = await ApplyAlgorithmn<T>(updatedComment, polarizeCsvFileViewModel.Algorithmn);
                 CreatePolarizedResults<T>(polarizedResults, ref updatedComment, ref positiveInstance, ref negativeInstance, stringBuilder, commentScore, polarityScore, commentDetail, commentDate, algorithmnModel, manualTransformedComment);
             }
 
