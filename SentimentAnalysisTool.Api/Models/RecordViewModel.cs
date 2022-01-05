@@ -20,6 +20,10 @@ namespace SentimentAnalysisTool.Api.Models
         [JsonPropertyName("negativePercent")]
         public int NegativePercent { get; set; }
 
+        [JsonProperty("totalNumberOfExcelRows")]
+        [JsonPropertyName("totalNumberOfExcelRows")]
+        public int TotalNumberOfExcelRows { get; set; }
+
         [JsonProperty("CommentModels")]
         [JsonPropertyName("CommentModels")]
         public IEnumerable<CommentViewModel<T>> CommentViewModels { get; set; }

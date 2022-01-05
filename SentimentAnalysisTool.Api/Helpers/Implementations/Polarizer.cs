@@ -58,6 +58,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
             var corpusTypeModel = await _corpusTypeService.FindCorpusTypeAsync(polarizeCsvFileViewModel.CorpusType, _configuration.GetConnectionString("SentimentDBConnection"));
 
             //Traverse Excel file
+            var totalExcelRowsCount = 0;
             for (int i = 2; i <= worksheet.Columns.Count; i++)
             {
                 var commentScore = worksheet.Cells[i, 1].Value;
@@ -69,6 +70,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 if (commentDetail == null)
                     break;
 
+                totalExcelRowsCount++;
                 var updatedComment = string.Empty;
 
                 //Removal of SpecialCharacters
@@ -97,7 +99,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
 
             await BuildWordFrequencyModels(wordFrequencies, stringBuilder);
 
-            RecordViewModel<T> recordViewModel = BuildRecordViewModel(polarizedResults, wordFrequencies, application, workbook, positiveInstance, negativeInstance);
+            RecordViewModel<T> recordViewModel = BuildRecordViewModel(polarizedResults, wordFrequencies, application, workbook, positiveInstance, negativeInstance, totalExcelRowsCount);
             return recordViewModel;
         }
 
@@ -145,7 +147,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
             }
         }
 
-        private RecordViewModel<T> BuildRecordViewModel<T>(List<CommentViewModel<T>> polarizedResults, List<WordFrequencyViewModel> wordFrequencies, Application application, Workbook workbook, int positiveInstance, int negativeInstance)
+        private RecordViewModel<T> BuildRecordViewModel<T>(List<CommentViewModel<T>> polarizedResults, List<WordFrequencyViewModel> wordFrequencies, Application application, Workbook workbook, int positiveInstance, int negativeInstance, int totalRowsCount)
         {
             //Build RecordViewModel
             double positivePercent = ((double)positiveInstance / (positiveInstance + negativeInstance)) * 100;
@@ -157,7 +159,8 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 NegativePercent = (int)negativePercent,
                 CommentViewModels = polarizedResults,
                 CorpusRecordViewModels = null,
-                WordFrequencyViewModels = wordFrequencies
+                WordFrequencyViewModels = wordFrequencies,
+                TotalNumberOfExcelRows = totalRowsCount
             };
             workbook.Close(0);
             application.Quit();
