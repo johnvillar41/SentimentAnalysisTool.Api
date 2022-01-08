@@ -12,6 +12,7 @@ namespace SentimentAnalysisTool.Api.Models
         public int RecordId { get; set; }
         public string Word { get; set; }
         public int WordFrequency { get; set; }
+        public string WordType { get; set; }
         public WordFrequencyViewModel(WordFrequencyModel wordFrequencyModel)
         {
             WordFrequencyId = wordFrequencyModel.WordFrequencyId;

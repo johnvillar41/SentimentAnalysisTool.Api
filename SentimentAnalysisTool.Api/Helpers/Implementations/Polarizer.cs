@@ -95,10 +95,9 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 dynamic algorithmnModel = null;
                 algorithmnModel = await ApplyAlgorithmn<T>(updatedComment, polarizeCsvFileViewModel.Algorithmn);
                 CreatePolarizedResults<T>(polarizedResults, ref updatedComment, ref positiveInstance, ref negativeInstance, stringBuilder, commentScore, polarityScore, commentDetail, commentDate, algorithmnModel, manualTransformedComment);
+                
             }
-
-            await BuildWordFrequencyModels(wordFrequencies, stringBuilder);
-
+            wordFrequencies = (List<WordFrequencyViewModel>)await CalculateWordFrequency(stringBuilder.ToString());
             RecordViewModel<T> recordViewModel = BuildRecordViewModel(polarizedResults, wordFrequencies, application, workbook, positiveInstance, negativeInstance, totalExcelRowsCount);
             return recordViewModel;
         }
@@ -130,21 +129,6 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 positiveInstance++;
             else
                 negativeInstance++;
-        }
-
-        private async Task BuildWordFrequencyModels(List<WordFrequencyViewModel> wordFrequencies, StringBuilder stringBuilder)
-        {
-            //Build fullstring here
-            SortedDictionary<string, int> wordFrequencyDictionary = await CalculateWordFrequency(stringBuilder.ToString());
-            foreach (var item in wordFrequencyDictionary)
-            {
-                wordFrequencies.Add(new WordFrequencyViewModel()
-                {
-                    RecordId = -1,
-                    Word = item.Key,
-                    WordFrequency = item.Value
-                });
-            }
         }
 
         private RecordViewModel<T> BuildRecordViewModel<T>(List<CommentViewModel<T>> polarizedResults, List<WordFrequencyViewModel> wordFrequencies, Application application, Workbook workbook, int positiveInstance, int negativeInstance, int totalRowsCount)
@@ -181,31 +165,54 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                  new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             return jsonModel;
         }
-        private async Task<SortedDictionary<string, int>> CalculateWordFrequency(string comments)
+        private async Task<IEnumerable<WordFrequencyViewModel>> CalculateWordFrequency(string comments)
         {
-            return await Task.Run((Func<SortedDictionary<string, int>>)(() =>
+            return await Task.Run(() =>
             {
-                SortedDictionary<string, int> mp = new();
+                List<WordFrequencyViewModel> wordFrequencies = new();
                 string[] commentSplitted = comments.Split(' ');
                 var positiveSentimentsFile = File.ReadLines(Path.Combine(_webHostEnvironment.WebRootPath, @"sentiment-files\", "positive-words.txt"));
                 var negativeSentimentsFile = File.ReadLines(Path.Combine(_webHostEnvironment.WebRootPath, @"sentiment-files\", "negative-words.txt"));
 
-                for (int i = 0; i < commentSplitted.Length; i++)
+                foreach (var comment in commentSplitted)
                 {
-                    if (positiveSentimentsFile.Contains(commentSplitted[i]) || negativeSentimentsFile.Contains(commentSplitted[i]))
+                    if (positiveSentimentsFile.Contains(comment))
                     {
-                        if (mp.ContainsKey(commentSplitted[i]))
+                        var x = wordFrequencies.Where(x => x.Word == comment).Select(x => x).FirstOrDefault();
+                        if (x == null)
                         {
-                            mp[commentSplitted[i]] = mp[commentSplitted[i]] + 1;
+                            wordFrequencies.Add(new WordFrequencyViewModel()
+                            {
+                                Word = comment,
+                                WordFrequency = 1,
+                                WordType = "Positive"
+                            });
                         }
                         else
                         {
-                            mp.Add(commentSplitted[i], 1);
+                            x.WordFrequency += 1;
+                        }
+                    }
+                    if(negativeSentimentsFile.Contains(comment))
+                    {
+                        var x = wordFrequencies.Where(x => x.Word == comment).Select(x => x).FirstOrDefault();
+                        if (x == null)
+                        {
+                            wordFrequencies.Add(new WordFrequencyViewModel()
+                            {
+                                Word = comment,
+                                WordFrequency = 1,
+                                WordType = "Negative"
+                            });
+                        }
+                        else
+                        {
+                            x.WordFrequency += 1;
                         }
                     }
                 }
-                return mp;
-            }));
+                return wordFrequencies;
+            });
         }
     }
 }
