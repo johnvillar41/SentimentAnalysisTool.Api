@@ -84,8 +84,9 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 if (polarizeCsvFileViewModel.ShouldConvertAbbreviations)
                     updatedComment = await _textProcessor.ConvertAbbreviationToBaseWordAsync(updatedComment, corpusTypeModel.CorpusTypeId);
 
-                //Polarization using CorpusWords
-                //TODO
+                //Convertion using CorpusWords
+                if (polarizeCsvFileViewModel.ShouldConvertSynonymns)
+                    updatedComment = await ConvertSynonymnsAsync(updatedComment);
 
                 //Stopper for polarization
                 if (updatedComment == string.Empty)
@@ -150,9 +151,6 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
             application.Quit();
             return recordViewModel;
         }
-
-
-
         private async Task<T> ApplyAlgorithmn<T>(string comment, AlgorithmnType algorithmnType)
         {
             var baseUrl = _configuration.GetValue<string>("SentimentAlgorithmnBaseUrl");
@@ -164,6 +162,24 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                           (responseContent,
                  new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             return jsonModel;
+        }
+        private async Task<string> ConvertSynonymnsAsync(string comment)
+        {
+            string[] commentSplitted = comment.Split(' ');
+            StringBuilder stringBuilder = new();
+            foreach (var commentSplit in commentSplitted)
+            {
+                var baseUrl = _configuration.GetValue<string>("SentimentAlgorithmnBaseUrl");
+                var response = await _httpClient.GetAsync($"{baseUrl}/Convert/{commentSplit}");
+
+                response.EnsureSuccessStatusCode();
+                var responseContent = await response.Content.ReadAsStreamAsync();
+                var synonym = await JsonSerializer.DeserializeAsync<string>
+                              (responseContent,
+                     new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                stringBuilder.Append(synonym);
+            }
+            return stringBuilder.ToString().Trim();
         }
         private async Task<IEnumerable<WordFrequencyViewModel>> CalculateWordFrequency(string comments)
         {

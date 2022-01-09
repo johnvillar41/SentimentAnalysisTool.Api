@@ -25,5 +25,9 @@ namespace SentimentAnalysisTool.Api.Models
         [JsonProperty("maxNumberOfChars")]
         [JsonPropertyName("maxNumberOfChars")]
         public int MaxNumberOfChars { get; set; }
+
+        [JsonProperty("shouldConvertSynonymns")]
+        [JsonPropertyName("shouldConvertSynonymns")]
+        public bool ShouldConvertSynonymns { get; set; }
     }
 }

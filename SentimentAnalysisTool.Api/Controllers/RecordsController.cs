@@ -61,16 +61,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             [FromForm] UploadCsvFileFormViewModel uploadCsvFileFormViewModel)
         {
 
-            var uploadCsvFileViewModel = new UploadCsvFileViewModel()
-            {
-                File = uploadCsvFileFormViewModel.File,
-                Algorithmn = (AlgorithmnType)Enum.Parse(typeof(AlgorithmnType), uploadCsvFileFormViewModel.Algorithmn),
-                ShouldDeleteSlangs = Convert.ToBoolean(uploadCsvFileFormViewModel.ShouldDeleteSlangs),
-                ShouldConvertAbbreviations = Convert.ToBoolean(uploadCsvFileFormViewModel.ShouldConvertAbbreviations),
-                CorpusType = uploadCsvFileFormViewModel.CorpusType,
-                MaxNumberOfChars = int.Parse(uploadCsvFileFormViewModel.MaxNumberOfChars)
-            };
-
+            var uploadCsvFileViewModel = new UploadCsvFileViewModel(uploadCsvFileFormViewModel);
             var filePath = "";
             try
             {
@@ -78,15 +69,7 @@ namespace SentimentAnalysisTool.Api.Controllers
                 if (filePath.Equals(string.Empty))
                     return BadRequest("Error Uploading file!");
 
-                var polarizeCsvFileViewModel = new PolarizeCsvFileViewModel()
-                {
-                    FilePath = filePath,
-                    Algorithmn = uploadCsvFileViewModel.Algorithmn,
-                    ShouldDeleteSlangs = uploadCsvFileViewModel.ShouldDeleteSlangs,
-                    ShouldConvertAbbreviations = uploadCsvFileViewModel.ShouldConvertAbbreviations,
-                    CorpusType = uploadCsvFileViewModel.CorpusType,
-                    MaxNumberOfChars = uploadCsvFileViewModel.MaxNumberOfChars
-                };
+                var polarizeCsvFileViewModel = new PolarizeCsvFileViewModel(uploadCsvFileViewModel, filePath);       
 
                 switch (uploadCsvFileViewModel.Algorithmn)
                 {

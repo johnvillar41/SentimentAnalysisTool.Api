@@ -16,6 +16,7 @@ namespace SentimentAnalysisTool.Api.Models
         public string Algorithmn { get; set; }
         public string ShouldDeleteSlangs { get; set; }
         public string ShouldConvertAbbreviations { get; set; }
+        public string ShouldConvertSynonyms { get; set; }
         public string CorpusType { get; set; }
         public string MaxNumberOfChars { get; set; }
     }

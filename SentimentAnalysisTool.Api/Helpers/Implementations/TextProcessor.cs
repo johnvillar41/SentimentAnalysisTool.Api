@@ -64,10 +64,23 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
 
         public string RemoveSpecialChars(string comment, int totalChars)
         {
-            comment = Regex.Replace(comment, @"http[^\s]+", "");
-            comment = Regex.Replace(comment, @"[^0-9a-zA-Z]+", " ");            
+            var stringBuilder = new StringBuilder();
+            for (int i = 0; i < comment.Length; i++)
+            {
+                if (i <= totalChars)
+                {
+                    stringBuilder.Append(comment[i]);
+                }
+                else
+                {
+                    stringBuilder.Append("");
+                }
+            }
+            var finalComment = stringBuilder.ToString();
+            finalComment = Regex.Replace(finalComment, @"http[^\s]+", "");
+            finalComment = Regex.Replace(finalComment, @"[^0-9a-zA-Z]+", " ");            
                      
-            return comment.Trim();
+            return finalComment.Trim();
         }
     }
 }

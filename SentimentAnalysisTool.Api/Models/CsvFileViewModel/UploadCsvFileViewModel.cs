@@ -13,5 +13,19 @@ namespace SentimentAnalysisTool.Api.Models
     {
         [JsonProperty("file")]
         public IFormFile File { get; set; }
+        public UploadCsvFileViewModel(UploadCsvFileFormViewModel form)
+        {
+            File = form.File;
+            Algorithmn = (AlgorithmnType)Enum.Parse(typeof(AlgorithmnType), form.Algorithmn);
+            ShouldDeleteSlangs = Convert.ToBoolean(form.ShouldDeleteSlangs);
+            ShouldConvertAbbreviations = Convert.ToBoolean(form.ShouldConvertAbbreviations);
+            CorpusType = form.CorpusType;
+            MaxNumberOfChars = int.Parse(form.MaxNumberOfChars);
+            ShouldConvertSynonymns = Convert.ToBoolean(form.ShouldConvertSynonyms);
+        }
+        public UploadCsvFileViewModel()
+        {
+
+        }
     }
 }
