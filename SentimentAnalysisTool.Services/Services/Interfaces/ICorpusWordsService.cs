@@ -13,5 +13,6 @@ namespace SentimentAnalysisTool.Services.Services.Interfaces
         Task<bool> AddCorpusWordsAsync(CorpusWordModel corpusWord, string connectionString);
         Task<ICollection<CorpusWordModel>> FetchCorpusWordsAsync(int corpusTypeId, string connectionString);
         Task<bool> DeleteCorpusWordAsync(int corpusWordId, string connectionString);
+        Task<string> ConvertSynonymousCommentAsync(int corpusId, string word, string connectionString);
     }
 }

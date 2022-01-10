@@ -86,7 +86,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
 
                 //Convertion using CorpusWords
                 if (polarizeCsvFileViewModel.ShouldConvertSynonymns)
-                    updatedComment = await ConvertSynonymnsAsync(updatedComment);
+                    updatedComment = await _textProcessor.ConvertSynonymousWordsAsync(updatedComment, corpusTypeModel.CorpusTypeId);
 
                 //Stopper for polarization
                 if (updatedComment == string.Empty)
@@ -162,24 +162,6 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                           (responseContent,
                  new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             return jsonModel;
-        }
-        private async Task<string> ConvertSynonymnsAsync(string comment)
-        {
-            string[] commentSplitted = comment.Split(' ');
-            StringBuilder stringBuilder = new();
-            foreach (var commentSplit in commentSplitted)
-            {
-                var baseUrl = _configuration.GetValue<string>("SentimentAlgorithmnBaseUrl");
-                var response = await _httpClient.GetAsync($"{baseUrl}/Convert/{commentSplit}");
-
-                response.EnsureSuccessStatusCode();
-                var responseContent = await response.Content.ReadAsStreamAsync();
-                var synonym = await JsonSerializer.DeserializeAsync<string>
-                              (responseContent,
-                     new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-                stringBuilder.Append(synonym);
-            }
-            return stringBuilder.ToString().Trim();
         }
         private async Task<IEnumerable<WordFrequencyViewModel>> CalculateWordFrequency(string comments)
         {

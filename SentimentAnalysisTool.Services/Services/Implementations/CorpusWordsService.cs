@@ -7,13 +7,20 @@ using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SentimentAnalysisTool.Services.Services.Implementations
 {
     public class CorpusWordsService : ICorpusWordsService
     {
+        private HttpClient _httpClient;
+        public CorpusWordsService()
+        {
+            _httpClient = new HttpClient();
+        }
         public async Task<bool> AddCorpusWordsAsync(CorpusWordModel corpusWord, string connectionString)
         {
             var procedure = StoredProcedures.SP_SAVE_CORPUS_WORD;
@@ -62,6 +69,33 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                 return true;
 
             return false;
+        }
+
+        public async Task<string> ConvertSynonymousCommentAsync(int corpusId, string word, string connectionString)
+        {
+            string[] commentSplitted = word.Split(' ');
+            StringBuilder stringBuilder = new();
+            foreach (var commentSplit in commentSplitted)
+            {
+                var baseUrl = "http://192.168.1.105:105/";
+                var response = await _httpClient.GetAsync($"{baseUrl}/Check/{commentSplit}");
+
+                response.EnsureSuccessStatusCode();
+                var responseContent = await response.Content.ReadAsStreamAsync();
+                var result = await JsonSerializer.DeserializeAsync<bool>
+                              (responseContent,
+                     new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                if (result)
+                {
+                    //Convert synonym word
+                    //TODO
+                }
+                else
+                {
+                    stringBuilder.Append(commentSplit);
+                }
+            }
+            return stringBuilder.ToString().Trim();
         }
 
         public async Task<bool> DeleteCorpusWordAsync(int corpusWordId, string connectionString)

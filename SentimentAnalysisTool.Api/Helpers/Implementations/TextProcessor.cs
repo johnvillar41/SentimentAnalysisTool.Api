@@ -15,16 +15,19 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
         private readonly IConfiguration _configuration;
         private readonly ISlangRecordsService _slangRecordsService;
         private readonly IAbbreviationsService _abbreviationsService;
+        private readonly ICorpusWordsService _corpusWordsService;
         private string ConnectionString { get; }
         public TextProcessor(
             IConfiguration configuration,
             ISlangRecordsService slangRecordsService,
-            IAbbreviationsService abbreviationsService)
+            IAbbreviationsService abbreviationsService,
+            ICorpusWordsService corpusWordsService)
         {
             _configuration = configuration;
             _slangRecordsService = slangRecordsService;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
             _abbreviationsService = abbreviationsService;
+            _corpusWordsService = corpusWordsService;
         }
         public async Task<string> RemoveSlangWordAsync(string comment, int corpusTypeId)
         {
@@ -78,9 +81,15 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
             }
             var finalComment = stringBuilder.ToString();
             finalComment = Regex.Replace(finalComment, @"http[^\s]+", "");
-            finalComment = Regex.Replace(finalComment, @"[^0-9a-zA-Z]+", " ");            
-                     
+            finalComment = Regex.Replace(finalComment, @"[^0-9a-zA-Z]+", " ");
+
             return finalComment.Trim();
+        }
+
+        public async Task<string> ConvertSynonymousWordsAsync(string comment, int corpusTypeId)
+        {
+            var convertedWord = await _corpusWordsService.ConvertSynonymousCommentAsync(corpusTypeId, comment, ConnectionString);
+            return convertedWord;
         }
     }
 }
