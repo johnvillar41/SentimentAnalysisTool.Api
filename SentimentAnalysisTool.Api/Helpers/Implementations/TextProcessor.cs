@@ -91,5 +91,14 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
             var convertedWord = await _corpusWordsService.ConvertSynonymousCommentAsync(corpusTypeId, comment, ConnectionString);
             return convertedWord;
         }
+
+        public bool CheckCommentHasSubjectMatter(string comment, string subjectMatter)
+        {
+            if (comment.Contains(subjectMatter))
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

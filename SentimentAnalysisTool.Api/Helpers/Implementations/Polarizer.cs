@@ -92,11 +92,21 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 if (updatedComment == string.Empty)
                     continue;
 
+                //Checker for Subject Matter 
+                bool hasSubjectMatter = false;
+                if (polarizeCsvFileViewModel.SubjectMatter != string.Empty)
+                {
+                    hasSubjectMatter = _textProcessor.CheckCommentHasSubjectMatter(updatedComment, polarizeCsvFileViewModel.SubjectMatter);
+                    if (!hasSubjectMatter)
+                        continue;
+                }
+
+
                 //Polarization of the updated comment
                 dynamic algorithmnModel = null;
                 algorithmnModel = await ApplyAlgorithmn<T>(updatedComment, polarizeCsvFileViewModel.Algorithmn);
                 CreatePolarizedResults<T>(polarizedResults, ref updatedComment, ref positiveInstance, ref negativeInstance, stringBuilder, commentScore, polarityScore, commentDetail, commentDate, algorithmnModel, manualTransformedComment);
-                
+
             }
             wordFrequencies = (List<WordFrequencyViewModel>)await CalculateWordFrequency(stringBuilder.ToString());
             RecordViewModel<T> recordViewModel = BuildRecordViewModel(polarizedResults, wordFrequencies, application, workbook, positiveInstance, negativeInstance, totalExcelRowsCount);
@@ -191,7 +201,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                             x.WordFrequency += 1;
                         }
                     }
-                    if(negativeSentimentsFile.Contains(comment))
+                    if (negativeSentimentsFile.Contains(comment))
                     {
                         var x = wordFrequencies.Where(x => x.Word == comment).Select(x => x).FirstOrDefault();
                         if (x == null)

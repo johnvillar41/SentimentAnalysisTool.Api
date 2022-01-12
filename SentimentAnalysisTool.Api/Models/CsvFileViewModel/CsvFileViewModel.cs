@@ -29,5 +29,9 @@ namespace SentimentAnalysisTool.Api.Models
         [JsonProperty("shouldConvertSynonymns")]
         [JsonPropertyName("shouldConvertSynonymns")]
         public bool ShouldConvertSynonymns { get; set; }
+
+        [JsonProperty("subjectMatter")]
+        [JsonPropertyName("subjectMatter")]
+        public string SubjectMatter{ get; set; }
     }
 }

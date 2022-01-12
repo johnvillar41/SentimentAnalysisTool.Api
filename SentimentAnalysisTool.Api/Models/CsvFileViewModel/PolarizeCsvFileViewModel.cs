@@ -18,6 +18,7 @@ namespace SentimentAnalysisTool.Api.Models
             CorpusType = file.CorpusType;
             MaxNumberOfChars = file.MaxNumberOfChars;
             ShouldConvertSynonymns = file.ShouldConvertSynonymns;
+            SubjectMatter = file.SubjectMatter;
         }
         public PolarizeCsvFileViewModel()
         {

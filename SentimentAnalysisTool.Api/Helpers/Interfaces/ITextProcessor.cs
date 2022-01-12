@@ -11,5 +11,6 @@ namespace SentimentAnalysisTool.Api.Helpers.Interfaces
         Task<string> RemoveSlangWordAsync(string comment, int corpusTypeId);
         Task<string> ConvertAbbreviationToBaseWordAsync(string comment, int corpusTypeId);
         Task<string> ConvertSynonymousWordsAsync(string comment, int corpusTypeId);
+        bool CheckCommentHasSubjectMatter(string comment, string subjectMatter);
     }
 }

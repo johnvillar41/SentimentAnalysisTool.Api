@@ -22,6 +22,7 @@ namespace SentimentAnalysisTool.Api.Models
             CorpusType = form.CorpusType;
             MaxNumberOfChars = int.Parse(form.MaxNumberOfChars);
             ShouldConvertSynonymns = Convert.ToBoolean(form.ShouldConvertSynonyms);
+            SubjectMatter = form.SubjectMatter;
         }
         public UploadCsvFileViewModel()
         {
