@@ -95,7 +95,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                 {
                     var wordSynonym = await _corpusRecordService.FetchSynonymousWordAsync(commentSplit, corpusId, connectionString);
                     if (wordSynonym != null)
-                        stringBuilder.Append(wordSynonym);
+                        stringBuilder.Append(wordSynonym + " ");
                     else
                         stringBuilder.Append(commentSplit + " ");
                 }
