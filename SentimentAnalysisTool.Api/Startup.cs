@@ -46,6 +46,7 @@ namespace SentimentAnalysisTool.Api
             services.AddTransient<ITextProcessor, TextProcessor>();
             services.AddTransient<IPolarizer, Polarizer>();
             services.AddTransient<HttpClient>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

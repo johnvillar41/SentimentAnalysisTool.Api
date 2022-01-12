@@ -78,5 +78,18 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                 }, transaction: transaction, commandType: CommandType.StoredProcedure);
             return result;
         }
+
+        public async Task<string> FetchSynonymousWordAsync(string commentSplit,int corpusTypeId, string connectionString)
+        {
+            var procedure = StoredProcedures.SP_FETCH_SYNONYMOUD_WORD;
+            using var connection = new SqlConnection(connectionString);
+            var result = await connection.QueryFirstOrDefaultAsync<string>(procedure,
+                new
+                {
+                    Word = commentSplit,
+                    CorpusTypeId = corpusTypeId
+                }, commandType: CommandType.StoredProcedure);
+            return result;
+        }
     }
 }

@@ -16,10 +16,12 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 {
     public class CorpusWordsService : ICorpusWordsService
     {
+        private readonly ICorpusRecordService _corpusRecordService;
         private HttpClient _httpClient;
-        public CorpusWordsService()
+        public CorpusWordsService(ICorpusRecordService corpusRecordService)
         {
             _httpClient = new HttpClient();
+            _corpusRecordService = corpusRecordService;
         }
         public async Task<bool> AddCorpusWordsAsync(CorpusWordModel corpusWord, string connectionString)
         {
@@ -87,12 +89,15 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                      new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
                 if (result)
                 {
-                    //Convert synonym word
-                    //TODO
+                    stringBuilder.Append(commentSplit + " ");
                 }
                 else
                 {
-                    stringBuilder.Append(commentSplit);
+                    var wordSynonym = await _corpusRecordService.FetchSynonymousWordAsync(commentSplit, corpusId, connectionString);
+                    if (wordSynonym != null)
+                        stringBuilder.Append(wordSynonym);
+                    else
+                        stringBuilder.Append(commentSplit + " ");
                 }
             }
             return stringBuilder.ToString().Trim();

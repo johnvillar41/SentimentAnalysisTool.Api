@@ -15,5 +15,6 @@ namespace SentimentAnalysisTool.Services.Services.Interfaces
         Task<bool> AddCorpusRecordAsync(IEnumerable<CorpusRecordModel> corpuses, string connectionString);
         Task<bool> AddCorpusRecordAsync(IEnumerable<CorpusRecordModel> corpuses, DbTransaction transaction, SqlConnection connection);
         Task<IEnumerable<CorpusRecordModel>> FetchCorpusRecordAsync(int id, DbTransaction transaction, SqlConnection connection);
+        Task<string> FetchSynonymousWordAsync(string commentSplit,int corpusTypeId, string connectionString);
     }
 }
