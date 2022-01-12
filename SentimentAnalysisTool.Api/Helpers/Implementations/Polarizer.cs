@@ -73,6 +73,15 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 totalExcelRowsCount++;
                 var updatedComment = string.Empty;
 
+                //Checker for Subject Matter 
+                bool hasSubjectMatter = false;
+                if (polarizeCsvFileViewModel.SubjectMatter != string.Empty)
+                {
+                    hasSubjectMatter = _textProcessor.CheckCommentHasSubjectMatter(commentDetail, polarizeCsvFileViewModel.SubjectMatter);
+                    if (!hasSubjectMatter)
+                        continue;
+                }
+
                 //Removal of SpecialCharacters
                 updatedComment = _textProcessor.RemoveSpecialChars(commentDetail, polarizeCsvFileViewModel.MaxNumberOfChars);
 
@@ -91,16 +100,6 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
                 //Stopper for polarization
                 if (updatedComment == string.Empty)
                     continue;
-
-                //Checker for Subject Matter 
-                bool hasSubjectMatter = false;
-                if (polarizeCsvFileViewModel.SubjectMatter != string.Empty)
-                {
-                    hasSubjectMatter = _textProcessor.CheckCommentHasSubjectMatter(updatedComment, polarizeCsvFileViewModel.SubjectMatter);
-                    if (!hasSubjectMatter)
-                        continue;
-                }
-
 
                 //Polarization of the updated comment
                 dynamic algorithmnModel = null;

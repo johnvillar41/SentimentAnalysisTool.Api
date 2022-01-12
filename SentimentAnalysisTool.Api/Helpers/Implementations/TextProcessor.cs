@@ -94,11 +94,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
 
         public bool CheckCommentHasSubjectMatter(string comment, string subjectMatter)
         {
-            if (comment.Contains(subjectMatter))
-            {
-                return true;
-            }
-            return false;
+            return comment.Trim().Contains(subjectMatter.Trim());
         }
     }
 }
