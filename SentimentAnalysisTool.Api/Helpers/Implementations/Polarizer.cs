@@ -75,7 +75,7 @@ namespace SentimentAnalysisTool.Api.Helpers.Implementations
 
                 //Checker for Subject Matter 
                 bool hasSubjectMatter = false;
-                if (polarizeCsvFileViewModel.SubjectMatter != string.Empty)
+                if (polarizeCsvFileViewModel.SubjectMatter != string.Empty && polarizeCsvFileViewModel.SubjectMatter != null)
                 {
                     hasSubjectMatter = _textProcessor.CheckCommentHasSubjectMatter(commentDetail, polarizeCsvFileViewModel.SubjectMatter);
                     if (!hasSubjectMatter)
