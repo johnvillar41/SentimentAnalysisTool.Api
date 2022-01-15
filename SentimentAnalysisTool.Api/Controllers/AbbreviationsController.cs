@@ -67,6 +67,15 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             return BadRequest();
         }
-        
+
+        [HttpGet("{corpusTypeId}")]
+        public async Task<IActionResult> FetchAbbreviations(int corpusTypeId)
+        {
+            var abbreviations = await _abbreviationsService.FetchAbbreviationsAsync(corpusTypeId, ConnectionString);
+            if (!abbreviations.Any())
+                return NoContent();
+
+            return Ok(abbreviations);
+        }        
     }
 }

@@ -15,5 +15,6 @@ namespace SentimentAnalysisTool.Services.Services.Interfaces
         Task<bool> AddAbbreviationAsync(IEnumerable<AbbreviationModel> abbreviations, SqlConnection connection, DbTransaction transaction);
         Task<bool> AddAbbreviationAsync(IEnumerable<AbbreviationModel> abbreviations, string connectionString);
         Task<AbbreviationModel> FindAbbreviationAsync(string abbreviation, int corpusTypeId, string connectionString);
+        Task<IEnumerable<AbbreviationModel>> FetchAbbreviationsAsync(int corpusTypeId, string connectionString);
     }
 }
