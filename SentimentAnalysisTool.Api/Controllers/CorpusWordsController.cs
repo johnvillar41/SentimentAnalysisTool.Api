@@ -32,7 +32,7 @@ namespace SentimentAnalysisTool.Api.Controllers
         }
         //GET: api/CorpusWords/1
         [HttpGet("{corpusTypeId}")]
-        public async Task<IActionResult> FetchAllCorpusWords([FromRoute] int corpusTypeId)
+        public async Task<IActionResult> FetchAllCorpusWords(int corpusTypeId)
         {
             var corpusList = await _corpusWordsService.FetchCorpusWordsAsync(corpusTypeId, ConnectionString);
             if (corpusList.Count == 0)
