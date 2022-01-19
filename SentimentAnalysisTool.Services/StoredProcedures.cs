@@ -20,7 +20,6 @@ namespace SentimentAnalysisTool.Services
         public const string SP_FETCH_WORD_FREQUENCIES = "FetchWordFrequencies";
         public const string SP_FETCH_SLANG_RECORD = "FetchSlangRecord";
         public const string SP_FETCH_SLANG_RECORDS = "FetchSlangRecords";
-        public const string SP_FETCH_ALL_SLANG_RECORDS = "FetchAllSlangRecords";
         public const string SP_FETCH_ABBREVIATION = "FetchAbbreviation";
         public const string SP_FETCH_SYNONYMOUD_WORD = "FetchSynonymousWord";
         public const string SP_FETCH_ABBREVIATIONS = "FetchAbbreviations";

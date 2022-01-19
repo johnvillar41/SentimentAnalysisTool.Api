@@ -82,12 +82,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 
         public async Task<IEnumerable<SlangRecordModel>> FetchSlangRecordAsync(int? corpusTypeId, string connectionString)
         {
-            var procedure = string.Empty;
-            if (corpusTypeId == null)
-                procedure = StoredProcedures.SP_FETCH_ALL_SLANG_RECORDS;
-            else
-                procedure = StoredProcedures.SP_FETCH_SLANG_RECORDS;
-
+            var procedure = StoredProcedures.SP_FETCH_SLANG_RECORDS;
             using var connection = new SqlConnection(connectionString);
             var records = await connection.QueryAsync<SlangRecordModel>(procedure,
                 new
