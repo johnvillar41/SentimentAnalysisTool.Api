@@ -72,9 +72,15 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             return false;
         }
 
-        public Task<IEnumerable<AbbreviationModel>> FetchAbbreviationsAsync(int corpusTypeId, string connectionString)
+        public async Task<IEnumerable<AbbreviationModel>> FetchAbbreviationsAsync(int corpusTypeId, string connectionString)
         {
-            throw new NotImplementedException();
+            var procedure = StoredProcedures.SP_FETCH_ABBREVIATIONS;
+            using var connection = new SqlConnection(connectionString);
+            var result = await connection.QueryAsync<AbbreviationModel>(procedure, new
+            {
+                CorpusTypeId = corpusTypeId
+            }, commandType: CommandType.StoredProcedure);
+            return result;
         }
 
         public async Task<AbbreviationModel> FindAbbreviationAsync(string abbreviation, int corpusTypeId, string connectionString)
