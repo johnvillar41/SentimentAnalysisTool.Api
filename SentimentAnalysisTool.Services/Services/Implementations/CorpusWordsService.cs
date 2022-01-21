@@ -125,7 +125,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                 {
                     CorpusTypeId = corpusTypeId
                 }, commandType: CommandType.StoredProcedure);
-            corpusWords.ToList().ForEach(async x => x.CorpusType = await _corpusTypeService.FindCorpusTypeAsync(corpusTypeId, connectionString));
+            corpusWords.ToList().ForEach(x => x.CorpusType = _corpusTypeService.FindCorpusTypeAsync(corpusTypeId, connectionString).Result);
             return (ICollection<CorpusWordModel>)corpusWords;
         }
     }
