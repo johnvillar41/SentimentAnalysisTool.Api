@@ -14,6 +14,11 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
 {
     public class AbbreviationsService : IAbbreviationsService
     {
+        private readonly ICorpusTypeService _corpusTypeService;
+        public AbbreviationsService(ICorpusTypeService corpusTypeService)
+        {
+            _corpusTypeService = corpusTypeService;
+        }
         public async Task<bool> AddAbbreviationAsync(AbbreviationModel abbreviation, string connectionString)
         {
             var procedure = StoredProcedures.SP_SAVE_ABBREVIATION;
@@ -80,6 +85,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             {
                 CorpusTypeId = corpusTypeId
             }, commandType: CommandType.StoredProcedure);
+            result.ToList().ForEach(async x => x.CorpusType = await _corpusTypeService.FindCorpusTypeAsync((int)corpusTypeId, connectionString));
             return result;
         }
 

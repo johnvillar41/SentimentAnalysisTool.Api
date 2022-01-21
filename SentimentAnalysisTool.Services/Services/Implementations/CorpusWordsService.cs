@@ -17,11 +17,13 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
     public class CorpusWordsService : ICorpusWordsService
     {
         private readonly ICorpusRecordService _corpusRecordService;
+        private readonly ICorpusTypeService _corpusTypeService;
         private HttpClient _httpClient;
-        public CorpusWordsService(ICorpusRecordService corpusRecordService)
+        public CorpusWordsService(ICorpusRecordService corpusRecordService, ICorpusTypeService corpusTypeService)
         {
             _httpClient = new HttpClient();
             _corpusRecordService = corpusRecordService;
+            _corpusTypeService = corpusTypeService;
         }
         public async Task<bool> AddCorpusWordsAsync(CorpusWordModel corpusWord, string connectionString)
         {
@@ -123,7 +125,8 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                 {
                     CorpusTypeId = corpusTypeId
                 }, commandType: CommandType.StoredProcedure);
-            return corpusWords.ToList();
+            corpusWords.ToList().ForEach(async x => x.CorpusType = await _corpusTypeService.FindCorpusTypeAsync(corpusTypeId, connectionString));
+            return (ICollection<CorpusWordModel>)corpusWords;
         }
     }
 }
