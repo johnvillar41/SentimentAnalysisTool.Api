@@ -5,12 +5,18 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SentimentAnalysisTool.Services.Services.Implementations
 {
     public class SlangRecordsService : ISlangRecordsService
     {
+        private readonly ICorpusTypeService _corpusTypeService;
+        public SlangRecordsService(ICorpusTypeService corpusTypeService)
+        {
+            _corpusTypeService = corpusTypeService;
+        }
         public async Task<bool> AddSlangRecordAsync(SlangRecordModel slangRecord, string connectionString)
         {
             var procedure = StoredProcedures.SP_SAVE_SLANG_RECORD;
@@ -89,6 +95,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                 {
                     CorpusTypeId = corpusTypeId
                 }, commandType: CommandType.StoredProcedure);
+            records.ToList().ForEach(async x => x.CorpusType = await _corpusTypeService.FindCorpusTypeAsync((int)corpusTypeId, connectionString));
             return records;
         }
 

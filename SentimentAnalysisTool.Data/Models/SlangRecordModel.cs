@@ -2,7 +2,7 @@
 {
     public class SlangRecordModel
     {
-        public int SlangRecordId { get; set; }
+        public int SlangRecordsId { get; set; }
         public CorpusTypeModel CorpusType { get; set; }
         public string SlangName { get; set; }
     }
