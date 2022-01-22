@@ -36,6 +36,7 @@ namespace SentimentAnalysisTool.Api.Controllers
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
             _fileHelper = fileHelper;
         }
+        //POST: api/Abbreviation/{corpusTypeId}
         [HttpPost("{corpusTypeId}")]
         public async Task<IActionResult> AddAbbreviations(
             [FromForm] IFormFile file,
@@ -49,7 +50,7 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             return BadRequest();
         }
-
+        //POST: api/Abbreviation
         [HttpPost]
         public async Task<IActionResult> AddAbbreviations(
             [FromBody] IEnumerable<AbbreviationsViewModel> abbreviations)
@@ -68,7 +69,7 @@ namespace SentimentAnalysisTool.Api.Controllers
 
             return BadRequest();
         }
-
+        //GET: api/Abbreviation/{corpusTypeId}
         [HttpGet("{corpusTypeId}")]
         public async Task<IActionResult> FetchAbbreviations(int corpusTypeId)
         {
@@ -77,6 +78,16 @@ namespace SentimentAnalysisTool.Api.Controllers
                 return NotFound();
 
             return Ok(abbreviations);
-        }        
+        }
+        //DELETE: api/Abbreviation/{abbreviationId}
+        [HttpDelete("{abbreviationId}")]
+        public async Task<IActionResult> DeleteAbbreviation(int abbreviationId)
+        {
+            var result = await _abbreviationsService.DeleteAbbreviationAsync(abbreviationId, ConnectionString);
+            if (result)
+                return Ok();
+
+            return BadRequest();
+        }
     }
 }

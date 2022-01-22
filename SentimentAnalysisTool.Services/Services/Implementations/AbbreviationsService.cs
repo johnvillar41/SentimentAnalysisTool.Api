@@ -77,6 +77,21 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             return false;
         }
 
+        public async Task<bool> DeleteAbbreviationAsync(int abbreviationId, string connectionString)
+        {
+            var procedure = StoredProcedures.SP_DELETE_ABBREVIATION;
+            using var connection = new SqlConnection(connectionString);
+            var result = await connection.ExecuteAsync(procedure, new
+            {
+                AbbreviationId = abbreviationId
+            },
+            commandType: CommandType.StoredProcedure);
+            if (result > 0)
+                return true;
+
+            return false;
+        }
+
         public async Task<IEnumerable<AbbreviationModel>> FetchAbbreviationsAsync(int corpusTypeId, string connectionString)
         {
             var procedure = StoredProcedures.SP_FETCH_ABBREVIATIONS;

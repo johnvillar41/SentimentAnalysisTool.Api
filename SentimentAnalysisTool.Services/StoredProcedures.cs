@@ -12,6 +12,7 @@ namespace SentimentAnalysisTool.Services
         public const string SP_DELETE_CORPUS_WORD = "DeleteCorpusWord";
         public const string SP_DELETE_RECORDS = "DeleteRecords";
         public const string SP_DELETE_SLANG_RECORD = "DeleteSlangRecord";
+        public const string SP_DELETE_ABBREVIATION = "DeleteAbbreviation";
 
         public const string SP_FETCH_CORPUS_TYPE = "FetchCorpusType";
         public const string SP_FETCH_CORPUS_WORD = "FetchCorpusWord";
