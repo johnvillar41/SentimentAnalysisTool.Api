@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
@@ -37,6 +38,14 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             if (result > 0)
                 return true;
             return false;
+        }
+
+        public async Task<IEnumerable<CorpusTypeModel>> FetchCorpusTypesAsync(string connectionString)
+        {
+            var procedure = StoredProcedures.SP_FETCH_CORPUSTYPES;
+            using var connection = new SqlConnection(connectionString);
+            var result = await connection.QueryAsync<CorpusTypeModel>(procedure, commandType: CommandType.StoredProcedure);
+            return result;
         }
 
         public async Task<CorpusTypeModel> FindCorpusTypeAsync(int corpusTypeId, string connectionString)

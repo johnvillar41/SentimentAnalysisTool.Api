@@ -15,5 +15,6 @@ namespace SentimentAnalysisTool.Services.Services.Interfaces
         Task<CorpusTypeModel> FindCorpusTypeAsync(int corpusTypeId, string connectionString);
         Task<CorpusTypeModel> FindCorpusTypeAsync(string corpusType, string connectionString);
         Task<bool> DeleteCorpusTypeAsync(int corpusTypeId, string connectionString);
+        Task<IEnumerable<CorpusTypeModel>> FetchCorpusTypesAsync(string connectionString);
     }
 }

@@ -23,6 +23,7 @@ namespace SentimentAnalysisTool.Services
         public const string SP_FETCH_ABBREVIATION = "FetchAbbreviation";
         public const string SP_FETCH_SYNONYMOUD_WORD = "FetchSynonymousWord";
         public const string SP_FETCH_ABBREVIATIONS = "FetchAbbreviations";
+        public const string SP_FETCH_CORPUSTYPES = "FetchCorpustypes";
 
         public const string SP_PAGINATE_COMMENTS = "PaginateCommentsTable";
 

@@ -99,7 +99,7 @@ namespace SentimentAnalysisTool.Api.Controllers
                 var slangRecordResult = await _slangRecordsService.AddSlangRecordAsync(corpusModel.SlangRecords, transaction, connection);
                 if (!slangRecordResult)
                     return BadRequest();
-            }            
+            }
             if (corpusModel.Abbreviations.Any())
             {
                 //Insert Abbreviations
@@ -120,6 +120,16 @@ namespace SentimentAnalysisTool.Api.Controllers
             var result = await _corpusTypeService.DeleteCorpusTypeAsync(id, ConnectionString);
             if (result)
                 return Ok();
+
+            return BadRequest();
+        }
+        //GET: api/CorpusType
+        [HttpGet]
+        public async Task<IActionResult> FetchCorpusTypes()
+        {
+            var result = await _corpusTypeService.FetchCorpusTypesAsync(ConnectionString);
+            if (result != null)
+                return Ok(result);
 
             return BadRequest();
         }
