@@ -109,7 +109,10 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
         {
             var procedure = StoredProcedures.SP_DELETE_CORPUS_WORD;
             using var connection = new SqlConnection(connectionString);
-            var rowsAffected = await connection.ExecuteAsync(procedure, corpusWordId, commandType: CommandType.StoredProcedure);
+            var rowsAffected = await connection.ExecuteAsync(procedure, new
+            {
+                CorpusWordId = corpusWordId
+            }, commandType: CommandType.StoredProcedure);
             if (rowsAffected > 0)
                 return true;
 
