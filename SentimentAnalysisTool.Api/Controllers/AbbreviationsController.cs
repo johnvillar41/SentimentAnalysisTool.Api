@@ -73,8 +73,8 @@ namespace SentimentAnalysisTool.Api.Controllers
         public async Task<IActionResult> FetchAbbreviations(int corpusTypeId)
         {
             var abbreviations = await _abbreviationsService.FetchAbbreviationsAsync(corpusTypeId, ConnectionString);
-            if (!abbreviations.Any())
-                return NoContent();
+            if (abbreviations == null)
+                return NotFound();
 
             return Ok(abbreviations);
         }        
