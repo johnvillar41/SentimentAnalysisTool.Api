@@ -45,10 +45,10 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                     item.SlangName
                 }, commandType: CommandType.StoredProcedure));
             }
-            if (rowsAffected.Contains(1))
-                return true;
+            //if (rowsAffected.Contains(1))
+            //    return true;
 
-            return false;
+            return true;
         }
 
         public async Task<bool> AddSlangRecordAsync(IEnumerable<SlangRecordModel> slangRecord, DbTransaction transaction, SqlConnection connection)
