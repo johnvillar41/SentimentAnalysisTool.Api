@@ -18,7 +18,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
     {
         private readonly ICorpusRecordService _corpusRecordService;
         private readonly ICorpusTypeService _corpusTypeService;
-        private HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
         public CorpusWordsService(ICorpusRecordService corpusRecordService, ICorpusTypeService corpusTypeService)
         {
             _httpClient = new HttpClient();
@@ -36,7 +36,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             return false;
         }
 
-        public async Task<bool> AddCorpusWordsAsync(IEnumerable<CorpusWordModel> corpusWords, string connectionString)
+        public async Task<bool> AddCorpusWordsAsync(IEnumerable<CorpusWordModel> corpusWords, int corpusTypeId, string connectionString)
         {
             var procedure = StoredProcedures.SP_SAVE_CORPUS_WORD;
             using var connection = new SqlConnection(connectionString);
@@ -45,7 +45,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
             {
                 rowsAffected += await connection.ExecuteAsync(procedure, new
                 {
-                    corpus.CorpusType.CorpusTypeId,
+                    CorpusTypeId = corpusTypeId,
                     corpus.CorpusWord
                 }, commandType: CommandType.StoredProcedure);
             }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using SentimentAnalysisTool.Api.Helpers;
+using SentimentAnalysisTool.Api.Helpers.Enums;
 using SentimentAnalysisTool.Api.Models;
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
@@ -19,16 +21,19 @@ namespace SentimentAnalysisTool.Api.Controllers
         private readonly ICorpusWordsService _corpusWordsService;
         private readonly ICorpusTypeService _corpusTypeService;
         private readonly IConfiguration _configuration;
+        private readonly IFileHelper _fileHelper;
         private string ConnectionString { get; }
         public CorpusWordsController(
             ICorpusWordsService corpusWordsService,
             IConfiguration configuration,
-            ICorpusTypeService corpusTypeService)
+            ICorpusTypeService corpusTypeService,
+            IFileHelper fileHelper)
         {
             _corpusWordsService = corpusWordsService;
             _corpusTypeService = corpusTypeService;
             _configuration = configuration;
             ConnectionString = _configuration.GetConnectionString("SentimentDBConnection");
+            _fileHelper = fileHelper;
         }
         //GET: api/CorpusWords/1
         [HttpGet("{corpusTypeId}")]
@@ -44,15 +49,16 @@ namespace SentimentAnalysisTool.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCorpusWords([FromBody] IEnumerable<CorpusWordViewModel> corpusWords)
         {
-            var corpusModelTasks = corpusWords.Select(async x => new CorpusWordModel()
-            {
-                CorpusWordId = -1,
-                CorpusWord = x.CorpusWord,
-                CorpusType = await _corpusTypeService.FindCorpusTypeAsync(x.CorpusTypeId, ConnectionString)
-            });
-            var corpusModels = await Task.WhenAll(corpusModelTasks);
-            var result = await _corpusWordsService.AddCorpusWordsAsync(corpusModels, ConnectionString);
-            if (result)
+            throw new NotImplementedException();
+        }
+        //POST api/CorpusWords/{corpusTypeId}
+        [HttpPost("{corpusTypeId}")]
+        public async Task<IActionResult> AddCorpusWord([FromForm] IFormFile file, [FromRoute] int corpusTypeId)
+        {
+            var result = await _fileHelper.UploadCsvAsync(file, UploadType.Corpus);
+            var corpusWords = await _fileHelper.TraverseCorpusWordsFileAsync(result, corpusTypeId);
+            var slangRecordsResult = await _corpusWordsService.AddCorpusWordsAsync(corpusWords, corpusTypeId, ConnectionString);
+            if (slangRecordsResult)
                 return Ok();
 
             return BadRequest();

@@ -67,6 +67,23 @@ namespace SentimentAnalysisTool.Api.Helpers
 
             return abbreviations;
         }
+
+        public async Task<IEnumerable<CorpusWordModel>> TraverseCorpusWordsFileAsync(string filePath, int corpusTypeId)
+        {
+            if (File.Exists(Path.Combine(filePath)))
+            {
+                var corpusWords = File.ReadLines(Path.Combine(filePath)).ToList();
+                var corpusRecordTasks = corpusWords.Select(async x => new CorpusWordModel()
+                {
+                    CorpusWord = x,
+                    CorpusType = await _corpusTypeService.FindCorpusTypeAsync(corpusTypeId, _configuration.GetConnectionString("SentimentDBConnection"))
+                });
+                var corpusRecords = await Task.WhenAll(corpusRecordTasks);
+                return corpusRecords;
+            }
+            return new List<CorpusWordModel>();
+        }
+
         public async Task<IEnumerable<SlangRecordModel>> TraverseSlangRecordFileAsync(string filePath, int corpusTypeId)
         {
             if (File.Exists(Path.Combine(filePath)))

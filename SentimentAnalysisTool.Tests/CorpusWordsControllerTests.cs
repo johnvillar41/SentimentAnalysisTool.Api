@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+
 using Moq;
 using SentimentAnalysisTool.Api.Controllers;
+using SentimentAnalysisTool.Api.Helpers;
 using SentimentAnalysisTool.Api.Models;
 using SentimentAnalysisTool.Data.Models;
 using SentimentAnalysisTool.Services.Services.Interfaces;
@@ -16,16 +18,20 @@ namespace SentimentAnalysisTool.Tests
         private readonly Mock<ICorpusWordsService> mockCorpusWordsService;
         private readonly Mock<ICorpusTypeService> mockCorpusTypeService;
         private readonly Mock<IConfiguration> mockConfiguration;
+        private readonly Mock<IFileHelper> mockFileHelper;
         private readonly CorpusWordsController corpusWordsController;
         public CorpusWordsControllerTests()
         {
             mockCorpusWordsService = new Mock<ICorpusWordsService>();
             mockConfiguration = new Mock<IConfiguration>();
             mockCorpusTypeService = new Mock<ICorpusTypeService>();
+            mockFileHelper = new Mock<IFileHelper>();
             corpusWordsController = new CorpusWordsController(
-                mockCorpusWordsService.Object, 
+                mockCorpusWordsService.Object,
                 mockConfiguration.Object,
-                mockCorpusTypeService.Object);
+                mockCorpusTypeService.Object,
+                mockFileHelper.Object
+                );
         }
         [Fact]
         public async Task Should_Return_NotFound_When_FetchCorpusWordsAsync_Returns_Zero()
@@ -70,7 +76,7 @@ namespace SentimentAnalysisTool.Tests
                 Mock.Of<CorpusWordViewModel>()
             };
             mockCorpusWordsService
-                .Setup(m => m.AddCorpusWordsAsync(It.IsAny<IEnumerable<CorpusWordModel>>(), It.IsAny<string>()))
+                .Setup(m => m.AddCorpusWordsAsync(It.IsAny<IEnumerable<CorpusWordModel>>(), It.IsAny<int>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(true));
             //Act
             var result = await corpusWordsController.AddCorpusWords(mockCorpusList);
@@ -87,13 +93,13 @@ namespace SentimentAnalysisTool.Tests
                 Mock.Of<CorpusWordViewModel>()
             };
             mockCorpusWordsService
-                .Setup(m => m.AddCorpusWordsAsync(It.IsAny<IEnumerable<CorpusWordModel>>(), It.IsAny<string>()))
+                .Setup(m => m.AddCorpusWordsAsync(It.IsAny<IEnumerable<CorpusWordModel>>(), It.IsAny<int>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(false));
             //Act
             var result = await corpusWordsController.AddCorpusWords(mockCorpusList);
             //Assert
             Assert.IsType<BadRequestResult>(result);
-        }        
+        }
         [Fact]
         public async Task Should_Return_Ok_When_Successfully_Added_CorpusWord()
         {
@@ -111,7 +117,7 @@ namespace SentimentAnalysisTool.Tests
         public async Task Should_Return_BadRequest_When_Unsuccessfully_Added_CorpusWord()
         {
             //Arrange
-            var corpusWord = Mock.Of<CorpusWordViewModel>();                
+            var corpusWord = Mock.Of<CorpusWordViewModel>();
             mockCorpusWordsService
                 .Setup(m => m.AddCorpusWordsAsync(It.IsAny<CorpusWordModel>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(false));
@@ -127,7 +133,7 @@ namespace SentimentAnalysisTool.Tests
             mockCorpusWordsService
                 .Setup(m => m.DeleteCorpusWordAsync(It.IsAny<int>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(true));
-                
+
             //Act
             var result = await corpusWordsController.DeleteCorpusWord(It.IsAny<int>());
             //Assert

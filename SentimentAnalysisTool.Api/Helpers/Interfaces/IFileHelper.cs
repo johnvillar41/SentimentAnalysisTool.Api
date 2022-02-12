@@ -16,5 +16,6 @@ namespace SentimentAnalysisTool.Api.Helpers
         Task<bool> DeleteCsvAsync(string filePath);
         Task<IEnumerable<SlangRecordModel>> TraverseSlangRecordFileAsync(string filePath, int corpusTypeId);
         Task<IEnumerable<AbbreviationModel>> TraverseAbbreviationsFileAsync(string filePath, int corpusTypeId);
+        Task<IEnumerable<CorpusWordModel>> TraverseCorpusWordsFileAsync(string filePath, int corpusTypeId);
     }
 }
