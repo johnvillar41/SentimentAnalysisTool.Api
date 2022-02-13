@@ -83,8 +83,8 @@ namespace SentimentAnalysisTool.Api.Helpers
                     corpusWords.Add(new CorpusWordModel()
                     {
                         CorpusType = await _corpusTypeService.FindCorpusTypeAsync(corpusTypeId, _configuration.GetConnectionString("SentimentDBConnection")),
-                        CorpusWord = worksheet.Cells[i, 2].Value,
-                        SynonymWord = worksheet.Cells[i, 3].Value
+                        CorpusWord = worksheet.Cells[i, 1].Value,
+                        SynonymWord = worksheet.Cells[i, 2].Value
                     });
                 }
                 return corpusWords;
