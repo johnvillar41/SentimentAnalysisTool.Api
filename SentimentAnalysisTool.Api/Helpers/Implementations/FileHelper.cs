@@ -72,14 +72,22 @@ namespace SentimentAnalysisTool.Api.Helpers
         {
             if (File.Exists(Path.Combine(filePath)))
             {
-                var corpusWords = File.ReadLines(Path.Combine(filePath)).ToList();
-                var corpusRecordTasks = corpusWords.Select(async x => new CorpusWordModel()
+                List<CorpusWordModel> corpusWords = new();
+                var application = new Application();
+                var workbook = application.Workbooks.Open(filePath, Notify: false, ReadOnly: true);
+                Worksheet worksheet = (Worksheet)workbook.ActiveSheet;
+                for (int i = 2; i <= worksheet.Columns.Count; i++)
                 {
-                    CorpusWord = x,
-                    CorpusType = await _corpusTypeService.FindCorpusTypeAsync(corpusTypeId, _configuration.GetConnectionString("SentimentDBConnection"))
-                });
-                var corpusRecords = await Task.WhenAll(corpusRecordTasks);
-                return corpusRecords;
+                    if (worksheet.Cells[i, 1].Value == null)
+                        break;
+                    corpusWords.Add(new CorpusWordModel()
+                    {
+                        CorpusType = await _corpusTypeService.FindCorpusTypeAsync(corpusTypeId, _configuration.GetConnectionString("SentimentDBConnection")),
+                        CorpusWord = worksheet.Cells[i, 2].Value,
+                        SynonymWord = worksheet.Cells[i, 3].Value
+                    });
+                }
+                return corpusWords;
             }
             return new List<CorpusWordModel>();
         }
@@ -115,6 +123,8 @@ namespace SentimentAnalysisTool.Api.Helpers
                     saveFile = Path.Combine(_webHostEnvironment.WebRootPath, @"slangs\", $"{guid}{csvFormFile.FileName}");
                 if (uploadType == UploadType.Abbreviation)
                     saveFile = Path.Combine(_webHostEnvironment.WebRootPath, @"abbreviaitons\", $"{guid}{csvFormFile.FileName}");
+                if (uploadType == UploadType.Corpus)
+                    saveFile = Path.Combine(_webHostEnvironment.WebRootPath, @"corpus\", $"{guid}{csvFormFile.FileName}");
 
                 using var stream = new FileStream(saveFile, FileMode.Create);
                 await csvFormFile.CopyToAsync(stream);
