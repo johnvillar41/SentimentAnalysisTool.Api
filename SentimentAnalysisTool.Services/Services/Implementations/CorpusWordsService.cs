@@ -46,6 +46,7 @@ namespace SentimentAnalysisTool.Services.Services.Implementations
                 rowsAffected += await connection.ExecuteAsync(procedure, new
                 {
                     CorpusTypeId = corpusTypeId,
+                    corpus.SynonymWord,
                     corpus.CorpusWord
                 }, commandType: CommandType.StoredProcedure);
             }

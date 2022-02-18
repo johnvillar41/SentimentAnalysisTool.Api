@@ -44,13 +44,7 @@ namespace SentimentAnalysisTool.Api.Controllers
                 return NotFound("Empty Corpus List!");
 
             return Ok(corpusList);
-        }
-        //POST: api/CorpusWords
-        [HttpPost]
-        public async Task<IActionResult> AddCorpusWords([FromBody] IEnumerable<CorpusWordViewModel> corpusWords)
-        {
-            throw new NotImplementedException();
-        }
+        }   
         //POST api/CorpusWords/{corpusTypeId}
         [HttpPost("{corpusTypeId}")]
         public async Task<IActionResult> AddCorpusWord([FromForm] IFormFile file, [FromRoute] int corpusTypeId)
